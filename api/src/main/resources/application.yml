@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: api
+
+
+telegramBot:
+  username: Stockify_ChatBot
+  token: 7996173552:AAEW9JgIlRac-c0XksVuQprDn0Ts2qoDI_M
+
+
+springdoc:
+  override-with-generic-response: false
+
+jwt:
+  secret: 63158d2da750372981a3716b4d45d6fa394024b075c201b7757742e69cb1fa347e92b5ae1d39f7cf6f4855ca44df7462b17fa7c9a8d27de59fee76e9447c990cccebb78cf7e3ae2def2ea63e50371219c462a5b6988acd6bb339621e8a1904fc54cda8ad0009b1ebb41b63c0ced5ccdb60eafc0c5a018189f673acdb753ee98c
