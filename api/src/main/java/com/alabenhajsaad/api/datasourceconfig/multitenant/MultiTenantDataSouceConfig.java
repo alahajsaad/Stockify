@@ -1,0 +1,86 @@
+package com.alabenhajsaad.api.datasourceconfig.multitenant;
+
+import jakarta.persistence.EntityManagerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
+
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+        basePackages ={"com.alabenhajsaad.api.product"} ,
+        entityManagerFactoryRef = "multiTenantEntityManagerFactory",  // Changed name
+        transactionManagerRef = "multiTenantTransactionManager"
+)
+
+public class MultiTenantDataSouceConfig {
+
+
+    @Primary
+    @Bean(name = "multiTenantDataSource")
+    public DynamicRoutingDataSource dynamicRoutingDataSource(
+            @Value("${spring.datasource.multitenant.jdbc-url}") String jdbcUrl,
+            @Value("${spring.datasource.multitenant.username}") String username,
+            @Value("${spring.datasource.multitenant.password}") String password,
+            @Value("${spring.datasource.multitenant.driver-class-name}") String driverClassName) {
+
+        DynamicRoutingDataSource dynamicRoutingDataSource = new DynamicRoutingDataSource();
+
+        // Création d'un DataSource par défaut avec les valeurs de l'application.yml
+        DataSource defaultDataSource = DataSourceBuilder.create()
+                .url(jdbcUrl)
+                .username(username)
+                .password(password)
+                .driverClassName(driverClassName)
+                .build();
+
+        dynamicRoutingDataSource.addDataSource("default", defaultDataSource);
+
+        return dynamicRoutingDataSource;
+    }
+
+    @Primary
+    @Bean(name = "multiTenantEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean tenantEntityManagerFactory(
+            @Qualifier("multiTenantDataSource") DataSource dataSource,
+            @Value("${spring.jpa.database-platform}") String dialect){
+        LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
+        bean.setDataSource(dataSource);
+        bean.setPackagesToScan("com.alabenhajsaad.api.product");
+
+        JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        bean.setJpaVendorAdapter(adapter);
+
+        Map<String,String> props = new HashMap<>();
+        props.put("hibernate.dialect",dialect);
+        props.put("hibernate.show_sql","true");
+        props.put("hibernate.hbm2ddl.auto","update");
+        bean.setJpaPropertyMap(props);
+
+        return bean;
+    }
+
+    @Bean(name = "multiTenantTransactionManager")
+    public PlatformTransactionManager tenantTransactionManager(
+            @Qualifier("multiTenantEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+
+
+}
+

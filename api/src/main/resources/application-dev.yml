@@ -1,28 +1,31 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/stockify_db?createDatabaseIfNotExist=true
-    username: username
-    password: password
-    driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
-      ddl-auto: update  #create-drop, update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect #org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    primary:
+      jdbc-url: jdbc:mysql://localhost:3306/multiTenantPrimary_dB?createDatabaseIfNotExist=true
+      username: root
+      password:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    multitenant:
+      jdbc-url: jdbc:mysql://localhost:3306/multiTenantDefault_db?createDatabaseIfNotExist=true
+      username: root
+      password:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+#  jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
 #  datasource:
 #    primary:
-#      jdbc-url: jdbc:postgresql://localhost:5432/stockify_db?createDatabaseIfNotExist=true
+#      jdbc-url: jdbc:postgresql://localhost:5432/multiTenantPrimary_dB?createDatabaseIfNotExist=true
 #      username: username
 #      password: password
 #      driver-class-name: org.postgresql.Driver
-#  tenant:
-#    datasource:
-#      url-base: jdbc:postgresql://localhost:5432/tenant
+#    multitenant:
+#      jdbc-url: jdbc:postgresql://localhost:5432/multiTenantDefault_db?createDatabaseIfNotExist=true
 #      username: username
 #      password: password
 #      driver-class-name: org.postgresql.Driver
+
 
 #  mail:
 #    host: localhost
@@ -43,3 +46,10 @@ spring:
 
 server:
   port: 8088
+
+database:
+  default:
+    username: root
+    password:
+  tenant:
+    prefix: jdbc:mysql://localhost:3306/multiTenant_

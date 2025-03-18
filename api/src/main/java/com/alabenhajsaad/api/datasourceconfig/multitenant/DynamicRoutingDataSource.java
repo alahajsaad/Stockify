@@ -1,14 +1,22 @@
-package com.alabenhajsaad.api.datasourceconfig.correct;
+package com.alabenhajsaad.api.datasourceconfig.multitenant;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     private final Map<Object, Object> dataSources = new ConcurrentHashMap<>();
+
+    private String defaultTenant = "default";
+    public DynamicRoutingDataSource() {
+        // Initialisation avec au moins une source de données vide pour éviter l'erreur
+        super.setTargetDataSources(new HashMap<>());
+        super.afterPropertiesSet();
+    }
 
     public void addDataSource(String tenantId, DataSource dataSource) {
         dataSources.put(tenantId, dataSource); // Register the new tenant's data source
@@ -19,10 +27,17 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     public boolean containsDataSource(String tenantId) {
         return dataSources.containsKey(tenantId);
     }
+    public boolean isEmptyDataSources(){
+        return dataSources.isEmpty();
+    }
 
     @Override
     protected Object determineCurrentLookupKey() {
-        return TenantContext.getCurrentTenant(); // Dynamic tenant switching
+        String currentTenant = TenantContext.getCurrentTenant();
+        if (currentTenant == null || !dataSources.containsKey(currentTenant)) {
+            return defaultTenant; // Retourne le tenant par défaut au lieu de null
+        }
+        return currentTenant;
     }
 }
 

@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.datasourceconfig.correct;
+package com.alabenhajsaad.api.datasourceconfig.multitenant;
 
 public class TenantContext {
     private static final ThreadLocal<String> CURRENT_TENANT = new ThreadLocal<>();
