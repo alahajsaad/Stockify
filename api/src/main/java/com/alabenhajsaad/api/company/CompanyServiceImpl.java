@@ -5,7 +5,7 @@ import com.alabenhajsaad.api.company.mapper.CompanyMapper;
 import com.alabenhajsaad.api.company.projection.CompanyFirstViewProjection;
 import com.alabenhajsaad.api.company.projection.CompanyViewForEmployeeProjection;
 
-import com.alabenhajsaad.api.datasourceconfig.correct.DynamicDataSourceService;
+import com.alabenhajsaad.api.datasourceconfig.multitenant.DynamicDataSourceService;
 import com.alabenhajsaad.api.datasourceconfig.datasource.DataSourceEntity;
 import com.alabenhajsaad.api.datasourceconfig.datasource.DataSourceService;
 import com.alabenhajsaad.api.exception.ConflictException;
@@ -72,7 +72,7 @@ public class CompanyServiceImpl implements CompanyService {
         company.setNumberOfUser(1);
 
         // Construct the database URL dynamically
-        String databaseUrl = dbPrefix + tenantId;
+        String databaseUrl = dbPrefix + tenantId + "?createDatabaseIfNotExist=true";
 
 
         try {

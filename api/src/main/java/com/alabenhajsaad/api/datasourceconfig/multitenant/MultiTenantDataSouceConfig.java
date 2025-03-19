@@ -1,5 +1,7 @@
 package com.alabenhajsaad.api.datasourceconfig.multitenant;
 
+import com.alabenhajsaad.api.datasourceconfig.datasource.DataSourceEntity;
+import com.alabenhajsaad.api.datasourceconfig.datasource.DataSourceService;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -29,7 +32,10 @@ import java.util.Map;
 )
 
 public class MultiTenantDataSouceConfig {
-
+    private final DataSourceService dataSourceService;
+    public MultiTenantDataSouceConfig(DataSourceService dataSourceService) {
+        this.dataSourceService = dataSourceService;
+    }
 
     @Primary
     @Bean(name = "multiTenantDataSource")
@@ -41,6 +47,12 @@ public class MultiTenantDataSouceConfig {
 
         DynamicRoutingDataSource dynamicRoutingDataSource = new DynamicRoutingDataSource();
 
+        List<DataSourceEntity> dataSourceEntities = dataSourceService.getAllDataSources();
+
+        for (DataSourceEntity dataSourceEntity : dataSourceEntities) {
+            DataSource tenantDataSource = createDataSource(dataSourceEntity.getUrl(),"root","","com.mysql.cj.jdbc.Driver");
+            dynamicRoutingDataSource.addDataSource(dataSourceEntity.getTenantId(), tenantDataSource);
+        }
         // Création d'un DataSource par défaut avec les valeurs de l'application.yml
         DataSource defaultDataSource = DataSourceBuilder.create()
                 .url(jdbcUrl)
@@ -49,9 +61,21 @@ public class MultiTenantDataSouceConfig {
                 .driverClassName(driverClassName)
                 .build();
 
+
+
         dynamicRoutingDataSource.addDataSource("default", defaultDataSource);
 
         return dynamicRoutingDataSource;
+    }
+
+    // Méthode pour créer un DataSource
+    private DataSource createDataSource(String url, String username, String password, String driverClassName) {
+        return DataSourceBuilder.create()
+                .url(url)
+                .username(username)
+                .password(password)
+                .driverClassName(driverClassName)
+                .build();
     }
 
     @Primary
@@ -69,7 +93,7 @@ public class MultiTenantDataSouceConfig {
         Map<String,String> props = new HashMap<>();
         props.put("hibernate.dialect",dialect);
         props.put("hibernate.show_sql","true");
-        props.put("hibernate.hbm2ddl.auto","update");
+        props.put("hibernate.hbm2ddl.auto","create");
         bean.setJpaPropertyMap(props);
 
         return bean;

@@ -14,6 +14,6 @@ public interface UserService {
     UserResponseDto updateUserHighLevel(UserUpdateHigthLevelDto dto);
     List<UserResponseDto> getUsersByCompany(Integer companyId);
     AppUser getUserById(Integer id);
-
+    AppUser getUserByEmail(String email);
 
 }

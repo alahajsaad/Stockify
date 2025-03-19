@@ -3,14 +3,14 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { FaUser, FaBell, FaSearch } from 'react-icons/fa';
-import Sidebar from './SideBar/Sidebar';
+import Sidebar from '../components/SideBar/Sidebar';
 
 interface LayoutProps {
   children: ReactNode;
   title?: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, title = 'Tableau de bord' }) => {
+const DashboardLayout: React.FC<LayoutProps> = ({ children, title = 'Tableau de bord' }) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -117,4 +117,4 @@ const Layout: React.FC<LayoutProps> = ({ children, title = 'Tableau de bord' }) 
   );
 };
 
-export default Layout;
+export default DashboardLayout;

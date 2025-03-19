@@ -1,12 +1,12 @@
-package com.alabenhajsaad.api.datasourceconfig.correct;
+package com.alabenhajsaad.api.datasourceconfig.multitenant;
 
-import com.alabenhajsaad.api.datasourceconfig.multitenant.TenantContext;
 import com.alabenhajsaad.api.security.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,14 +16,16 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TenantFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private static final List<String> WITHOUT_JWT_AUTH_PATHS = Arrays.asList(
-            "http://localhost:8088/api/v1/user/admin",
-            "http://localhost:8088/api/v1/company",
-            "http://localhost:8088/api/v1/auth/login",
-            "http://localhost:8088/api/v1/auth/profile"
+            "/api/v1/user/admin",
+            "/api/v1/company",
+            "/api/v1/auth/login",
+            "/api/v1/auth/profile",
+            "/api/v1/datasource"
     );
 
     @Override
@@ -31,7 +33,7 @@ public class TenantFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String requestUri = request.getRequestURI();
-
+            log.info("Request URI: {}", requestUri);
             // Vérification si le chemin est dans la liste des chemins ignorés
             if (WITHOUT_JWT_AUTH_PATHS.stream().anyMatch(requestUri::startsWith)) {
                 filterChain.doFilter(request, response);
@@ -46,6 +48,7 @@ public class TenantFilter extends OncePerRequestFilter {
                 // Vérification et récupération du tenantId
                 String tenantId = jwtService.getTenantIdFromToken(token);
 
+                log.info("Tenant ID: {}", tenantId);
                 if (tenantId != null) {
                     TenantContext.setCurrentTenant(tenantId);
                 } else {

@@ -1,14 +1,10 @@
 // App.tsx
 import React from 'react';
-import Layout from './Layout';
-import RepairDetailsPage from './RepairDetailsPage';
+import LandingLayout from './layout/LandingLayout';
 
 const App: React.FC = () => {
   return (
-    <Layout title="Tableau de bord">
-      {/* Exemple de contenu de page */}
-     <RepairDetailsPage/>
-    </Layout>
+    <LandingLayout/>
   );
 }
 

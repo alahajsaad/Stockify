@@ -4,6 +4,7 @@ package com.alabenhajsaad.api.company;
 import com.alabenhajsaad.api.enums.EntityStatus;
 import com.alabenhajsaad.api.enums.Subscription;
 import com.alabenhajsaad.api.user.AppUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,7 @@ public class Company {
     private LocalDate updatedAt ;
 
     @OneToMany(mappedBy = "company")
+    @JsonIgnore
     private List<AppUser> users;
 
     @PrePersist
