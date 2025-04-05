@@ -25,7 +25,10 @@ public class TenantFilter extends OncePerRequestFilter {
             "/api/v1/company",
             "/api/v1/auth/login",
             "/api/v1/auth/profile",
-            "/api/v1/datasource"
+            "/api/v1/datasource",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui/index.html#"
     );
 
     @Override

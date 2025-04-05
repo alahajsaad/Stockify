@@ -35,7 +35,7 @@ public class JwtService {
         // Utiliser claims() pour ajouter plusieurs revendications
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(instant)
-                .expiresAt(instant.plus(10, ChronoUnit.DAYS))
+                .expiresAt(instant.plus(30, ChronoUnit.DAYS))
                 .subject(user.getUsername())
                 .claim("scope", scope)                // Ajouter scope comme une revendication distincte
                 .claim("tenantId", user.getTenantId()) // Ajouter tenantId comme une revendication distincte

@@ -49,7 +49,8 @@ server:
 
 database:
   default:
+    pass: ""
     username: root
-    password:
+
   tenant:
     prefix: jdbc:mysql://localhost:3306/multiTenant_

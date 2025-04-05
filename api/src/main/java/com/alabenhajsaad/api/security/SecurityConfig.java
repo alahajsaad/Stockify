@@ -1,7 +1,6 @@
 package com.alabenhajsaad.api.security;
 
 import com.alabenhajsaad.api.user.UserDetailsServiceImpl;
-import com.alabenhajsaad.api.user.UserRepository;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +13,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -45,7 +42,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(ar -> ar.anyRequest().permitAll())
-               // .httpBasic(Customizer.withDefaults())
+
                 .oauth2ResourceServer(oa -> oa.jwt(Customizer.withDefaults()))
                 .userDetailsService(userDetailsServiceImp)
                 .build() ;

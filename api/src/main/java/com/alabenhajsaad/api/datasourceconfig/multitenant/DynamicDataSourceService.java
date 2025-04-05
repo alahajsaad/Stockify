@@ -16,7 +16,7 @@ public class DynamicDataSourceService {
     @Value("${database.default.username}")
     private String defaultUsername;
 
-    @Value("${database.default.password}")
+    @Value("${database.default.pass}")
     private String defaultPassword;
     private final DynamicRoutingDataSource dynamicDataSource;
 
@@ -32,7 +32,7 @@ public class DynamicDataSourceService {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(url);
         dataSource.setUsername(defaultUsername);
-        dataSource.setPassword("");
+        dataSource.setPassword(defaultPassword);
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver"); // Change this if needed
         dataSource.setMaximumPoolSize(10);
         dataSource.setMinimumIdle(2);
