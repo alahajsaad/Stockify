@@ -3,6 +3,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.center {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+}
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

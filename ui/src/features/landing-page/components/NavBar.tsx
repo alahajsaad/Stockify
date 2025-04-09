@@ -3,6 +3,7 @@ import { useIsMobile } from "../../../hooks/useMobile";
 
 import { Menu, X } from 'lucide-react';
 import { Button } from "src/components/ui";
+import { useNavigate } from "react-router-dom";
 
 type NavBarProps = {
   setIsOpenLoginForm: (isOpen: boolean) => void;
@@ -10,7 +11,7 @@ type NavBarProps = {
 
 
 const NavBar : React.FC<NavBarProps> = ({setIsOpenLoginForm}) =>{
-
+    const navigate = useNavigate();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     //const [loginDialogOpen, setLoginDialogOpen] = useState(false);
     const isMobile = useIsMobile();
@@ -20,6 +21,9 @@ const NavBar : React.FC<NavBarProps> = ({setIsOpenLoginForm}) =>{
     };
     const openLoginForm = () => {
         setIsOpenLoginForm(true)
+    }
+    const navigateToSignUpPage = () => {
+      navigate('/SignUp');
     }
   
     // const handleLoginClick = () => {
@@ -51,7 +55,7 @@ const NavBar : React.FC<NavBarProps> = ({setIsOpenLoginForm}) =>{
           
           <div className="flex items-center gap-4">
           <Button onClick={openLoginForm}>Se connecter</Button>
-          <Button>S'inscrire</Button>
+          <Button onClick={navigateToSignUpPage}>S'inscrire</Button>
             
         
           

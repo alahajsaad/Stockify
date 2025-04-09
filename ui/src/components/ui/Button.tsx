@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 
 interface ButtonProps {
   children?: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'add';
+  variant?: 'primary' | 'secondary' | 'add' | 'link';
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -23,6 +23,7 @@ const variantClasses = {
   primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
   secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500",
   add: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 p-2",
+  link: "text-blue-500 hover:text-blue-700",
 };
 
 const transitionClasses = "transition-colors duration-300 ease-in-out";

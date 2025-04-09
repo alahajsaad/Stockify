@@ -16,6 +16,7 @@ const auth = async (authCredential: AuthCredential): Promise<string> => {
     authCredential.email === MOCK_EMAIL &&
     authCredential.password === MOCK_PASSWORD
   ) {
+    localStorage.setItem('token', MOCK_TOKEN);
     return MOCK_TOKEN;
   } else {
     throw new Error("Invalid email or password");

@@ -1,14 +1,17 @@
 import { LucideIcon } from "lucide-react";
-import { useId, useState } from "react";
-import { Eye, EyeOff } from 'lucide-react';
+import { ReactNode, useId } from "react";
+
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  Icon?: LucideIcon; // Corrected type for Lucide React Icons
-  variant?: 'text' | 'password';
+  label: string;
+  Icon: LucideIcon;
+  type: string;
+  testId : string;
+  children : ReactNode 
+  
 }
 
-const Input: React.FC<InputProps> = ({variant = 'text' , label, Icon, ...props }) => {
+const Input: React.FC<Partial<InputProps>> = ({type='text' , label, Icon, testId, children , ...props }) => {
   const id = useId();
   // const [showPassword, setShowPassword] = useState(false);
   // const togglePassword = () => setShowPassword(!showPassword);
@@ -31,26 +34,17 @@ const Input: React.FC<InputProps> = ({variant = 'text' , label, Icon, ...props }
           </div>
         )}
         <input
-          type={variant}
+          type={type}
           id={id}
-          className={`bg-gray-50 border p-2.5 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ${
+          data-testid={testId}
+          className={`bg-gray-50 border p-2.5 border-gray-300  text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ${
             Icon ? "ps-10" : "p-2.5"
           } dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
           {...props} 
         />
+        {children}
 
-        {/* <input
-          type={showPassword ? "text" : "password"}
-          placeholder="......"
-          {...register('password', { required: 'Le mot de passe est requis' })}
-          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-         <div
-          className="absolute top-9 right-3 cursor-pointer text-gray-500"
-          onClick={togglePassword}
-        >
-          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-        </div> */}
+        
       </div>
     </div>
   );
