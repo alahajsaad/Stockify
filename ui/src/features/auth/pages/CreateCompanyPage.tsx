@@ -3,10 +3,13 @@ import AdminSignUpForm from "../forms/AdminSignUpForm";
 import ValidationCodeForm from "../forms/ValidationCodeForm";
 import CompanyCreationForm from "../forms/CompanyCreationForm";
 import SignUpComplete from "../forms/SignUpComplete";
+import { UserResponseDto } from "src/types";
 
 const CreateCompanyPage : React.FC = () => {
     const [currentStep , setCurrentStep] = useState<number>(1)
+    const [admin,setAdmin] = useState<UserResponseDto>()
     
+ 
 
     return (
         <div className="center lg:w-[60vw] h-auto md:w-[80vw] w-[90vw]  p-6  bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -28,8 +31,8 @@ const CreateCompanyPage : React.FC = () => {
               {currentStep === 4 && 'Inscription complétée'}
             </p>
           </div>
-            {currentStep === 1 && <AdminSignUpForm setStep={setCurrentStep} />}
-            {currentStep === 2 && <ValidationCodeForm  setStep={setCurrentStep}/>}
+            {currentStep === 1 && <AdminSignUpForm setAdmin={setAdmin} setStep={setCurrentStep} />}
+            {currentStep === 2 && <ValidationCodeForm admin={admin!}  setStep={setCurrentStep}/>}
             {currentStep === 3 && <CompanyCreationForm  setStep={setCurrentStep}/>}
             {currentStep === 4 && <SignUpComplete />}
         </div>

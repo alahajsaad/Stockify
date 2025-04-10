@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "src/components/ui";
 import OtpInput from "src/components/ui/inputs/OtpInput";
+import { UserResponseDto } from "src/types";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -12,10 +13,10 @@ type FormValues = z.infer<typeof formSchema>;
 
 type FormProps = {
   setStep: (step: number) => void;
-  email?: string; // Making email optional since it might be passed from a parent component
+  admin: UserResponseDto; // Making email optional since it might be passed from a parent component
 }
 
-const ValidationCodeForm: React.FC<FormProps> = ({ setStep, email = "votre email" }) => {
+const ValidationCodeForm: React.FC<FormProps> = ({ setStep, admin }) => {
   const { 
     control, 
     handleSubmit, 
@@ -50,7 +51,7 @@ const ValidationCodeForm: React.FC<FormProps> = ({ setStep, email = "votre email
     >
       <h2 className="text-2xl font-bold mb-6 text-center">Vérification de l'email</h2>
       <p className="text-center text-gray-600 mb-6">
-        Un code de validation a été envoyé à <span className="font-medium">{email}</span>
+        Un code de validation a été envoyé à <span className="font-medium">{admin.email}</span>
       </p>
       
       <Controller
