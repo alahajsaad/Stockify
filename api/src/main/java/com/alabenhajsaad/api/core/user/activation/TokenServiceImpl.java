@@ -22,6 +22,7 @@ public class TokenServiceImpl implements TokenService {
     private final TokenRepository repository;
     private final UserRepository userRepository;
     private final EmailService emailService;
+
     @Transactional(noRollbackFor = TokenHasExpiredException.class)
     public void activateAccount(String token) {
         Token savedToken = repository.findByToken(token)

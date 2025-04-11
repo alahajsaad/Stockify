@@ -13,9 +13,6 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 const Input: React.FC<Partial<InputProps>> = ({type='text' , label, Icon, testId, children , ...props }) => {
   const id = useId();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const togglePassword = () => setShowPassword(!showPassword);
-
   return (
     <div>
       {label && (

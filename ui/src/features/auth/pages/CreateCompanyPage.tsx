@@ -6,7 +6,7 @@ import SignUpComplete from "../forms/SignUpComplete";
 import { UserResponseDto } from "src/types";
 
 const CreateCompanyPage : React.FC = () => {
-    const [currentStep , setCurrentStep] = useState<number>(1)
+    const [currentStep , setCurrentStep] = useState<number>(3)
     const [admin,setAdmin] = useState<UserResponseDto>()
     
  

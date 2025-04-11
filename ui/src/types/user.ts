@@ -7,3 +7,15 @@ export type User = {
     telegramId?:string
    
 }
+
+export type UserResponseDto = {
+    id : number,
+    firstName : string,
+    lastName : string,
+    email : string
+} 
+
+export type CreateAdminResponse = {
+    message: string;
+    user: User;
+  };

@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "src/components/ui";
 import OtpInput from "src/components/ui/inputs/OtpInput";
+import { useActivateAccount } from "src/services/hooks/useAccountActivation";
 import { UserResponseDto } from "src/types";
 import { z } from "zod";
 
@@ -29,15 +30,19 @@ const ValidationCodeForm: React.FC<FormProps> = ({ setStep, admin }) => {
     }
   });
 
-  const handleFormSubmit = (data: FormValues) => {
-    console.log(data);
-    // You would typically validate the OTP with your backend here
-    // If validation fails, you can set an error:
-    // setError('otp', { type: 'manual', message: 'Code de vérification incorrect' });
-    
-    // On success, proceed to next step
-    setStep(3);
-  };
+
+  const mutation = useActivateAccount({
+      onSuccess: (response) => {
+        if (response.status === "success") {
+          setStep(3);
+        }
+      },
+    });
+    const handleFormSubmit = (data: FormValues) => {
+      mutation.mutate(data.otp);
+    };
+
+ 
 
   const handleResendValidationCode = () => {
     // Add logic to resend validation code

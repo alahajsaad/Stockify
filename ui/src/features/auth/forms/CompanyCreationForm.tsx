@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button, Input } from "src/components/ui";
+import InputFile from "src/components/ui/inputs/InputFile";
 import { z } from "zod";
 const formSchema = z
   .object({
@@ -10,7 +11,13 @@ const formSchema = z
     phone: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
     address: z.string(),
     city: z.string(),
-   // logo: z.string()
+    logo: z
+      .instanceof(File)
+      .refine((file) => file.size > 0, "Veuillez importer un fichier valide.")
+      .refine(
+        (file) => ["image/jpeg", "image/png"].includes(file.type),
+        "Le fichier doit être une image JPG ou PNG."
+      )
   })
  ;
 type FormValues = z.infer<typeof formSchema>;
@@ -21,7 +28,7 @@ type FormProps = {
 
 const CompanyCreationForm : React.FC<FormProps> = ({setStep}) => {
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+    const { register, handleSubmit, reset, control , formState: { errors } } = useForm<FormValues>({
        resolver: zodResolver(formSchema), // Using zodResolver for validation
     });
     const handleFormSubmit = (data: FormValues) => {
@@ -51,7 +58,7 @@ const CompanyCreationForm : React.FC<FormProps> = ({setStep}) => {
             <Input placeholder="" label="Numero de telephone de l'entreprise" {...register('phone')}/>
             {errors.phone && <p className='text-red-500'>{errors.phone.message}</p>}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Input placeholder="" label="Adresse" {...register('address')}/>
               {errors.address && <p className='text-red-500'>{errors.address.message}</p>}
@@ -61,7 +68,13 @@ const CompanyCreationForm : React.FC<FormProps> = ({setStep}) => {
               {errors.city && <p className='text-red-500'>{errors.city.message}</p>}
             </div>
           </div>
+          <div>
+        {/* Use Controller to pass 'control' prop to InputFile */}
+        <InputFile name="logo" label="Importer un fichier" control={control} testId="upload-input"/>
+        {errors.logo && <p className="text-red-500">{errors.logo.message}</p>}
+      </div>
           
+
           <div className='flex justify-end mt-[20px]'>
               <Button type="submit">suivant</Button>
           </div> 

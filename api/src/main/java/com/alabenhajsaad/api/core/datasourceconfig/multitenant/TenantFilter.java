@@ -45,10 +45,10 @@ public class TenantFilter extends OncePerRequestFilter {
 //                return; // Retourner pour éviter l'exécution du reste du filtre
 //            }
 
-            if (WITHOUT_JWT_AUTH_PATHS.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestUri))) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+//            if (WITHOUT_JWT_AUTH_PATHS.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestUri))) {
+//                filterChain.doFilter(request, response);
+//                return;
+//            }
 
             String authHeader = request.getHeader("Authorization");
 
@@ -67,8 +67,7 @@ public class TenantFilter extends OncePerRequestFilter {
                     return;
                 }
             } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Unauthorized: Missing or invalid Authorization header");
+                filterChain.doFilter(request, response);
                 return;
             }
 

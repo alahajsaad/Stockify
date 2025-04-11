@@ -5,6 +5,7 @@ import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { LandingPage } from "./features/landing-page";
 import CreateCompanyPage from "./features/auth/pages/CreateCompanyPage";
 import "./App.css";
+import { ToastContainer } from 'react-toastify';
 
 // Lazy load dashboard for performance optimization
 const Dashboard = lazy(() => import("./features/DashBoard/DashBoard"));
@@ -22,6 +23,7 @@ const App = () => {
   }, [isAuthenticated, user?.scope, location.pathname, navigate]);
 
   return (
+    <>
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -31,7 +33,10 @@ const App = () => {
         </Route>
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
+      
     </Suspense>
+    <ToastContainer />
+    </>
   );
 };
 

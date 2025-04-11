@@ -55,13 +55,7 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin}) => {
 
   const handleFormSubmit = (data: FormValues) => {
     const { firstName, lastName, email, password, telegramId } = data;
-    const user: User = {
-      firstName,
-      lastName,
-      email,
-      password,
-      telegramId,
-    };
+    const user: User = {firstName,lastName,email,password,telegramId};
     mutation.mutate(user);
   };
 
