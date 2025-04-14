@@ -1,9 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import {  useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, PasswordInput } from "src/components/ui";
+import { getAdminInscriptionStatus } from "src/services/api/user";
 import { useCreateAdminAccount } from "src/services/hooks/useUser";
-import { User, UserResponseDto } from "src/types";
-import { z } from "zod";
+import { AdminInscriptionStatus, ApiResponse, User, UserResponseDto } from "src/types";
+import {  z } from "zod";
 
 // ✅ Validation schema
 const formSchema = z
@@ -30,27 +33,51 @@ type FormValues = z.infer<typeof formSchema>;
 type FormProps = {
   setStep: (step: number) => void;
   setAdmin : (admin : UserResponseDto) => void
+  setAdminInscriptionStatus : (state : AdminInscriptionStatus) => void
 };
 
 
 
-const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin}) => {
+const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin , setAdminInscriptionStatus}) => {
+  const [adminId,setAdminId] =useState<number>()
+  console.log("adminId :" + adminId)
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
+  
+
+
+  const { data: inscriptionStatus } = useQuery<ApiResponse<AdminInscriptionStatus>, Error>({
+    queryKey: ['adminInscription', adminId],
+    queryFn: () => getAdminInscriptionStatus(adminId!),
+    enabled: !!adminId,
+   
+  });
+  useEffect(() => {
+    if (inscriptionStatus?.data) {
+      setAdminInscriptionStatus(inscriptionStatus.data);
+    }
+  }, [inscriptionStatus, setAdminInscriptionStatus]);
+  
+
+
+
 
   const mutation = useCreateAdminAccount({
     onSuccess: (response) => {
       if (response.status === "success" && response.data) {
         setAdmin(response.data);
         setStep(2);
+      } else if (response.status === "error" && typeof response.data === 'number') {
+        setAdminId(response.data); // triggers useEffect
       }
-    },
+    }
+    
+   
   });
 
   const handleFormSubmit = (data: FormValues) => {
@@ -99,6 +126,7 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin}) => {
           {mutation.isPending ? "Création en cours..." : "Créer le compte admin"}
         </Button>
       </div>
+      {inscriptionStatus && <p>{inscriptionStatus.data}</p>}
     </form>
   );
 };

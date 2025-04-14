@@ -2,7 +2,7 @@ package com.alabenhajsaad.api.core.user;
 
 
 import com.alabenhajsaad.api.core.company.Company;
-import com.alabenhajsaad.api.core.user.activation.TokenService;
+import com.alabenhajsaad.api.core.user_account_activation.TokenService;
 import com.alabenhajsaad.api.core.user.mapper.UserMapper;
 import com.alabenhajsaad.api.core.enums.EntityStatus;
 import com.alabenhajsaad.api.core.enums.Role;
@@ -14,6 +14,7 @@ import com.alabenhajsaad.api.core.user.dto.UserUpdateHigthLevelDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository ;
@@ -38,7 +40,9 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto createAdminAccount(UserCreationDto dto) {
         AppUser user = mapper.toUser(dto);
         if(Boolean.TRUE.equals(repository.existsByEmail(user.getEmail())) ){
-            throw new ConflictException("User already exists");
+            log.info(String.valueOf(repository.findByEmail(user.getEmail()).get().getId()));
+            throw new ConflictException("L'utilisateur existe déjà",repository.findByEmail(user.getEmail()).get().getId());
+
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ADMIN);
@@ -54,11 +58,12 @@ public class UserServiceImpl implements UserService {
     public AppUser createEmployeeAccount(UserCreationDto dto , Integer companyId) {
         AppUser user = mapper.toUser(dto);
         if(repository.existsByEmail(user.getEmail()) || repository.existsByTelegramId(user.getTelegramId())){
-            throw new ConflictException("User already exists");
+            throw new ConflictException("L'utilisateur existe déjà",repository.findByEmail(user.getEmail()).get().getId());
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.EMPLOYEE);
         user.setStatus(EntityStatus.ACTIVE);
+
         Company company = companyService.getCompanyById(companyId);
         user.setCompany(company);
         user.setTenantId(company.getTenantId());
@@ -118,6 +123,18 @@ public class UserServiceImpl implements UserService {
     public AppUser getUserByEmail(String email) {
         return repository.findByEmail(email).
                 orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
+    @Override
+    public AdminInscriptionStatus getAdminInscriptionStatus(Integer id){
+        var admin = getUserById(id) ;
+        if(admin.getCompany() != null){
+            return AdminInscriptionStatus.ADMIN_HAS_COMPANY;
+        } else if (admin.getStatus() == EntityStatus.ACTIVE) {
+            return AdminInscriptionStatus.ACTIVE_ADMIN_WITHOUT_COMPANY;
+        } else {
+            return AdminInscriptionStatus.INACTIVE_ADMIN_WITHOUT_COMPANY;
+        }
     }
 
 

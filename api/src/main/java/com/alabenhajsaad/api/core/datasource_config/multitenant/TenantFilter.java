@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.core.datasourceconfig.multitenant;
+package com.alabenhajsaad.api.core.datasource_config.multitenant;
 
 import com.alabenhajsaad.api.core.security.JwtService;
 import jakarta.servlet.FilterChain;
@@ -38,7 +38,7 @@ public class TenantFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String requestUri = request.getRequestURI();
-            log.info("Request URI: {}", requestUri);
+          //  log.info("Request URI: {}", requestUri);
             // Vérification si le chemin est dans la liste des chemins ignorés
 //            if (WITHOUT_JWT_AUTH_PATHS.stream().anyMatch(requestUri::startsWith)) {
 //                filterChain.doFilter(request, response);
@@ -58,7 +58,7 @@ public class TenantFilter extends OncePerRequestFilter {
                 // Vérification et récupération du tenantId
                 String tenantId = jwtService.getTenantIdFromToken(token);
 
-                log.info("Tenant ID: {}", tenantId);
+               // log.info("Tenant ID: {}", tenantId);
                 if (tenantId != null) {
                     TenantContext.setCurrentTenant(tenantId);
                 } else {

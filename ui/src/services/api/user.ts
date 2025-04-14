@@ -1,4 +1,4 @@
-import { ApiResponse, User, UserResponseDto } from "src/types";
+import { AdminInscriptionStatus, ApiResponse, User, UserResponseDto } from "src/types";
 import request from "./request";
 import { toastHandler } from "./toastHandler";
 
@@ -13,4 +13,15 @@ export const createAdminAccount = (user: User): Promise<ApiResponse<UserResponse
   toastHandler(response);
   return response 
 
+};
+
+
+export const getAdminInscriptionStatus = (id: number): Promise<ApiResponse<AdminInscriptionStatus>> => {
+  const response = request<AdminInscriptionStatus>({
+    url:`/user/admin/inscription?id=${(id)}`,
+    method: "get",
+   
+  });
+  
+  return response 
 };

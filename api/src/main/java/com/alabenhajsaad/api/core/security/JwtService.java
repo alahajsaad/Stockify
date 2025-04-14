@@ -47,7 +47,7 @@ public class JwtService {
         );
 
         String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
-        return Map.of("access-token", jwt);
+        return Map.of("access_token", jwt);
     }
 
     public String getTenantIdFromToken(String token) {

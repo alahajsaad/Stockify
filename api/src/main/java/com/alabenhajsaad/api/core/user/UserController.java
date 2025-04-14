@@ -48,5 +48,9 @@ public class UserController {
         return userService.getUserById(id) ;
     }
 
+    @GetMapping("/admin/inscription")
+    public ResponseEntity<ApiResponse<AdminInscriptionStatus>> getAdminInscriptionStatus(@RequestParam Integer id) {
+        return ResponseEntity.ok(ApiResponse.success(userService.getAdminInscriptionStatus(id)));
+    }
 
 }

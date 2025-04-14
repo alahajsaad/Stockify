@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.core.datasourceconfig.multitenant;
+package com.alabenhajsaad.api.core.datasource_config.multitenant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

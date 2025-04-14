@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.core.user.activation;
+package com.alabenhajsaad.api.core.user_account_activation;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -15,5 +15,6 @@ public interface UserService {
     List<UserResponseDto> getUsersByCompany(Integer companyId);
     AppUser getUserById(Integer id);
     AppUser getUserByEmail(String email);
+    AdminInscriptionStatus getAdminInscriptionStatus(Integer id);
 
 }

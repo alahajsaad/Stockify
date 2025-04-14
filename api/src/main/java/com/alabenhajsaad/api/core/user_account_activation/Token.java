@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.core.user.activation;
+package com.alabenhajsaad.api.core.user_account_activation;
 
 import com.alabenhajsaad.api.core.user.AppUser;
 import jakarta.persistence.*;

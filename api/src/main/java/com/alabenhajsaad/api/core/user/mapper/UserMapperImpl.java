@@ -23,6 +23,16 @@ public class UserMapperImpl implements UserMapper{
     }
 
     @Override
+    public AppUser toUser(UserResponseDto dto) {
+        return AppUser.builder()
+                .id(dto.id())
+                .firstName(dto.firstName())
+                .lastName(dto.lastName())
+                .email(dto.email())
+                .build();
+    }
+
+    @Override
     public void updateUserFromCreationDto(UserCreationDto dto, AppUser existingUser) {
         updateIfNotNull(dto.firstName(), existingUser::setFirstName);
         updateIfNotNull(dto.lastName(), existingUser::setLastName);

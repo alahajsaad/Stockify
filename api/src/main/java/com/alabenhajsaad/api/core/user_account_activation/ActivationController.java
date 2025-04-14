@@ -1,7 +1,8 @@
-package com.alabenhajsaad.api.core.user.activation;
+package com.alabenhajsaad.api.core.user_account_activation;
 
 import com.alabenhajsaad.api.config.ApiResponse;
 import com.alabenhajsaad.api.core.user.AppUser;
+import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ActivationController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Void>> getActivation(@RequestBody AppUser user) {
+    public ResponseEntity<ApiResponse<Void>> getActivation(@RequestBody UserResponseDto user) {
         tokenService.sendValidationEmail(user);
         return ResponseEntity.ok(ApiResponse.success(null, "Un nouveau code d'activation a été envoyé à votre adresse e-mail."));
 

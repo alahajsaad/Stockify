@@ -1,5 +1,8 @@
-package com.alabenhajsaad.api.core.user.activation;
+package com.alabenhajsaad.api.core.user_account_activation;
 
+import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
+import com.alabenhajsaad.api.core.user.mapper.UserMapper;
+import com.alabenhajsaad.api.core.utils.CodeGenerator;
 import com.alabenhajsaad.api.email.EmailService;
 import com.alabenhajsaad.api.email.EmailTemplateName;
 import com.alabenhajsaad.api.core.enums.EntityStatus;
@@ -14,7 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
@@ -22,19 +24,22 @@ public class TokenServiceImpl implements TokenService {
     private final TokenRepository repository;
     private final UserRepository userRepository;
     private final EmailService emailService;
-
+    private final CodeGenerator codeGenerator;
+    private final UserMapper userMapper ;
     @Transactional(noRollbackFor = TokenHasExpiredException.class)
     public void activateAccount(String token) {
         Token savedToken = repository.findByToken(token)
                 .orElseThrow(() -> new NotFoundException("Invalid token"));
 
+        //If the token has expired
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
+            repository.delete(savedToken);
             sendValidationEmail(savedToken.getUser());
-            throw new TokenHasExpiredException("Activation token has expired. A new token has been send to the same email address");
+            throw new TokenHasExpiredException("Le jeton d'activation a expiré. Un nouveau jeton a été envoyé à la même adresse e-mail.");
         }
 
-        var user = userRepository.findById(savedToken.getUser().getId())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        var user = savedToken.getUser();
         user.setStatus(EntityStatus.ACTIVE);
         userRepository.save(user);
 
@@ -44,7 +49,7 @@ public class TokenServiceImpl implements TokenService {
 
     private String generateAndSaveActivationToken(AppUser user) {
         // Generate a token
-        String generatedToken = generateActivationCode(6);
+        String generatedToken = codeGenerator.generate(6);
         var token = Token.builder()
                 .token(generatedToken)
                 .createdAt(LocalDateTime.now())
@@ -68,17 +73,12 @@ public class TokenServiceImpl implements TokenService {
         );
     }
 
-    private String generateActivationCode(int length) {
-        String characters = "0123456789";
-        StringBuilder codeBuilder = new StringBuilder();
+    @Override
+    public void sendValidationEmail(UserResponseDto user) {
+        var appUser = userMapper.toUser(user);
+        sendValidationEmail(appUser);
 
-        SecureRandom secureRandom = new SecureRandom();
-
-        for (int i = 0; i < length; i++) {
-            int randomIndex = secureRandom.nextInt(characters.length());
-            codeBuilder.append(characters.charAt(randomIndex));
-        }
-
-        return codeBuilder.toString();
     }
+
+
 }

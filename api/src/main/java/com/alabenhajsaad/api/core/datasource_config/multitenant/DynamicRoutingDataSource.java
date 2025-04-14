@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.core.datasourceconfig.multitenant;
+package com.alabenhajsaad.api.core.datasource_config.multitenant;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;

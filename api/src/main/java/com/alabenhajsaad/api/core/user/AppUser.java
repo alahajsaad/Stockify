@@ -2,7 +2,7 @@ package com.alabenhajsaad.api.core.user;
 
 import com.alabenhajsaad.api.core.company.Company;
 
-import com.alabenhajsaad.api.core.user.activation.Token;
+import com.alabenhajsaad.api.core.user_account_activation.Token;
 import com.alabenhajsaad.api.core.enums.EntityStatus;
 import com.alabenhajsaad.api.core.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;

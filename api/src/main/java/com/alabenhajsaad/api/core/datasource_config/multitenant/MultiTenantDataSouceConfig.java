@@ -1,7 +1,7 @@
-package com.alabenhajsaad.api.core.datasourceconfig.multitenant;
+package com.alabenhajsaad.api.core.datasource_config.multitenant;
 
-import com.alabenhajsaad.api.core.datasourceconfig.datasource.DataSourceEntity;
-import com.alabenhajsaad.api.core.datasourceconfig.datasource.DataSourceService;
+import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceEntity;
+import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceService;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,7 +92,7 @@ public class MultiTenantDataSouceConfig {
 
         Map<String,String> props = new HashMap<>();
         props.put("hibernate.dialect",dialect);
-        props.put("hibernate.show_sql","true");
+      //  props.put("hibernate.show_sql","true");
         props.put("hibernate.hbm2ddl.auto","create");
         bean.setJpaPropertyMap(props);
 

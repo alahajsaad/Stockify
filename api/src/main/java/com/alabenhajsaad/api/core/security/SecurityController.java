@@ -1,6 +1,8 @@
 package com.alabenhajsaad.api.core.security;
 
+import com.alabenhajsaad.api.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,11 +24,12 @@ public class SecurityController {
     }
 
     @PostMapping("/login")
-    public Map<String,String> login(@RequestParam String username ,@RequestParam String password){
+    public ResponseEntity<ApiResponse<Map<String,String>>> login(@RequestBody LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username,password)
+                new UsernamePasswordAuthenticationToken(loginRequest.username(),loginRequest.password())
         );
-        return jwtService.generateToken(authentication) ;
+        return ResponseEntity.ok(ApiResponse.success(jwtService.generateToken(authentication)));
+
     }
 
 }

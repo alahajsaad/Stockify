@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.core.datasourceconfig.datasource;
+package com.alabenhajsaad.api.core.datasource_config.datasource;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -7,9 +7,18 @@ export type ApiResponse<T> = {
     message : string 
 
 }
+export type LoginResponse = {
+    access_token: string;
+};
+
+export type LoginRequest = {
+    username: string;
+    password: string;
+};
 
 export type { User } from './user'
 export type { CreateAdminResponse } from './user'
 export type { UserResponseDto } from './user'
+export type { AdminInscriptionStatus } from './user'
 
 

@@ -1,13 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminSignUpForm from "../forms/AdminSignUpForm";
 import ValidationCodeForm from "../forms/ValidationCodeForm";
 import CompanyCreationForm from "../forms/CompanyCreationForm";
 import SignUpComplete from "../forms/SignUpComplete";
-import { UserResponseDto } from "src/types";
+import { AdminInscriptionStatus, UserResponseDto } from "src/types";
+import { useNavigate } from "react-router-dom";
 
 const CreateCompanyPage : React.FC = () => {
-    const [currentStep , setCurrentStep] = useState<number>(3)
+    const [currentStep , setCurrentStep] = useState<number>(1)
     const [admin,setAdmin] = useState<UserResponseDto>()
+    const [adminInscriptionStatus ,setAdminInscriptionStatus] = useState<AdminInscriptionStatus>()
+    const navigate = useNavigate()
+    useEffect(()=>{
+      switch(adminInscriptionStatus) {
+        case "ADMIN_HAS_COMPANY" :
+          navigate('/')
+          break;
+        case "ACTIVE_ADMIN_WITHOUT_COMPANY":
+          setCurrentStep(3)
+          break;
+        case "INACTIVE_ADMIN_WITHOUT_COMPANY":
+          setCurrentStep(2)
+          break;
+      }
+    },[adminInscriptionStatus,navigate]) 
     
  
 
@@ -31,7 +47,7 @@ const CreateCompanyPage : React.FC = () => {
               {currentStep === 4 && 'Inscription complétée'}
             </p>
           </div>
-            {currentStep === 1 && <AdminSignUpForm setAdmin={setAdmin} setStep={setCurrentStep} />}
+            {currentStep === 1 && <AdminSignUpForm setAdminInscriptionStatus={setAdminInscriptionStatus} setAdmin={setAdmin} setStep={setCurrentStep} />}
             {currentStep === 2 && <ValidationCodeForm admin={admin!}  setStep={setCurrentStep}/>}
             {currentStep === 3 && <CompanyCreationForm  setStep={setCurrentStep}/>}
             {currentStep === 4 && <SignUpComplete />}

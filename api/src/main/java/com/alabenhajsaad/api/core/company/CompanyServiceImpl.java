@@ -5,9 +5,9 @@ import com.alabenhajsaad.api.core.company.mapper.CompanyMapper;
 import com.alabenhajsaad.api.core.company.projection.CompanyFirstViewProjection;
 import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProjection;
 
-import com.alabenhajsaad.api.core.datasourceconfig.multitenant.DynamicDataSourceService;
-import com.alabenhajsaad.api.core.datasourceconfig.datasource.DataSourceEntity;
-import com.alabenhajsaad.api.core.datasourceconfig.datasource.DataSourceService;
+import com.alabenhajsaad.api.core.datasource_config.multitenant.DynamicDataSourceService;
+import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceEntity;
+import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceService;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 
 import com.alabenhajsaad.api.fileManager.FileLoader;

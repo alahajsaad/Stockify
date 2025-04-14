@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.core.datasourceconfig.primary;
+package com.alabenhajsaad.api.core.datasource_config.primary;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,7 +50,7 @@ public class PrimaryDataSourceConfig {
 
         Map<String,String> props = new HashMap<>();
         props.put("hibernate.dialect",dialect);
-        props.put("hibernate.show_sql","true");
+       // props.put("hibernate.show_sql","true");
         props.put("hibernate.hbm2ddl.auto","update");
         bean.setJpaPropertyMap(props);
 
