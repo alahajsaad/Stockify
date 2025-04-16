@@ -1,42 +1,42 @@
 services:
-  postgres:
-    container_name: postgres-stockify
-    image: postgres
-    environment:
-      POSTGRES_USER: username
-      POSTGRES_PASSWORD: password
-      PGDATA: /var/lib/postgresql/data
-    volumes:
-      - postgres:/data/postgres
-    ports:
-      - 5432:5432
-    networks:
-      - spring-demo
-    restart: unless-stopped
-  mail-dev:
+  mail-dev: # service name
     container_name: mail-dev-stockify
     image: maildev/maildev
     ports:
       - 1080:1080
       - 1025:1025
-#  keycloak:
-#    container_name: keycloak-bsn
-#    image: quay.io/keycloak/keycloak:24.0.2
-#    ports:
-#      - 9090:8080
-#    environment:
-#      KEYCLOAK_ADMIN: admin
-#      KEYCLOAK_ADMIN_PASSWORD: admin
-#    networks:
-#      - spring-demo
-#    command:
-#      - "start-dev"
+    networks:
+      - stockify_network
+  mysql:  # service name
+    image: mysql
+    container_name: mysql-db-container
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 0000
+    ports:
+      - "3306:3306"
+    volumes:
+      - stockify_volume:/var/lib/mysql
+    networks:
+      - stockify_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: my_phpmyadmin
+    restart: always
+    ports:
+      - "8092:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: 0000
+    networks:
+      - stockify_network
+
 networks:
-  spring-demo:
+  stockify_network:
     driver: bridge
 
 volumes:
-  postgres:
+  stockify_volume:
     driver: local
-#  keycloak:
-#    driver: local

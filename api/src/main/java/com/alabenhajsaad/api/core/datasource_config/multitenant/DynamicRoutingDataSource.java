@@ -16,29 +16,20 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     private String defaultTenant = "default";
 
     public DynamicRoutingDataSource() {
-
         // Initialisation avec au moins une source de données vide pour éviter l'erreur
         super.setTargetDataSources(new HashMap<>());
         super.afterPropertiesSet();
-
     }
 
-
-
-
+    // register a dataSource with correspond tenantId to dataSources hashMap
     public void addDataSource(String tenantId, DataSource dataSource) {
-        log.info("dataSource: "+ dataSource.toString());
         dataSources.put(tenantId, dataSource); // Register the new tenant's data source
         super.setTargetDataSources(dataSources); // Update Spring's routing map
         super.afterPropertiesSet(); // Refresh the routing configuration
     }
 
     public boolean containsDataSource(String tenantId) {
-
         return dataSources.containsKey(tenantId);
-    }
-    public boolean isEmptyDataSources(){
-        return dataSources.isEmpty();
     }
 
     @Override

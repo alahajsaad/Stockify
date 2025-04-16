@@ -24,12 +24,24 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsServiceImp ;
+    private static final List<String> WITHOUT_JWT = Arrays.asList(
+            "/api/v1/auth/**",
+            "/api/v1/auth/login",
+            "/api/v1/company",
+            "/api/v1/datasource",
+            "/v3/api-docs/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    );
+
     @Value("${jwt.secret}")
     private String secretKey ;
     @Bean
@@ -41,7 +53,10 @@ public class SecurityConfig {
         return httpSecurity
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(ar -> ar.anyRequest().permitAll())
+
+                .authorizeHttpRequests(ar -> ar
+                        .requestMatchers("api/v1/user/admin","/api/v1/auth/**","/api/v1/company/**","api/v1/accountActivation/**","/v3/api-docs/**","/swagger-ui/**").permitAll()
+                        .anyRequest().authenticated())
 
                 .oauth2ResourceServer(oa -> oa.jwt(Customizer.withDefaults()))
                 .userDetailsService(userDetailsServiceImp)

@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.business.product;
+package com.alabenhajsaad.api.business;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

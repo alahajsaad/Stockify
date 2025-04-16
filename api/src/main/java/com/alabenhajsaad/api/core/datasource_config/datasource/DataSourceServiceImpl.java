@@ -11,8 +11,12 @@ public class DataSourceServiceImpl implements DataSourceService {
     private final DataSourceRepository repository ;
 
     @Override
-    public DataSourceEntity addDataSource(DataSourceEntity dataSource) {
-        return repository.save(dataSource);
+    public DataSourceEntity addDataSource(String tenantId ,String databaseUrl) {
+
+        return repository.save(DataSourceEntity.builder()
+                            .url(databaseUrl)
+                            .tenantId(tenantId)
+                            .build());
     }
 
     @Override

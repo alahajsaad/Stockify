@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -23,11 +24,20 @@ public class DynamicDataSourceService {
 
     public void registerTenant(String tenantId, String url) {
         if (!dynamicDataSource.containsDataSource(tenantId)) {
-            DataSource newDataSource = createDataSource(url);
+            DataSource newDataSource = createDataSource(url,"root","","com.mysql.cj.jdbc.Driver");
             dynamicDataSource.addDataSource(tenantId, newDataSource);
         }
     }
 
+    // Méthode pour créer un DataSource
+    public DataSource createDataSource(String url, String username, String password, String driverClassName) {
+        return DataSourceBuilder.create()
+                .url(url)
+                .username(username)
+                .password(password)
+                .driverClassName(driverClassName)
+                .build();
+    }
     public DataSource createDataSource(String url) {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(url);

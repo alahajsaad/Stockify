@@ -28,8 +28,13 @@ public class SecurityController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.username(),loginRequest.password())
         );
-        return ResponseEntity.ok(ApiResponse.success(jwtService.generateToken(authentication)));
+        return ResponseEntity.ok(ApiResponse.success(jwtService.login(authentication)));
 
+    }
+
+    @PostMapping("/token/refresh")
+    public Map<String,String> getNewAccessToken(@RequestParam String refreshToken){
+        return null ;
     }
 
 }

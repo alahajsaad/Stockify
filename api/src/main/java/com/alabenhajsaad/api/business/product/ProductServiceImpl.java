@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.business.product;
 
+import com.alabenhajsaad.api.business.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

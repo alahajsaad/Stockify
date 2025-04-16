@@ -7,7 +7,6 @@ import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProje
 
 import com.alabenhajsaad.api.core.datasource_config.multitenant.DynamicDataSourceService;
 import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceEntity;
-import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceService;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 
 import com.alabenhajsaad.api.fileManager.FileLoader;
@@ -20,9 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -36,7 +38,7 @@ public class CompanyServiceImpl implements CompanyService {
     // (CompanyService depends on UserService and vice versa).
     private final CompanyUserRelationService userService;
     private final DynamicDataSourceService dynamicDataSourceService;
-    private final DataSourceService dataSourceService;
+    private final com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceService dataSourceService;
 
     @Value("${database.tenant.prefix}")
     private String dbPrefix;
@@ -59,7 +61,7 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         // Generate tenant ID and set it
-        String tenantId = generateTenantId();
+        String tenantId = generateBase64TenantId();
         company.setTenantId(tenantId);
 
         // Assign admin to the company
@@ -78,12 +80,7 @@ public class CompanyServiceImpl implements CompanyService {
         try {
             // Register new tenant
             dynamicDataSourceService.registerTenant(tenantId, databaseUrl);
-
-            // Save the new DataSource entity
-            DataSourceEntity dataSourceEntity = new DataSourceEntity();
-            dataSourceEntity.setTenantId(tenantId);
-            dataSourceEntity.setUrl(databaseUrl);
-            dataSourceService.addDataSource(dataSourceEntity);
+            dataSourceService.addDataSource(tenantId,databaseUrl);
 
         } catch (Exception e) {
             // Log the error and handle rollback properly
@@ -151,5 +148,14 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         return codeBuilder.toString();
+    }
+    public static String generateBase64TenantId() {
+        UUID uuid = UUID.randomUUID();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(16);
+        byteBuffer.putLong(uuid.getMostSignificantBits());
+        byteBuffer.putLong(uuid.getLeastSignificantBits());
+
+        // Encode to Base64 URL-safe and remove trailing '=' padding
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(byteBuffer.array());
     }
 }

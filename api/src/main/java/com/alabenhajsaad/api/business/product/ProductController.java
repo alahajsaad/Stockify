@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.business.product;
 
+import com.alabenhajsaad.api.business.Product;
 import com.alabenhajsaad.api.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
