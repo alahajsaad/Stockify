@@ -41,13 +41,14 @@ public class UserServiceImpl implements UserService {
         AppUser user = mapper.toUser(dto);
         if(Boolean.TRUE.equals(repository.existsByEmail(user.getEmail())) ){
             log.info(String.valueOf(repository.findByEmail(user.getEmail()).get().getId()));
-            throw new ConflictException("L'utilisateur existe déjà",repository.findByEmail(user.getEmail()).get().getId());
+            throw new ConflictException("Vous avez déjà un compte administrateur.",repository.findByEmail(user.getEmail()).get().getId());
 
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ADMIN);
         user.setStatus(EntityStatus.INACTIVE);
         var savedUser = repository.save(user);
+
         tokenService.sendValidationEmail(savedUser);
         return mapper.toUserResponseDto(savedUser);
     }
@@ -125,16 +126,11 @@ public class UserServiceImpl implements UserService {
                 orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
+
+
     @Override
-    public AdminInscriptionStatus getAdminInscriptionStatus(Integer id){
-        var admin = getUserById(id) ;
-        if(admin.getCompany() != null){
-            return AdminInscriptionStatus.ADMIN_HAS_COMPANY;
-        } else if (admin.getStatus() == EntityStatus.ACTIVE) {
-            return AdminInscriptionStatus.ACTIVE_ADMIN_WITHOUT_COMPANY;
-        } else {
-            return AdminInscriptionStatus.INACTIVE_ADMIN_WITHOUT_COMPANY;
-        }
+    public UserResponseDto getUserDetailsById(Integer id) {
+        return mapper.toUserResponseDto(getUserById(id));
     }
 
 

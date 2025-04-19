@@ -12,8 +12,8 @@ public record CompanyCreationDto(
         String address,
         String city,
         String zipCode,
-        MultipartFile logo,
-        Subscription subscription
+        MultipartFile logo
+
 
 ) {
 }

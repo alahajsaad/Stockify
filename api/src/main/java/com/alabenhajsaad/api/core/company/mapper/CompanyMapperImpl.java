@@ -2,6 +2,8 @@ package com.alabenhajsaad.api.core.company.mapper;
 
 import com.alabenhajsaad.api.core.company.Company;
 import com.alabenhajsaad.api.core.company.dto.CompanyCreationDto;
+import com.alabenhajsaad.api.core.company.dto.CompanyResponseDto;
+import com.alabenhajsaad.api.core.enums.Subscription;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +18,7 @@ public class CompanyMapperImpl implements CompanyMapper {
                 .address(dto.address())
                 .city(dto.city())
                 .zipCode(dto.zipCode())
-                .subscription(dto.subscription())
+                .subscription(Subscription.FIFTEEN_DAY_TRIAL)
                 .isNew(true)
                 .build();
     }
@@ -24,5 +26,15 @@ public class CompanyMapperImpl implements CompanyMapper {
     @Override
     public void updateCompanyFromDto(CompanyCreationDto dto, Company existingCompany) {
 
+    }
+
+    @Override
+    public CompanyResponseDto toCompanyResponseDto(Company company) {
+        return CompanyResponseDto.builder()
+                .id(company.getId())
+                .name(company.getName())
+                .email(company.getEmail())
+                .phone(company.getPhone())
+                .build();
     }
 }

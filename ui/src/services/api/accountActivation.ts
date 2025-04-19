@@ -1,4 +1,4 @@
-import { ApiResponse } from "src/types";
+import { ApiResponse, UserResponseDto } from "src/types";
 import request from "./request";
 import { toastHandler } from "./toastHandler";
 
@@ -15,3 +15,18 @@ export const activateAccount = (token: string): Promise<ApiResponse<void>> => {
   return response 
 
 };
+
+export const getNewActivationCode = (admin: UserResponseDto): Promise<ApiResponse<void>> => {
+  const response = request<void>({
+    //@RequestParam
+    url: "/accountActivation/new",
+    method: "post",
+    data : admin 
+   
+  });
+  toastHandler(response);
+  return response 
+
+};
+
+

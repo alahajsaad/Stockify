@@ -25,3 +25,12 @@ export const getAdminInscriptionStatus = (id: number): Promise<ApiResponse<Admin
   
   return response 
 };
+
+export const getUserById = (id: number): Promise<ApiResponse<UserResponseDto>> => {
+  const response = request<UserResponseDto>({
+    url:`/user?id=${(id)}`,
+    method: "get",
+});
+  
+  return response 
+};

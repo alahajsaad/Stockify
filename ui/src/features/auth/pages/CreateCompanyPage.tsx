@@ -3,27 +3,45 @@ import AdminSignUpForm from "../forms/AdminSignUpForm";
 import ValidationCodeForm from "../forms/ValidationCodeForm";
 import CompanyCreationForm from "../forms/CompanyCreationForm";
 import SignUpComplete from "../forms/SignUpComplete";
-import { AdminInscriptionStatus, UserResponseDto } from "src/types";
+import { ApiResponse, UserResponseDto } from "src/types";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getNewActivationCode } from "src/services/api/accountActivation";
+import { CompanyResponseDto } from "src/types/company";
 
 const CreateCompanyPage : React.FC = () => {
     const [currentStep , setCurrentStep] = useState<number>(1)
     const [admin,setAdmin] = useState<UserResponseDto>()
-    const [adminInscriptionStatus ,setAdminInscriptionStatus] = useState<AdminInscriptionStatus>()
-    const navigate = useNavigate()
-    useEffect(()=>{
-      switch(adminInscriptionStatus) {
-        case "ADMIN_HAS_COMPANY" :
-          navigate('/')
-          break;
-        case "ACTIVE_ADMIN_WITHOUT_COMPANY":
-          setCurrentStep(3)
-          break;
-        case "INACTIVE_ADMIN_WITHOUT_COMPANY":
-          setCurrentStep(2)
-          break;
+    const [company ,setCompany] = useState<CompanyResponseDto>()
+   
+
+    const { refetch } = useQuery<ApiResponse<void>, Error>({
+      queryKey: ['getNewActivationCode', admin?.id],
+      queryFn: () => {
+        if (!admin) {
+          throw new Error("Admin data is not available");
+        }
+        console.log(admin)
+        return getNewActivationCode(admin);
+      },
+      enabled: false,
+    });
+    
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+      if (admin?.company != null) {
+        console.log("admin has company, go to /");
+        navigate('/?login=true');
+      } else if (admin?.status === 'ACTIVE' && admin.company == null) {
+        console.log("active admin but doesn't have a company, go to create company");
+        setCurrentStep(3);
+      } else if (admin?.status === 'INACTIVE' && admin.company == null && currentStep != 2) {
+        console.log("inactive admin and doesn't have a company, go to activate account");
+        refetch();
+        setCurrentStep(2);
       }
-    },[adminInscriptionStatus,navigate]) 
+    }, [admin, navigate, refetch]);
     
  
 
@@ -47,10 +65,10 @@ const CreateCompanyPage : React.FC = () => {
               {currentStep === 4 && 'Inscription complétée'}
             </p>
           </div>
-            {currentStep === 1 && <AdminSignUpForm setAdminInscriptionStatus={setAdminInscriptionStatus} setAdmin={setAdmin} setStep={setCurrentStep} />}
-            {currentStep === 2 && <ValidationCodeForm admin={admin!}  setStep={setCurrentStep}/>}
-            {currentStep === 3 && <CompanyCreationForm  setStep={setCurrentStep}/>}
-            {currentStep === 4 && <SignUpComplete />}
+            {currentStep === 1 && <AdminSignUpForm setAdmin={setAdmin} setStep={setCurrentStep} />}
+            {currentStep === 2 && admin && <ValidationCodeForm admin={admin}  setStep={setCurrentStep}/>}
+            {currentStep === 3 && <CompanyCreationForm admin_Id={admin?.id} setCompany={setCompany}  setStep={setCurrentStep}/>}
+            {currentStep === 4 && <SignUpComplete fullName={`${admin?.firstName ?? ""} ${admin?.lastName ?? ""}`} companyName={company?.name ?? ""} />}
         </div>
     );
 }

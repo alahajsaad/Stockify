@@ -1,7 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Button, Input } from "src/components/ui";
 import InputFile from "src/components/ui/inputs/InputFile";
+import { createCompany } from "src/services/api/company";
+import { ApiResponse } from "src/types";
+import { CompanyCreationDto, CompanyResponseDto } from "src/types/company";
 import { z } from "zod";
 const formSchema = z
   .object({
@@ -11,31 +15,54 @@ const formSchema = z
     phone: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
     address: z.string(),
     city: z.string(),
+    zipCode : z.string(),
     logo: z
-      .instanceof(File)
-      .refine((file) => file.size > 0, "Veuillez importer un fichier valide.")
-      .refine(
-        (file) => ["image/jpeg", "image/png"].includes(file.type),
-        "Le fichier doit être une image JPG ou PNG."
-      )
+    .any()
+    .refine((file) => file instanceof File && file.size > 0, "Veuillez importer un fichier valide.")
+    .refine(
+      (file) => ["image/jpeg", "image/png"].includes(file.type),
+      "Le fichier doit être une image JPG ou PNG."
+    ),
   })
  ;
 type FormValues = z.infer<typeof formSchema>;
 
 type FormProps = {
     setStep : (step : number) => void
+    setCompany : (company : CompanyResponseDto) => void
+    admin_Id?: number
 }
 
-const CompanyCreationForm : React.FC<FormProps> = ({setStep}) => {
+const CompanyCreationForm : React.FC<FormProps> = ({setStep , setCompany , admin_Id}) => {
 
-    const { register, handleSubmit, reset, control , formState: { errors } } = useForm<FormValues>({
+    const { register, handleSubmit,  control , formState: { errors } } = useForm<FormValues>({
        resolver: zodResolver(formSchema), // Using zodResolver for validation
     });
     const handleFormSubmit = (data: FormValues) => {
-        console.log(data)
+      if(admin_Id){
+        const adminId = admin_Id;
+        mutation.mutate({ company: data, adminId });
+      }
+      
+    };
 
-        setStep(4)
-    }
+    const queryClient = useQueryClient();
+    const mutation = useMutation<ApiResponse<CompanyResponseDto>, Error, { company: CompanyCreationDto; adminId: number }>({
+      mutationFn: ({ company, adminId }) => createCompany(company, adminId),
+      onSuccess: (response) => {
+        if (response.data) {
+          queryClient.invalidateQueries({ queryKey: ["company"] });
+          setCompany(response.data);
+          setStep(4);
+        } else {
+          // Optional: Handle the case where response.data is null
+          console.error("Company creation response missing data");
+        }
+      }
+      
+    });
+    
+
     return (
        
           <form className="space-y-6" onSubmit={handleSubmit(handleFormSubmit)} >
@@ -58,7 +85,7 @@ const CompanyCreationForm : React.FC<FormProps> = ({setStep}) => {
             <Input placeholder="" label="Numero de telephone de l'entreprise" {...register('phone')}/>
             {errors.phone && <p className='text-red-500'>{errors.phone.message}</p>}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Input placeholder="" label="Adresse" {...register('address')}/>
               {errors.address && <p className='text-red-500'>{errors.address.message}</p>}
@@ -67,11 +94,15 @@ const CompanyCreationForm : React.FC<FormProps> = ({setStep}) => {
               <Input placeholder="" label="Ville" {...register('city')}/>
               {errors.city && <p className='text-red-500'>{errors.city.message}</p>}
             </div>
+            <div>
+              <Input placeholder="" label="Code postal" {...register('zipCode')}/>
+              {errors.zipCode && <p className='text-red-500'>{errors.zipCode.message}</p>}
+            </div>
           </div>
           <div>
         {/* Use Controller to pass 'control' prop to InputFile */}
-        <InputFile name="logo" label="Importer un fichier" control={control} testId="upload-input"/>
-        {errors.logo && <p className="text-red-500">{errors.logo.message}</p>}
+        <InputFile name="logo" label="Logo d'entreprise" control={control} testId="upload-input"/>
+        {errors.logo && <p className="text-red-500">error with log upload</p>}
       </div>
           
 

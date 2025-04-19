@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {NavBar , HeroSection} from "../index"
 import Modal from "../../../components/ui/Modal";
 import LoginForm from "../../../features/auth/forms/LoginForm";
-
-const LandingPage : React.FC = () =>{
+import { useSearchParams } from "react-router-dom";
+type LandingPageProps = {
+    isLoginFormOpen : boolean
+}
+const LandingPage : React.FC<LandingPageProps> = ({isLoginFormOpen = false }) =>{
     const [isOpenloginForm,setIsOpenLoginForm] = useState(false) 
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const loginParam = searchParams.get("login");
+        setIsOpenLoginForm(loginParam === "true");
+      }, [searchParams]);
     return (
         <div className="h-screen overflow-hidden">
             <NavBar setIsOpenLoginForm={setIsOpenLoginForm}/>

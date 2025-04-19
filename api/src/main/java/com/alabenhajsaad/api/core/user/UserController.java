@@ -43,14 +43,11 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(userService.getUsersByCompany(id),"Utilisateurs bien trouvés"));
     }
 
-    @GetMapping("/{id}")
-    public AppUser getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id) ;
+    @GetMapping()
+    public ResponseEntity<ApiResponse<UserResponseDto>> getUserById(@RequestParam Integer id) {
+        return ResponseEntity.ok(ApiResponse.success(userService.getUserDetailsById(id)));
     }
 
-    @GetMapping("/admin/inscription")
-    public ResponseEntity<ApiResponse<AdminInscriptionStatus>> getAdminInscriptionStatus(@RequestParam Integer id) {
-        return ResponseEntity.ok(ApiResponse.success(userService.getAdminInscriptionStatus(id)));
-    }
+
 
 }

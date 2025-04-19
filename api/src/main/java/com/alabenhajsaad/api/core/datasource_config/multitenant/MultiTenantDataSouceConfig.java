@@ -33,13 +33,12 @@ import java.util.Map;
 
 public class MultiTenantDataSouceConfig {
     private final DataSourceService dataSourceService;
-   // private final DynamicDataSourceService dynamicDataSourceService;
     public MultiTenantDataSouceConfig(DataSourceService dataSourceService ) {
         this.dataSourceService = dataSourceService;
 
     }
 
-    @Primary
+
     @Bean(name = "multiTenantDataSource")
     public DynamicRoutingDataSource dynamicRoutingDataSource(
             @Value("${spring.datasource.multitenant.jdbc-url}") String jdbcUrl,
@@ -75,7 +74,7 @@ public class MultiTenantDataSouceConfig {
     }
 
 
-    @Primary
+
     @Bean(name = "multiTenantEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean tenantEntityManagerFactory(
             @Qualifier("multiTenantDataSource") DataSource dataSource){
@@ -90,7 +89,7 @@ public class MultiTenantDataSouceConfig {
         props.put("hibernate.dialect","org.hibernate.dialect.MySQLDialect");
         props.put("hibernate.show_sql","true");
         props.put("hibernate.format_sql","true");
-        props.put("hibernate.hbm2ddl.auto","update");
+        props.put("hibernate.hbm2ddl.auto","none");
         bean.setJpaPropertyMap(props);
 
         return bean;

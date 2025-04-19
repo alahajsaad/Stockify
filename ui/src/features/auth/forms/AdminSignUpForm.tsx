@@ -3,9 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import {  useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, PasswordInput } from "src/components/ui";
-import { getAdminInscriptionStatus } from "src/services/api/user";
+import { getUserById } from "src/services/api/user";
 import { useCreateAdminAccount } from "src/services/hooks/useUser";
-import { AdminInscriptionStatus, ApiResponse, User, UserResponseDto } from "src/types";
+import { ApiResponse, User, UserResponseDto } from "src/types";
 import {  z } from "zod";
 
 // ✅ Validation schema
@@ -33,13 +33,13 @@ type FormValues = z.infer<typeof formSchema>;
 type FormProps = {
   setStep: (step: number) => void;
   setAdmin : (admin : UserResponseDto) => void
-  setAdminInscriptionStatus : (state : AdminInscriptionStatus) => void
 };
 
 
 
-const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin , setAdminInscriptionStatus}) => {
+const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin }) => {
   const [adminId,setAdminId] =useState<number>()
+  //const navigate = useNavigate()
   console.log("adminId :" + adminId)
   const {
     register,
@@ -51,17 +51,18 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin , setAdminIns
   
 
 
-  const { data: inscriptionStatus } = useQuery<ApiResponse<AdminInscriptionStatus>, Error>({
-    queryKey: ['adminInscription', adminId],
-    queryFn: () => getAdminInscriptionStatus(adminId!),
+  const { data: userData } = useQuery<ApiResponse<UserResponseDto>, Error>({
+    queryKey: ['getUserById', adminId],
+    queryFn: () => getUserById(adminId!),
     enabled: !!adminId,
    
   });
   useEffect(() => {
-    if (inscriptionStatus?.data) {
-      setAdminInscriptionStatus(inscriptionStatus.data);
+    if (userData?.data) {
+      setAdmin(userData.data);
     }
-  }, [inscriptionStatus, setAdminInscriptionStatus]);
+    
+  }, [userData?.data ,setAdmin]);
   
 
 
@@ -126,7 +127,7 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin , setAdminIns
           {mutation.isPending ? "Création en cours..." : "Créer le compte admin"}
         </Button>
       </div>
-      {inscriptionStatus && <p>{inscriptionStatus.data}</p>}
+      
     </form>
   );
 };

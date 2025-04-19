@@ -18,8 +18,8 @@ public class ActivationController {
         return ResponseEntity.ok(ApiResponse.success(null,"Compte activé avec succès"));
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<Void>> getActivation(@RequestBody UserResponseDto user) {
+    @PostMapping("/new")
+    public ResponseEntity<ApiResponse<Void>> getNewActivationCode(@RequestBody UserResponseDto user) {
         tokenService.sendValidationEmail(user);
         return ResponseEntity.ok(ApiResponse.success(null, "Un nouveau code d'activation a été envoyé à votre adresse e-mail."));
 

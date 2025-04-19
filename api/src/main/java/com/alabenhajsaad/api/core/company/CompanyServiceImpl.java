@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.core.company;
 
 import com.alabenhajsaad.api.core.company.dto.CompanyCreationDto;
+import com.alabenhajsaad.api.core.company.dto.CompanyResponseDto;
 import com.alabenhajsaad.api.core.company.mapper.CompanyMapper;
 import com.alabenhajsaad.api.core.company.projection.CompanyFirstViewProjection;
 import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProjection;
@@ -46,7 +47,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
-    public Company createCompany(CompanyCreationDto dto, Integer adminId) {
+    public CompanyResponseDto createCompany(CompanyCreationDto dto, Integer adminId) {
         // Check if tax number already exists
         if (Boolean.TRUE.equals(repository.existsByTaxNumber(dto.taxNumber()))) {
             throw new ConflictException("Une entreprise avec ce numéro fiscal : " + dto.taxNumber() + " existe déjà");
@@ -89,7 +90,7 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         // Persist the company entity
-        return repository.save(company);
+        return mapper.toCompanyResponseDto(repository.save(company));
     }
 
 

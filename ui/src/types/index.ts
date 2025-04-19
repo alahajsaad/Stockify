@@ -16,6 +16,9 @@ export type LoginRequest = {
     password: string;
 };
 
+export type { CompanyCreationDto } from "./company"
+export type { CompanyResponseDto } from "./company"
+
 export type { User } from './user'
 export type { CreateAdminResponse } from './user'
 export type { UserResponseDto } from './user'

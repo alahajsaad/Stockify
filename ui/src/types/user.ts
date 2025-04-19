@@ -1,3 +1,5 @@
+import { CompanyResponseDto } from "./company";
+
 export type User = {
     id?: number;
     firstName: string
@@ -7,12 +9,23 @@ export type User = {
     telegramId?:string
    
 }
+export type Role = 
+  | 'ADMIN'
+  | 'EMPLOYEE'
+  | 'TOPADMIN' ;
+
+export type EntityStatus =
+  | 'ACTIVE'
+  | 'INACTIVE' ;
 
 export type UserResponseDto = {
     id : number,
     firstName : string,
     lastName : string,
     email : string
+    role : Role,
+    status : EntityStatus,
+    company? : CompanyResponseDto
 } 
 
 export type CreateAdminResponse = {

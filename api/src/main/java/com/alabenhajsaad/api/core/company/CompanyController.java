@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.core.company;
 
 import com.alabenhajsaad.api.core.company.dto.CompanyCreationDto;
+import com.alabenhajsaad.api.core.company.dto.CompanyResponseDto;
 import com.alabenhajsaad.api.core.company.projection.CompanyFirstViewProjection;
 import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProjection;
 import com.alabenhajsaad.api.config.ApiResponse;
@@ -25,7 +26,7 @@ public class CompanyController {
     private final FileLoader fileLoader;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<Company>> createCompany(
+    public ResponseEntity<ApiResponse<CompanyResponseDto>> createCompany(
             @ModelAttribute CompanyCreationDto dto,
             @RequestParam("adminId") Integer adminId
     ) {

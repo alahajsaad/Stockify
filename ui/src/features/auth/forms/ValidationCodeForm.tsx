@@ -22,7 +22,6 @@ const ValidationCodeForm: React.FC<FormProps> = ({ setStep, admin }) => {
     control, 
     handleSubmit, 
     formState: { errors },
-    setError
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {

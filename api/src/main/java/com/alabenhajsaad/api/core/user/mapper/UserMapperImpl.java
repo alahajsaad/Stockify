@@ -1,16 +1,20 @@
 package com.alabenhajsaad.api.core.user.mapper;
 
 
+import com.alabenhajsaad.api.core.company.mapper.CompanyMapper;
 import com.alabenhajsaad.api.core.user.AppUser;
 import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
 import com.alabenhajsaad.api.core.user.dto.UserUpdateHigthLevelDto;
 import com.alabenhajsaad.api.core.user.dto.UserCreationDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Consumer;
 
 @Service
+@RequiredArgsConstructor
 public class UserMapperImpl implements UserMapper{
+    private final CompanyMapper companyMapper;
 
     public AppUser toUser(UserCreationDto dto){
         return AppUser.builder()
@@ -60,13 +64,23 @@ public class UserMapperImpl implements UserMapper{
 
     @Override
     public UserResponseDto toUserResponseDto(AppUser user) {
+        if (user == null) {
+            return null;
+        }
+
         return UserResponseDto.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
+                .role(user.getRole())
+                .status(user.getStatus())
+                .company(user.getCompany() == null
+                        ? null
+                        : companyMapper.toCompanyResponseDto(user.getCompany()))
                 .build();
     }
+
 
 
 }
