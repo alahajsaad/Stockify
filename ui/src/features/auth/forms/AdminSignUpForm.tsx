@@ -7,6 +7,7 @@ import { getUserById } from "src/services/api/user";
 import { useCreateAdminAccount } from "src/services/hooks/useUser";
 import { ApiResponse, User, UserResponseDto } from "src/types";
 import {  z } from "zod";
+import { ArrowLeft } from 'lucide-react';
 
 // ✅ Validation schema
 const formSchema = z
@@ -88,7 +89,10 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin }) => {
   };
 
   return (
+   
+     
     <form className="space-y-6" onSubmit={handleSubmit(handleFormSubmit)}>
+     
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Input placeholder="Ala" label="Prénom" {...register("firstName")} />
@@ -129,6 +133,7 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin }) => {
       </div>
       
     </form>
+   
   );
 };
 

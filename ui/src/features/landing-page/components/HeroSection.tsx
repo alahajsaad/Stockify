@@ -1,7 +1,12 @@
 import { Building, ShoppingCart, Package, BarChart4 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'src/components/ui';
 
 const HeroSection : React.FC = () => {
+  const navigate = useNavigate()
+  const navigateToSignUpPage = () => {
+    navigate('/SignUp');
+  }
 
     return (
         <div className="relative h-screen flex items-center">
@@ -23,7 +28,7 @@ const HeroSection : React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <Button className="rounded-full px-8 py-6 text-lg">Commencer gratuitement</Button>
+            <Button onClick={navigateToSignUpPage} className="rounded-full px-8 py-6 text-lg">Essayez gratuitement</Button>
               
             <Button className="rounded-full px-8 py-6 text-lg">Voir la démo</Button>
               

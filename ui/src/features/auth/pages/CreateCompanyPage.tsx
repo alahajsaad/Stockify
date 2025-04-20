@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getNewActivationCode } from "src/services/api/accountActivation";
 import { CompanyResponseDto } from "src/types/company";
+import { Button } from "src/components/ui";
+import { ArrowLeft } from 'lucide-react';
 
 const CreateCompanyPage : React.FC = () => {
     const [currentStep , setCurrentStep] = useState<number>(1)
@@ -41,20 +43,25 @@ const CreateCompanyPage : React.FC = () => {
         refetch();
         setCurrentStep(2);
       }
-    }, [admin, navigate, refetch]);
+    }, [admin, navigate, refetch,currentStep]);
     
  
 
     return (
+      <div>
+        {currentStep === 1 &&
+         <Button onClick={()=> navigate('/')} className="w-12 h-12 bg-white border border-blue-500 hover:bg-blue-500 rounded-full flex items-center justify-center transition-colors duration-200 absolute top-10 left-10">
+         <ArrowLeft className="text-blue-500 hover:text-white" size={20} />
+         </Button>
+        }
+        
         <div className="center lg:w-[60vw] h-auto md:w-[80vw] w-[90vw]  p-6  bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div className="mb-6">
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between gap-1 mb-2">
               {[1, 2, 3, 4].map((step) => (
                 <div 
                   key={step} 
-                  className={`w-1/4 h-1 rounded-full ${
-                    step <= currentStep ? 'bg-primary' : 'bg-gray-200'
-                  }`}
+                  className={`w-1/4 h-2 rounded-full ${step <= currentStep ? 'bg-primary' : 'bg-gray-200'}`}
                 />
               ))}
             </div>
@@ -69,6 +76,7 @@ const CreateCompanyPage : React.FC = () => {
             {currentStep === 2 && admin && <ValidationCodeForm admin={admin}  setStep={setCurrentStep}/>}
             {currentStep === 3 && <CompanyCreationForm admin_Id={admin?.id} setCompany={setCompany}  setStep={setCurrentStep}/>}
             {currentStep === 4 && <SignUpComplete fullName={`${admin?.firstName ?? ""} ${admin?.lastName ?? ""}`} companyName={company?.name ?? ""} />}
+        </div>
         </div>
     );
 }

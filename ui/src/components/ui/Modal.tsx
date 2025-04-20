@@ -56,8 +56,11 @@ const Modal = ({ children, title, isOpen, onClose, size = 'md' }: ModalProps) =>
   return (
     <dialog
       ref={dialogRef}
-      className={`w-full ${sizeClasses} absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 m-0 p-0 rounded-lg shadow-xl bg-white backdrop-blur: blur(16px) backdrop:bg-opacity-50 transition-transform duration-500`}
-     
+      className={`w-full ${sizeClasses} max-w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+      m-0 p-0 rounded-lg shadow-xl bg-white 
+      backdrop:bg-black/50 backdrop-blur-sm 
+      transition-all duration-1000 ease-in-out`}
+           
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       aria-labelledby="modal-title"

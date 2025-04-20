@@ -3,10 +3,8 @@ import {NavBar , HeroSection} from "../index"
 import Modal from "../../../components/ui/Modal";
 import LoginForm from "../../../features/auth/forms/LoginForm";
 import { useSearchParams } from "react-router-dom";
-type LandingPageProps = {
-    isLoginFormOpen : boolean
-}
-const LandingPage : React.FC<LandingPageProps> = ({isLoginFormOpen = false }) =>{
+
+const LandingPage : React.FC = () =>{
     const [isOpenloginForm,setIsOpenLoginForm] = useState(false) 
     const [searchParams] = useSearchParams();
 

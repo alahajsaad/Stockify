@@ -54,8 +54,14 @@ const NavBar : React.FC<NavBarProps> = ({setIsOpenLoginForm}) =>{
           </div>
           
           <div className="flex items-center gap-4">
+          {!isMobile &&
+          <>
           <Button onClick={openLoginForm}>Se connecter</Button>
           <Button onClick={navigateToSignUpPage}>S'inscrire</Button>
+          </>
+          
+          }
+          
             
         
           
@@ -88,7 +94,8 @@ const NavBar : React.FC<NavBarProps> = ({setIsOpenLoginForm}) =>{
             <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
               Contact
             </a>
-            <Button onClick={openLoginForm}  className="w-full sm:hidden mt-2" text="Se connecter" />
+            <Button onClick={openLoginForm}  className="w-full sm:hidden mt-2">Se connecter</Button>
+            <Button onClick={navigateToSignUpPage}  className="w-full sm:hidden mt-2">S'inscrire</Button>
             
           </div>
         </div>
