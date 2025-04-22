@@ -7,7 +7,6 @@ import { getUserById } from "src/services/api/user";
 import { useCreateAdminAccount } from "src/services/hooks/useUser";
 import { ApiResponse, User, UserResponseDto } from "src/types";
 import {  z } from "zod";
-import { ArrowLeft } from 'lucide-react';
 
 // ✅ Validation schema
 const formSchema = z

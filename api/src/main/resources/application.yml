@@ -3,6 +3,9 @@ spring:
     active: dev
   application:
     name: api
+#  spring:
+#    liquibase:
+#      enabled: false
 
 
 telegramBot:

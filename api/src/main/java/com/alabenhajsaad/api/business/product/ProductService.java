@@ -1,7 +1,8 @@
 package com.alabenhajsaad.api.business.product;
 
-import com.alabenhajsaad.api.business.Product;
+import java.util.List;
 
 public interface ProductService {
     Product AddProduct(Product product);
+    List<Product> SearchProduct(String SearchWord);
 }

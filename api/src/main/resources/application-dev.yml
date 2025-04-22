@@ -12,11 +12,6 @@ spring:
       username: root
       password:
       driver-class-name: com.mysql.cj.jdbc.Driver
-#  liquibase:
-#    enabled: false
-#    tenant:
-#      enabled: true
-#      change-log: classpath:db/changelog/tenant/db.changelog-master.yaml
 #  jpa:
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect
 #  datasource:

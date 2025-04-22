@@ -1,4 +1,4 @@
-package com.alabenhajsaad.api.business.category;
+package com.alabenhajsaad.api.business.vat;
 
 import com.alabenhajsaad.api.business.product.Product;
 import jakarta.persistence.*;
@@ -14,14 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "category")
-public class Category {
+@Table(name = "value_added_tax")
+public class Vat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id ;
-    @Column(unique = true)
-    private String name;
+    @Column(unique = true, nullable = false)
+    private Double rate ;
+    private String description;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "vat")
     private List<Product> products ;
 }

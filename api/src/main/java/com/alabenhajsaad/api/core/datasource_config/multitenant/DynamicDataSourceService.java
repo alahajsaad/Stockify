@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.core.datasource_config.multitenant;
 
 
+//import com.alabenhajsaad.api.core.datasource_config.liquibase.LiquibaseService;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +21,15 @@ public class DynamicDataSourceService {
     @Value("${database.default.pass}")
     private String defaultPassword;
     private final DynamicRoutingDataSource dynamicDataSource;
+    //private final LiquibaseService liquibaseService;
 
 
     public void registerTenant(String tenantId, String url) {
         if (!dynamicDataSource.containsDataSource(tenantId)) {
             DataSource newDataSource = createDataSource(url,"root","","com.mysql.cj.jdbc.Driver");
             dynamicDataSource.addDataSource(tenantId, newDataSource);
+            //liquibaseService.runLiquibaseForTenant(tenantId);
+
         }
     }
 

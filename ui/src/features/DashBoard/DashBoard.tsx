@@ -4,6 +4,7 @@ import Sidebar from "./components/SideBar/Sidebar";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "src/hooks/useMobile";
 import NavBar from "./components/NavBar/NavBar";
+import ProductForm from "../product/forms/productForm";
 
 const Dashboard : React.FC = () => {
      const { logout } = useAuth();
@@ -28,6 +29,10 @@ const Dashboard : React.FC = () => {
             <div className="bg-gray-100 p-4 flex-1 overflow-auto">
                 <p>Dashboard</p>
                 <Button onClick={logout}>Se deconnecter</Button>
+                <div className="lg:w-[60vw] rounded-lg shadow-sm border border-gray-200 bg-white p-4">
+                 <ProductForm />
+                </div>
+                
             </div>
             
         </div>

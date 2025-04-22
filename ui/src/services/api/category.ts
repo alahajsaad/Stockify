@@ -1,0 +1,130 @@
+import { ApiResponse } from "src/types";
+import request from "./request";
+import { toastHandler } from "./toastHandler";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+export type Category = {
+    id : number ,
+    name : string
+}
+
+export const addNewCategory = (category: Category): Promise<ApiResponse<Category>> => {
+    const response = request<Category>({
+      url: "/category",
+      method: "post",
+      data: category,
+    });
+    toastHandler(response);
+    return response; 
+  };
+
+export const searchCategory = (searchKey : string): Promise<ApiResponse<Category[]>> => {
+    const  response = request<Category[]>({
+      url: `/category?searchKey=${(searchKey)}`,
+      method: "get",
+  });
+   return response;
+};
+
+export const getCategoryById = (id : number): Promise<ApiResponse<Category>> => {
+    const response = request<Category>({
+      url: `/category?id=${(id)}`,
+      method: "get",
+  });
+  return response 
+};
+
+export const updateCategory = (category : Category): Promise<ApiResponse<Category>> => {
+    const response = request<Category>({
+      url:  "/category",
+      method: "put",
+      data: category ,
+  });
+  toastHandler(response)
+  return response 
+};
+
+export const deleteCategory = (id : number): Promise<ApiResponse<void>> => {
+    const response = request<void>({
+      url:  `/category?id=${(id)}`,
+      method: "delete",
+  });
+  toastHandler(response)
+  return response 
+};
+
+export const useSearchedCategories = (isEnabled = true , searchKey:string) =>{
+    return useQuery<Category[],Error>(
+       { 
+        queryKey : ['SearchedCategories' , searchKey] , 
+        queryFn : () => searchCategory(searchKey).then(response => {
+            if (response.status === 'error') {
+                throw new Error(response.message);
+              }
+              return response.data as Category[];
+        }) ,
+        gcTime: Infinity, 
+        staleTime : 1000 * 60 * 15 ,
+        enabled : isEnabled
+    }
+)}
+
+export const useAddCategory = () => {
+    const queryClient = useQueryClient();
+     
+    return useMutation<Category, Error, Category>({
+      mutationFn: (category: Category) => 
+        addNewCategory(category).then(response => {
+          if (response.status === 'error') {
+            throw new Error(response.message);
+          }
+          return response.data as Category;
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['ListOfValueAddedTax'] });
+      }
+    });
+  };
+
+export const useUpdateCategory = () => {
+    const queryClient = useQueryClient();
+     
+    return useMutation<Category, Error, Category>({
+      mutationFn: (category: Category) => 
+        updateCategory(category).then(response => {
+          if (response.status === 'error') {
+            throw new Error(response.message);
+          }
+          return response.data as Category;
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['ListOfValueAddedTax'] });
+      }
+    });
+  };
+
+  
+  export const useCategoryById = (id: number) => {
+    return useQuery<Category, Error>({
+      queryKey: ['ValueAddedTax', id], 
+      queryFn: () => getCategoryById(id).then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response.data as Category;
+      }),
+      enabled: false // Only run query when id is available
+    });
+  };
+ 
+  export const useDeleteCategory = () => {
+    const queryClient = useQueryClient();
+    
+    return useMutation<ApiResponse<void>, Error, number>({
+      mutationFn: (id: number) => deleteCategory(id),
+      onSuccess: () => {
+        // Invalidate and refetch the list query when a record is deleted
+        queryClient.invalidateQueries({ queryKey: ['ListOfValueAddedTax'] });
+      }
+    });
+  };
