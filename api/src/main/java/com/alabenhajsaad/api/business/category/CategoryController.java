@@ -21,6 +21,12 @@ public class CategoryController {
         );
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<Category>>> searchCategory(@RequestParam String searchKey) {
+        return ResponseEntity.ok(
+                ApiResponse.success(service.searchCategory(searchKey))
+        );
+    }
     @PutMapping
     public ResponseEntity<ApiResponse<Category>> updateCategory(@RequestBody Category category) {
         return ResponseEntity.ok(

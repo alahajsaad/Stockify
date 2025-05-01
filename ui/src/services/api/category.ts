@@ -1,12 +1,9 @@
-import { ApiResponse } from "src/types";
+import { ApiResponse, Category } from "src/types";
 import request from "./request";
 import { toastHandler } from "./toastHandler";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export type Category = {
-    id : number ,
-    name : string
-}
+
 
 export const addNewCategory = (category: Category): Promise<ApiResponse<Category>> => {
     const response = request<Category>({
@@ -20,7 +17,7 @@ export const addNewCategory = (category: Category): Promise<ApiResponse<Category
 
 export const searchCategory = (searchKey : string): Promise<ApiResponse<Category[]>> => {
     const  response = request<Category[]>({
-      url: `/category?searchKey=${(searchKey)}`,
+      url: `/category/search?searchKey=${(searchKey)}`,
       method: "get",
   });
    return response;
@@ -53,38 +50,52 @@ export const deleteCategory = (id : number): Promise<ApiResponse<void>> => {
   return response 
 };
 
-export const useSearchedCategories = (isEnabled = true , searchKey:string) =>{
-    return useQuery<Category[],Error>(
-       { 
-        queryKey : ['SearchedCategories' , searchKey] , 
-        queryFn : () => searchCategory(searchKey).then(response => {
-            if (response.status === 'error') {
-                throw new Error(response.message);
-              }
-              return response.data as Category[];
-        }) ,
-        gcTime: Infinity, 
-        staleTime : 1000 * 60 * 15 ,
-        enabled : isEnabled
-    }
-)}
+export const useSearchedCategories = (searchKey: string, isEnabled = true) => {
+  return useQuery<Category[], Error>({
+    queryKey: ['Categories', searchKey],
+    queryFn: () => {
+      if (!searchKey || searchKey.trim() === "") {
+        return Promise.resolve([]);
+      }
+      return searchCategory(searchKey).then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response.data as Category[];
+      });
+    },
+    gcTime: Infinity,
+    staleTime: 1000 * 60 * 15,
+    enabled: typeof searchKey === "string" && searchKey.trim().length > 0 && isEnabled,
+    refetchOnMount: false
+  });
+};
+
 
 export const useAddCategory = () => {
-    const queryClient = useQueryClient();
-     
-    return useMutation<Category, Error, Category>({
-      mutationFn: (category: Category) => 
-        addNewCategory(category).then(response => {
-          if (response.status === 'error') {
-            throw new Error(response.message);
-          }
-          return response.data as Category;
-        }),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['ListOfValueAddedTax'] });
-      }
-    });
-  };
+  const queryClient = useQueryClient();
+  
+  return useMutation<Category, Error, Category>({
+    mutationFn: (category: Category) =>
+      addNewCategory(category).then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response.data as Category;
+      }),
+    onSuccess: (newCategory) => {
+      // Update the cache with the new category
+      queryClient.setQueryData(['Categories'], (oldData: Category[] | undefined) => {
+        // If we don't have any existing data, create a new array with just the new category
+        if (!oldData) {
+          return [newCategory];
+        }
+        // Otherwise add the new category to the existing array
+        return [...oldData, newCategory];
+      });
+    }
+  });
+};
 
 export const useUpdateCategory = () => {
     const queryClient = useQueryClient();
@@ -98,15 +109,15 @@ export const useUpdateCategory = () => {
           return response.data as Category;
         }),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['ListOfValueAddedTax'] });
+        queryClient.invalidateQueries({ queryKey: ['Categories'] });
       }
     });
   };
 
   
-  export const useCategoryById = (id: number) => {
+  export const useGetCategoryById = (id: number) => {
     return useQuery<Category, Error>({
-      queryKey: ['ValueAddedTax', id], 
+      queryKey: ['Category', id], 
       queryFn: () => getCategoryById(id).then(response => {
         if (response.status === 'error') {
           throw new Error(response.message);
@@ -124,7 +135,7 @@ export const useUpdateCategory = () => {
       mutationFn: (id: number) => deleteCategory(id),
       onSuccess: () => {
         // Invalidate and refetch the list query when a record is deleted
-        queryClient.invalidateQueries({ queryKey: ['ListOfValueAddedTax'] });
+        queryClient.invalidateQueries({ queryKey: ['Categories'] });
       }
     });
   };

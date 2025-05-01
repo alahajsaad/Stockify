@@ -65,6 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
                 path={item.path}
                 title={item.title}
                 icon={item.icon}
+                addButtonPath={item.addButtonPath}
                 isExpanded={isExpanded}
               />
             ))}

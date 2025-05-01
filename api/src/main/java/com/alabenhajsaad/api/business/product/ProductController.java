@@ -15,6 +15,6 @@ public class ProductController {
     private final ProductService productService;
     @PostMapping
     public ResponseEntity<ApiResponse<Product>> addProduct(@RequestBody Product product) {
-        return ResponseEntity.ok(ApiResponse.success(productService.AddProduct(product),"Produit ajoutée avec succès"));
+        return ResponseEntity.ok(ApiResponse.success(productService.addProduct(product),"Produit ajoutée avec succès"));
     }
 }

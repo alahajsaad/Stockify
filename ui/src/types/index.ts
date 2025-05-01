@@ -16,6 +16,16 @@ export type LoginRequest = {
     password: string;
 };
 
+export type Category = {
+    id? : number ,
+    name? : string
+}
+
+export type valueAddedTax = {
+    id? : number ,
+    rate? : number ,
+    description? : string
+}
 export type { CompanyCreationDto } from "./company"
 export type { CompanyResponseDto } from "./company"
 

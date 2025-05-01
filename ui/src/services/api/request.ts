@@ -11,7 +11,10 @@ const client = axios.create({
 });
 
 const request = async <T = unknown>( options: AxiosRequestConfig ): Promise<ApiResponse<T>> => {
-  //client.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token') || ''}`;
+  if(localStorage.getItem('access_token') != null){
+    client.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('access_token')}`;
+  }
+ 
 
   try {
     const response = await client.request<ApiResponse<T>>(options);
@@ -34,3 +37,34 @@ const request = async <T = unknown>( options: AxiosRequestConfig ): Promise<ApiR
 };
 
 export default request;
+
+// const request = async <T = unknown>(options: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+//   const token = localStorage.getItem('access_token');
+
+//   const config: AxiosRequestConfig = {
+//     ...options,
+//     headers: {
+//       ...(options.headers || {}),
+//       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+//     },
+//   };
+
+//   try {
+//     const response = await client.request<ApiResponse<T>>(config);
+//     return response.data;
+//   } catch (error) {
+//     const axiosError = error as AxiosError<ApiResponse<any>>;
+
+//     if (axiosError.response?.data) {
+//       return axiosError.response.data;
+//     }
+
+//     return {
+//       status: 'error',
+//       data: null,
+//       message: axiosError.message || 'Unexpected error',
+//     };
+//   }
+// };
+
+// export default request;

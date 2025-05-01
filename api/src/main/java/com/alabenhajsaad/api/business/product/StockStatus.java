@@ -1,5 +1,5 @@
 package com.alabenhajsaad.api.business.product;
 
-public enum ProductStatus {
+public enum StockStatus {
     IN_STOCK,OUT_OF_STOCK
 }

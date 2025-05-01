@@ -12,6 +12,8 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -19,12 +21,28 @@ import java.io.IOException;
 public class TenantFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private static final List<String> WITHOUT_TENANT_ID_PATHS = Arrays.asList(
+            "/api/v1/user/admin",
+            "/api/v1/company/**",
+            "/api/v1/auth/**",
+            "/api/v1/datasource",
+            "/v3/api-docs/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    );
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
+
+            String requestUri = request.getRequestURI();
+            if (WITHOUT_TENANT_ID_PATHS.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestUri))) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String authHeader = request.getHeader("Authorization");
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);

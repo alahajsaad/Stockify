@@ -5,6 +5,8 @@ import com.alabenhajsaad.api.core.exception.ConflictException;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,5 +53,13 @@ public class CategoryServiceImpl implements CategoryService{
 
         repository.deleteById(id);
     }
+
+    @Override
+    public List<Category> searchCategory(String searchKey) {
+        Pageable pageable = PageRequest.of(0, 5);
+        return repository.findByNameStartingWith(searchKey , pageable).getContent();
+    }
+
+
 
 }

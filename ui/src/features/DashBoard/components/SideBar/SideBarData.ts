@@ -1,25 +1,33 @@
 // sidebarData.ts
 import { LucideIcon } from "lucide-react";
-import { Book, BarChart, User, Settings, Ticket, Plus } from 'lucide-react';
+import { Book,ShoppingBasket } from 'lucide-react';
 
 
 
-export interface SidebarItemProps {
+
+export interface SidebarItemData {
   path: string;
   title: string;
   icon: LucideIcon;
+  addButtonPath?:string;
+  children?:SidebarItemData[]
 }
 
-export const sidebarData: SidebarItemProps[] = [
+export const sidebarData: SidebarItemData[] = [
   {
     title: "Tableau de bord",
     path: "/dashboard",
     icon: Book,
+    children : [
+      {title: "Tableau de bord", path: "/dashboard",icon: Book,},
+      {title: "Tableau de bord", path: "/dashboard",icon: Book,}
+    ]
   },
   {
-    title: "Ajouter réparation",
-    path: "/reparation",
-    icon: Book,
+    title: "Produits",
+    path: "/products",
+    icon: ShoppingBasket,
+    addButtonPath : "/addProduct"
   },
   {
     title: "Historique de réparation",

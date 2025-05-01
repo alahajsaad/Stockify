@@ -22,7 +22,7 @@ const baseClasses = "py-2 px-4 rounded font-medium text-sm focus:outline-none cu
 const variantClasses = {
   primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
   secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500",
-  add: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 p-2",
+  add: "bg-blue-600  py-2.5 text-white hover:bg-blue-700 focus:ring-blue-500",
   link: "text-blue-500 hover:text-blue-700",
 };
 

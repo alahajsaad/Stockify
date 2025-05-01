@@ -1,48 +1,60 @@
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, Suspense, lazy } from "react";
 import { useAuth } from "./features/auth/components/AuthProvider";
-import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { LandingPage } from "./features/landing-page";
 import CreateCompanyPage from "./features/auth/pages/CreateCompanyPage";
-import "./App.css";
-import { ToastContainer } from 'react-toastify';
 import LoadingScreen from "./features/DashBoard/components/LoadingScreen";
+import ProductForm from "./features/product/forms/productForm";
+import ProtectedRoute from "./features/auth/components/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
+import "./App.css";
 
-// Lazy load dashboard for performance optimization
-const Dashboard = lazy(() => import("./features/DashBoard/DashBoard"));
+const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
 const App = () => {
-  const { isAuthenticated, user , isAuthLoading  } = useAuth();
-  const navigate = useNavigate();
+  const { isAuthenticated, isAuthLoading ,setIsAuthenticated} = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthLoading && isAuthenticated && ["/", "/SignUp"].includes(location.pathname)) {
-      navigate("/dashboard");
+    if (!isAuthLoading) {
+      if (isAuthenticated && (location.pathname === "/stokify" || location.pathname === "/SignUp")) {
+        navigate("/dashboard");
+      }
     }
-  }, [isAuthenticated, user?.scope, location.pathname, isAuthLoading, navigate]);
+    if(isAuthenticated && location.pathname != "/stokify" && location.pathname != "/SignUp"){
+      navigate(location.pathname)
+    }
+  }, [isAuthenticated, isAuthLoading, location.pathname, navigate]);
+  
 
-  if (isAuthLoading) return <LoadingScreen />; // 👈 Show loading while checking auth
+
+  if (isAuthLoading) return <LoadingScreen />;
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        {/* Public routes */}
+        <Route path="/stokify" element={<LandingPage  setIsAuthenticated={setIsAuthenticated}/>} />
         <Route path="/SignUp" element={<CreateCompanyPage />} />
-        <Route
-          element={<ProtectedRoute />}
-        >
-          <Route
-            path="/dashboard"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <Dashboard />
-              </Suspense>
-            }
-          />
+
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={
+            <Suspense fallback={<LoadingScreen />}>
+              <DashboardLayout />
+            </Suspense>
+          }>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<div>Dashboard home</div>} />
+            <Route path="products" element={<ProductForm />} />
+            {/* Add more protected routes here */}
+          </Route>
         </Route>
+
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
+
       <ToastContainer />
     </>
   );

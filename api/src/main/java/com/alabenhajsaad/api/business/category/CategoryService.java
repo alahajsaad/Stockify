@@ -8,4 +8,5 @@ public interface CategoryService {
     List<Category> getAllCategory();
     Category getCategoryById(int id);
     void deleteCategoryById(int id);
+    List<Category> searchCategory(String searchKey) ;
 }

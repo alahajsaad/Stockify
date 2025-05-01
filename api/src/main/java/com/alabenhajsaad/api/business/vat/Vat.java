@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.business.vat;
 
 import com.alabenhajsaad.api.business.product.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +25,6 @@ public class Vat {
     private String description;
 
     @OneToMany(mappedBy = "vat")
+    @JsonIgnore
     private List<Product> products ;
 }

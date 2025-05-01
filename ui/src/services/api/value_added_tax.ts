@@ -1,13 +1,9 @@
-import { ApiResponse } from "src/types";
+import { ApiResponse, valueAddedTax } from "src/types";
 import request from "./request";
 import { toastHandler } from "./toastHandler";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export type valueAddedTax = {
-    id : number ,
-    rate : number ,
-    description : string
-}
+
 
 export const addNewValueAddedTax = (tax: valueAddedTax): Promise<ApiResponse<valueAddedTax>> => {
     const response = request<valueAddedTax>({
@@ -56,7 +52,7 @@ export const deleteValueAddedTax = (id : number): Promise<ApiResponse<void>> => 
 };
 
 
-export const useValueAddedTax = (isEnabled = true) =>{
+export const useGetValueAddedTaxList = (isEnabled = true) =>{
     return useQuery<valueAddedTax[],Error>(
        { 
         queryKey : ['ListOfValueAddedTax'] , 

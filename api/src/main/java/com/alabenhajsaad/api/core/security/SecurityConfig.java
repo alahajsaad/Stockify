@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -55,7 +56,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(ar -> ar
-                        .requestMatchers("api/v1/accountActivation/**","api/v1/user/admin/inscription/**","api/v1/user/**","/api/v1/auth/**","/api/v1/company/**","api/v1/accountActivation/**","/v3/api-docs/**","/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("api/v1/user/**","api/v1/vat/**","/api/v1/auth/**","/api/v1/company/**","api/v1/accountActivation/**","/v3/api-docs/**","/swagger-ui/**").permitAll()
                         .anyRequest().authenticated())
 
                 .oauth2ResourceServer(oa -> oa.jwt(Customizer.withDefaults()))
