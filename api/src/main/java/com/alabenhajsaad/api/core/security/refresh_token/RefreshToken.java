@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,15 +21,15 @@ public class RefreshToken {
     @Id
     @GeneratedValue
     private Integer id;
-
-    private String token;
+    private String token ;
     private Instant issuedAt;
     private Instant expiresAt;
     private boolean revoked;
+    private String userAgent;
+    private String ipAddress;
 
     @ManyToOne
     private AppUser user;
 
-    // device info, IP, user agent (optional)
 }
 

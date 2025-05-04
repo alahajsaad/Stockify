@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS product (
     quantity INT CHECK (quantity >= 0),
     last_purchase_price DECIMAL(10,2);
     critical_threshold INT,
-    product_status VARCHAR(255),
+    stock_status VARCHAR(255),
     category_id INT,
     vat_id INT,
     FOREIGN KEY (category_id) REFERENCES category(id),

@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
+.card {
+  @apply p-4 m-4 rounded shadow-custom border border-[#EBEBEB] bg-white ;
+}
+
 .center {
   @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
 }

@@ -3,6 +3,7 @@ package com.alabenhajsaad.api.business.product;
 import com.alabenhajsaad.api.business.category.Category;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
 import com.alabenhajsaad.api.business.vat.Vat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
@@ -47,6 +48,7 @@ public class Product {
     @ManyToOne
     private Vat vat ;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product" )
+    @JsonIgnore
     private List<SupplierOrderLine> orderLines;
 }

@@ -13,6 +13,12 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService service;
+    @PostMapping("/multi")
+    public ResponseEntity<ApiResponse<List<Category>>> createCategory(@RequestBody List<Category> categories) {
+        return ResponseEntity.ok(
+                ApiResponse.success(service.addMultipleCategories(categories), "Catégorie ajoutée avec succès")
+        );
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<Category>> createCategory(@RequestBody Category category) {

@@ -25,7 +25,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
         var supplierOrder = getSupplierOrderById(supplierOrderId);
         supplierOrder.setIsReceived(true);
         supplierOrder.getOrderLines()
-                .forEach(line -> productService.updateProductQuantity(line.getProduct().getId(),line.getQuantity() , line.getUnitPrice()));
+                .forEach(line -> productService.updateProductQuantityAndLastPurchasePrice(line.getProduct().getId(),line.getQuantity() , line.getUnitPrice()));
         repository.save(supplierOrder) ;
     }
 

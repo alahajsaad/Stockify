@@ -1,18 +1,13 @@
 package com.alabenhajsaad.api.core.security.refresh_token;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.alabenhajsaad.api.core.user.AppUser;
+import jakarta.servlet.http.HttpServletRequest;
 
-@Service
-@RequiredArgsConstructor
-public class RefreshTokenService {
-    private final RefreshTokenRepository repository ;
+import java.util.Map;
 
-    public void addRefreshToken(RefreshToken refreshToken) {
-        repository.save(refreshToken);
-    }
-    public void revokeRefreshToken(RefreshToken refreshToken) {
-
-    }
-
+public interface RefreshTokenService {
+     Map<String, String> generateAndSaveRefreshToken(AppUser user, HttpServletRequest request) ;
+     RefreshToken validateRefreshToken(String rawToken);
+     void revokeRefreshToken(String refreshToken);
+     String generateAndCacheTokenOfValidation(AppUser user);
 }

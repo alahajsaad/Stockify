@@ -25,7 +25,7 @@ public class ProductExternalServiceImpl implements ProductExternalService {
 
     @Override
     @Transactional
-    public void updateProductQuantity(Integer productId, Integer quantity , BigDecimal unitPrice) {
+    public void updateProductQuantityAndLastPurchasePrice(Integer productId, Integer quantity , BigDecimal unitPrice) {
         var product = repository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + productId + " not found")
         );

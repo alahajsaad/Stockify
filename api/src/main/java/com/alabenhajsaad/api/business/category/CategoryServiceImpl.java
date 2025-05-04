@@ -17,6 +17,16 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository repository;
     private final ProductExternalService productExternalService;
     @Override
+    public List<Category> addMultipleCategories(List<Category> categories) {
+        for (Category category : categories) {
+            if (repository.existsByName(category.getName())) {
+                throw new ConflictException("La valeur de taxe " + category.getName() + " existe déjà");
+            }
+        }
+        return repository.saveAll(categories);
+    }
+
+    @Override
     public Category addCategory(Category category) {
         if(repository.existsByName(category.getName())){
             throw new ConflictException("Une catégorie portant le nom '" + category.getName() + "' existe déjà.");

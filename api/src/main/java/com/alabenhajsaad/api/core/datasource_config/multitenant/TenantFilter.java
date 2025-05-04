@@ -1,6 +1,6 @@
 package com.alabenhajsaad.api.core.datasource_config.multitenant;
 
-import com.alabenhajsaad.api.core.security.JwtService;
+import com.alabenhajsaad.api.core.security.AccessTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class TenantFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final AccessTokenService jwtService;
     private static final List<String> WITHOUT_TENANT_ID_PATHS = Arrays.asList(
             "/api/v1/user/admin",
             "/api/v1/company/**",

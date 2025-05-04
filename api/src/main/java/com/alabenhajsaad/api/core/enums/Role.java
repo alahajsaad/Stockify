@@ -1,5 +1,5 @@
 package com.alabenhajsaad.api.core.enums;
 
 public enum Role {
-    ADMIN,EMPLOYEE
+    ADMIN,EMPLOYEE,TOP_ADMIN
 }

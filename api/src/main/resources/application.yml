@@ -3,9 +3,9 @@ spring:
     active: dev
   application:
     name: api
-#  spring:
-#    liquibase:
-#      enabled: false
+
+  liquibase:
+    enabled: false
 
 
 telegramBot:
@@ -21,4 +21,4 @@ jwt:
 
 logging:
   level:
-    liquibase: DEBUG
+    liquibase: warn

@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 
 export type ProductStatus =  
 | 'IN_STOCK'
-| 'OUT_OF_STOCK' ;
+| 'OUT_OF_STOCK' 
+| 'LOW_STOCK' ;
 
 export type Product = {
     id? : number,
@@ -13,6 +14,7 @@ export type Product = {
     reference : string,
     quantity? : number ,
     criticalThreshold : number,
+    lastPurchasePrice? : number ,
     productStatus? : ProductStatus
     category : Category ,
     vat : valueAddedTax
@@ -47,4 +49,8 @@ export const addProduct = (product: Product): Promise<ApiResponse<Product>> => {
       }
     });
   };
+
+  export const useSearchProduct = () =>{
+
+  }
 
