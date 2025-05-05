@@ -9,5 +9,4 @@ public interface RefreshTokenService {
      Map<String, String> generateAndSaveRefreshToken(AppUser user, HttpServletRequest request) ;
      RefreshToken validateRefreshToken(String rawToken);
      void revokeRefreshToken(String refreshToken);
-     String generateAndCacheTokenOfValidation(AppUser user);
 }

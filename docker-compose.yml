@@ -20,6 +20,18 @@ services:
     networks:
       - stockify_network
 
+  redis: # Redis service
+    image: redis:alpine  # Using Redis with Alpine Linux for a smaller image size
+    container_name: redis-db-container
+    ports:
+      - "6379:6379"  # Expose Redis default port
+    volumes:
+      - redis_data:/data  # Redis data persistence, separate volume for Redis
+    networks:
+      - stockify_network
+    # You can add additional Redis configurations if needed, e.g., authentication:
+    # environment:
+    #   REDIS_PASSWORD: "your-redis-password"
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: my_phpmyadmin
@@ -39,4 +51,6 @@ networks:
 
 volumes:
   stockify_volume:
+    driver: local
+  redis_data: # Separate volume for Redis data to avoid conflict with MySQL
     driver: local

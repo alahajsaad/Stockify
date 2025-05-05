@@ -126,6 +126,15 @@ public class UserServiceImpl implements UserService {
                 orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
+    @Override
+    public void changePassword(String email, String password , String confirmPassword) {
+        if(!password.equals(confirmPassword)){
+            throw new RuntimeException("Passwords do not match");
+        }
+        var user  = getUserByEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        repository.save(user);
+    }
 
 
     @Override

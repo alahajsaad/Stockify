@@ -80,23 +80,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         repository.save(refreshTokenEntity);
     }
 
-    @Override
-    public String generateAndCacheTokenOfValidation(AppUser user) {
-        Instant instant = Instant.now();
 
-        String rawToken = generateSecureToken(); // already base64-encoded
-        String hashedToken = hashToken(rawToken);
-
-        var refreshToken = RefreshToken.builder()
-                .token(hashedToken) // or hash this before saving, if needed
-                .issuedAt(instant)
-                .expiresAt(instant.plus(15, ChronoUnit.MINUTES))
-                .revoked(false)
-                .user(user)
-                .build();
-
-        return rawToken;
-    }
 
 
 }

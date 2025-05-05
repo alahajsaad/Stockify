@@ -7,6 +7,14 @@ export type ApiResponse<T> = {
     message : string 
 
 }
+export type Page<T> = {
+    content: T[];
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number; // numéro de page actuel
+  }
+  
 export type LoginResponse = {
     access_token: string;
 };

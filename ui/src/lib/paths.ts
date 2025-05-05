@@ -1,0 +1,18 @@
+export const Paths = {
+    landingPage: "/",
+    signIn: "/sign-in",
+    signUp: "/SignUp",
+    home: "/home",
+    about: "/about",
+    contact: "/contact",
+    dashboard: "/dashboard",
+    calorieCalculator: "/mifflin-st-jeor-equation-calculator-for-nutrition",
+    profile: "/profile",
+    adminPage: "/admin/admin-panel",
+    usersPage: "/admin/users-list",
+    reviewsPage: "/admin/reviews-list",
+    recommendRecipes: "/user/recipes-recommendation",
+    notAuthorized: "/notAuthorized",
+    notFound: "*",
+    stockify: "/stockify",
+  };

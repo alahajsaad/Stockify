@@ -16,7 +16,7 @@ export interface SidebarItemData {
 export const sidebarData: SidebarItemData[] = [
   {
     title: "Tableau de bord",
-    path: "/dashboard",
+    path: "/stockify",
     icon: Book,
     children : [
       {title: "Tableau de bord", path: "/dashboard",icon: Book,},
@@ -25,9 +25,9 @@ export const sidebarData: SidebarItemData[] = [
   },
   {
     title: "Produits",
-    path: "/products",
+    path: "/stockify/products",
     icon: ShoppingBasket,
-    addButtonPath : "/addProduct"
+    addButtonPath : "/stockify/products/add"
   },
   {
     title: "Historique de réparation",

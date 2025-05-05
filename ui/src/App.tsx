@@ -8,6 +8,8 @@ import ProductForm from "./features/product/forms/productForm";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
+import { Paths } from "./lib/paths";
+import ConsultProducts from "./features/product/pages/ConsultProducts";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -17,12 +19,13 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    
     if (!isAuthLoading) {
-      if (isAuthenticated && (location.pathname === "/stokify" || location.pathname === "/SignUp")) {
-        navigate("/dashboard");
+      if (isAuthenticated && (location.pathname === "/" || location.pathname === "/SignUp")) {
+        navigate("/stockify/dashboard");
       }
     }
-    if(isAuthenticated && location.pathname != "/stokify" && location.pathname != "/SignUp"){
+    if(isAuthenticated && location.pathname != "/" && location.pathname != "/SignUp"){
       navigate(location.pathname)
     }
   }, [isAuthenticated, isAuthLoading, location.pathname, navigate]);
@@ -35,19 +38,20 @@ const App = () => {
     <>
       <Routes>
         {/* Public routes */}
-        <Route path="/stokify" element={<LandingPage  setIsAuthenticated={setIsAuthenticated}/>} />
-        <Route path="/SignUp" element={<CreateCompanyPage />} />
+        <Route path={Paths.landingPage} element={<LandingPage  setIsAuthenticated={setIsAuthenticated}/>} />
+        <Route path={Paths.signUp} element={<CreateCompanyPage />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={
+          <Route path={Paths.stockify} element={
             <Suspense fallback={<LoadingScreen />}>
               <DashboardLayout />
             </Suspense>
           }>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<div>Dashboard home</div>} />
-            <Route path="products" element={<ProductForm />} />
+            <Route path="products/add" element={<ProductForm />} />
+            <Route path="products" element={<ConsultProducts />} />
             {/* Add more protected routes here */}
           </Route>
         </Route>

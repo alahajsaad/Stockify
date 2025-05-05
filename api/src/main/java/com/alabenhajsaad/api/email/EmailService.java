@@ -56,7 +56,7 @@ public class EmailService {
     }
 
 
-    public void sendResetPasswordEmail(String to, String subject,String linkTOResetPassword , String username, EmailTemplateName emailTemplate){
+    public void sendResetPasswordEmail(String to, String subject,String linkToResetPassword , String username, EmailTemplateName emailTemplate){
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(
@@ -65,9 +65,10 @@ public class EmailService {
                     UTF_8.name()
             );
 
+
             Map<String, Object> properties = new HashMap<>();
             properties.put("username", username);
-            properties.put("linkTOResetPassword", linkTOResetPassword);
+            properties.put("linkToResetPassword", linkToResetPassword);
 
             Context context = new Context();
             context.setVariables(properties);

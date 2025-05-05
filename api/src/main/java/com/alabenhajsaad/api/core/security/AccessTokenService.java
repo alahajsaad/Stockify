@@ -30,7 +30,7 @@ public class AccessTokenService {
         // Utiliser claims() pour ajouter plusieurs revendications
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(instant)
-                .expiresAt(instant.plus(1, ChronoUnit.MINUTES))
+                .expiresAt(instant.plus(1, ChronoUnit.DAYS))
                 .subject(user.getUsername())
                 .claim("fullName", user.getFullName())
                 .claim("scope", "ROLE_" + user.getRole())                // Ajouter scope comme une revendication distincte

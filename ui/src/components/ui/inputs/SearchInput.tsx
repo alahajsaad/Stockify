@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "src/hooks/useDebounce";
 import Input from "./Input";
 import { LoaderCircle } from "lucide-react";
+import { Search } from 'lucide-react';
 
 type SearchInputProps = {
   setSearchKey: (searchKey: string) => void;
   isPending: boolean;
   label?:string
-  onfocus : () => void
+  onfocus? : () => void
   value? : string
+  placeholder ? : string
 };
 
-const SearchInput: React.FC<SearchInputProps> = ({ setSearchKey, isPending , label , onfocus , value}) => {
+const SearchInput: React.FC<SearchInputProps> = ({ setSearchKey, isPending , label , onfocus , value , placeholder}) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchValue, 300);
 
@@ -31,10 +33,11 @@ const SearchInput: React.FC<SearchInputProps> = ({ setSearchKey, isPending , lab
     <Input
       onChange={handleChange}
       value={searchValue}
-      placeholder="Rechercher ..."
+      placeholder={placeholder? placeholder : "Rechercher ..."}
       aria-label="search-input"
       label={label}
       onFocus={onfocus}
+      Icon={Search}
     >
       <div className="absolute inset-y-0 right-3 flex items-center text-gray-500">
         {isPending ? <LoaderCircle className="animate-spin" /> : null}

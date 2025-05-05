@@ -2,6 +2,7 @@ package com.alabenhajsaad.api.core.security;
 
 
 import com.alabenhajsaad.api.core.security.dto.LoginRequest;
+import com.alabenhajsaad.api.core.security.reset_token.ResetTokenDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 
@@ -13,4 +14,5 @@ public interface SecurityService {
     void logout(String refreshToken);
     void forgetPassword(String email);
     void changePassword(String oldPassword, String newPassword);
+    void resetPassword(ResetTokenDto resetTokenDto);
 }

@@ -15,7 +15,7 @@ public interface UserService {
     List<UserResponseDto> getUsersByCompany(Integer companyId);
     AppUser getUserById(Integer id);
     AppUser getUserByEmail(String email);
-
+    void changePassword(String email, String password , String confirmedPassword);
     UserResponseDto getUserDetailsById(Integer id);
 
 }

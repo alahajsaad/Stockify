@@ -26,17 +26,14 @@ public class ProductController {
     }
     @GetMapping
     public ResponseEntity<ApiResponse<Page<Product>>> getFiltredProducts(
-            @RequestBody(required = false) ProductFilter productFilter,
-            @RequestParam(defaultValue = "0") Integer page, // Default to 0 (first page)
-            @RequestParam(defaultValue = "10") Integer size // Default to 10 (size)
+            @RequestParam(required = false) StockStatus status,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "8") Integer size
     ) {
-        // If productFilter is null, use default values
-        if (productFilter == null) {
-            productFilter = new ProductFilter(null, null, null); // You can set default values here if needed
-        }
 
         return ResponseEntity.ok(ApiResponse.success(
-                productService.getFiltredProducts(productFilter, PageRequest.of(page, size))
+                productService.getFiltredProducts(status, keyword, PageRequest.of(page, size))
         ));
     }
 

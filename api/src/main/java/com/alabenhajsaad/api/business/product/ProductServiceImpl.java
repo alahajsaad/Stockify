@@ -77,11 +77,10 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Page<Product> getFiltredProducts(ProductFilter productFilter ,Pageable pageable) {
+    public Page<Product> getFiltredProducts(StockStatus status,String keyword ,Pageable pageable) {
         Specification<Product> specification = Specification
-                .where(ProductSpecification.hasCategory(productFilter.categoryId()))
-                .and(ProductSpecification.hasStockStatus(productFilter.status()))
-                .and(ProductSpecification.hasNameOrReferenceLike(productFilter.keyword()));
+                .where(ProductSpecification.hasNameOrReferenceOrCategoryLike(keyword))
+                .and(ProductSpecification.hasStockStatus(status)) ;
 
         if (pageable.getSort().isUnsorted()) {
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
