@@ -1,26 +1,26 @@
 package com.alabenhajsaad.api.business.product;
 
-import com.alabenhajsaad.api.business.product.dto.ProductFilter;
+import com.alabenhajsaad.api.business.client_order_line.ClientOrderLineRepository;
+import com.alabenhajsaad.api.business.product.dto.ProductTransactionDTO;
+import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLineRepository;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
+    private final ClientOrderLineRepository clientOrderLineRepository;
+    private final SupplierOrderLineRepository supplierOrderLineRepository;
 
     @Override
     public List<Product> addMultipleProducts(List<Product> products) {
@@ -102,6 +102,26 @@ public class ProductServiceImpl implements ProductService {
         }
         return repository.save(product);
 
+    }
+
+    @Override
+    public Page<ProductTransactionDTO> getAllProductTransactions(Integer productId, Pageable pageable) {
+        // 1. Fetch all transactions (consider optimizing with limits if dataset is large)
+        List<ProductTransactionDTO> sales = clientOrderLineRepository.findSalesTransactionsByProductId(productId);
+        List<ProductTransactionDTO> purchases = supplierOrderLineRepository.findPurchaseTransactionsByProductId(productId);
+
+        // 2. Combine and sort
+        List<ProductTransactionDTO> combined = new ArrayList<>();
+        combined.addAll(sales);
+        combined.addAll(purchases);
+        combined.sort(Comparator.comparing(ProductTransactionDTO::getTransactionDate).reversed());
+
+        // 3. Manual pagination
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), combined.size());
+        List<ProductTransactionDTO> paged = combined.subList(start, end);
+
+        return new PageImpl<>(paged, pageable, combined.size());
     }
 
 

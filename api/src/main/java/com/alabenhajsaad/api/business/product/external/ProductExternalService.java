@@ -6,4 +6,6 @@ public interface ProductExternalService {
     boolean existsByCategoryId(Integer categoryId);
     boolean existsByVatId(Integer vatId);
     void updateProductQuantityAndLastPurchasePrice(Integer productId, Integer quantity , BigDecimal unitPrice);
+    void updateProductQuantityAndLastSalePrice(Integer productId , Integer quantity ,BigDecimal unitPrice);
+    void undoUpdateProductQuantityAndLastSalePrice(Integer productId , Integer quantity );
 }

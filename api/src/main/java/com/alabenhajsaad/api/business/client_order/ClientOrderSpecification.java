@@ -1,14 +1,15 @@
-package com.alabenhajsaad.api.business.supplier_order;
+package com.alabenhajsaad.api.business.client_order;
+
 
 import com.alabenhajsaad.api.business.utils.DeliveryStatus;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
-import com.alabenhajsaad.api.business.utils.ReceptionStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 
-public class SupplierOrderSpecification {
-    public static Specification<SupplierOrder> hasDate(LocalDate fromDate, LocalDate toDate) {
+public class ClientOrderSpecification {
+
+    public static Specification<ClientOrder> hasDate(LocalDate fromDate, LocalDate toDate) {
         return (root, query, criteriaBuilder) -> {
             if (fromDate == null && toDate == null) {
                 return null;
@@ -18,7 +19,7 @@ public class SupplierOrderSpecification {
             return criteriaBuilder.between(root.get("date"), fromDate, toDate);
         };
     }
-    public static Specification<SupplierOrder> hasPaymentStatus(PaymentStatus status) {
+    public static Specification<ClientOrder> hasPaymentStatus(PaymentStatus status) {
         return (root, query, criteriaBuilder) -> {
             if (status == null ) {
                 return null;
@@ -26,16 +27,16 @@ public class SupplierOrderSpecification {
             return criteriaBuilder.equal(root.get("paymentStatus"), status);
         };
     }
-    public static Specification<SupplierOrder> hasReceptionStatus(ReceptionStatus status) {
+    public static Specification<ClientOrder> hasDeliveryStatus(DeliveryStatus status) {
         return (root, query, criteriaBuilder) -> {
             if (status == null ) {
                 return null;
             }
-            return criteriaBuilder.equal(root.get("receptionStatus"), status);
+            return criteriaBuilder.equal(root.get("deliveryStatus"), status);
         };
     }
 
-    public static Specification<SupplierOrder> hasKeyWord(String keyword) {
+    public static Specification<ClientOrder> hasKeyWord(String keyword) {
         return (root, query, criteriaBuilder) -> {
             if (keyword == null || keyword.trim().isEmpty()) {
                 return null;

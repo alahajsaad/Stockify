@@ -1,4 +1,4 @@
-import { ApiResponse, Category, Page, valueAddedTax } from "src/types"
+import { ApiResponse, Page, valueAddedTax } from "src/types"
 import request from "./request";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -13,38 +13,47 @@ export type Product = {
     id : number,
     designation :string ,
     reference : string,
-    quantity? : number ,
+    quantity : number ,
     criticalThreshold : number,
-    lastPurchasePrice? : number ,
-    stockStatus? : StockStatus
+    lastPurchasePrice : number ,
+    lastSalePrice:number,
+    stockStatus : StockStatus
     category : {id : number ,name : string} ,
     vat : valueAddedTax
 }
 
 
 export const addProduct = (product: Product): Promise<ApiResponse<Product>> => {
-    const response = request<Product>({
+    return request<Product>({
       url: "/product",
       method: "post",
       data: product,
     });
-    
-    return response; 
-  };
-  export const getFiltredProduct = (
-    params: {
-      status?: StockStatus ; // Adaptez selon vos enums
-      keyword?: string;
-      page?: number;
-      size?: number;
-    }
-  ): Promise<ApiResponse<Page<Product>>> => {
-    return request<Page<Product>>({
-      url: "/product",
-      method: "get",
-      params,
-    });
-  };
+};
+
+export const getProductById = (id:number) : Promise<ApiResponse<Product>> =>  {
+  return request<Product>({
+    url: `/category?id=${(id)}`,
+    method: "get",
+  });
+}
+
+
+
+export const getFiltredProduct = (
+  params: {
+    status?: StockStatus ; // Adaptez selon vos enums
+    keyword?: string;
+    page?: number;
+    size?: number;
+  }
+): Promise<ApiResponse<Page<Product>>> => {
+  return request<Page<Product>>({
+    url: "/product",
+    method: "get",
+    params,
+  });
+};
   
 
   
@@ -94,6 +103,27 @@ export const addProduct = (product: Product): Promise<ApiResponse<Product>> => {
     });
   };
 
+
+  export const useGetProductById = (id: number) => {
+    return useQuery<Page<Product>, Error>({
+      queryKey: ['Products', id],
+      queryFn: () => {
+        return getProductById(id).then(response => {
+          if (response.status === 'error') {
+            throw new Error(response.message);
+          }
+          if (!response.data) {
+            throw new Error('No data returned from server');
+          }
+          return response.data;
+        });
+      },
+      gcTime: Infinity,
+      staleTime: 1000 * 60 * 15,
+      refetchOnMount: false,
+      enabled : false
+    });
+  };
   
   
  

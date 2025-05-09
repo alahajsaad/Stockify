@@ -1,7 +1,6 @@
 package com.alabenhajsaad.api.core.company;
 
 
-import com.alabenhajsaad.api.core.enums.EntityStatus;
 import com.alabenhajsaad.api.core.enums.Subscription;
 import com.alabenhajsaad.api.core.user.AppUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,8 +35,6 @@ public class Company {
     private String tenantId ;
     @Enumerated(EnumType.STRING)
     private Subscription subscription;
-    @Enumerated(EnumType.STRING)
-    private EntityStatus status ;
 
     private LocalDate createdAt ;
     private LocalDate updatedAt ;
@@ -57,6 +54,9 @@ public class Company {
         this.updatedAt = LocalDate.now();
     }
 
+    public boolean isActive() {
+        return !this.subscription.equals(Subscription.BLOCKED);
+    }
 
 
 }

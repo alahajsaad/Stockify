@@ -17,5 +17,4 @@ public interface UserService {
     AppUser getUserByEmail(String email);
     void changePassword(String email, String password , String confirmedPassword);
     UserResponseDto getUserDetailsById(Integer id);
-
 }

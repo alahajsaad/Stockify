@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.business.product.external;
 
+import com.alabenhajsaad.api.business.product.Product;
 import com.alabenhajsaad.api.business.product.ProductRepository;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
@@ -23,14 +24,33 @@ public class ProductExternalServiceImpl implements ProductExternalService {
         return repository.existsByVat_Id(vatId);
     }
 
+    public Product findById(Integer id) {
+        return repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product with id " + id + " not found")
+        );
+    }
+
     @Override
     @Transactional
     public void updateProductQuantityAndLastPurchasePrice(Integer productId, Integer quantity , BigDecimal unitPrice) {
-        var product = repository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + productId + " not found")
-        );
+        var product = findById(productId) ;
         product.setQuantity(product.getQuantity() + quantity);
         product.setLastPurchasePrice(unitPrice) ;
+        repository.save(product);
+    }
+
+    @Override
+    public void updateProductQuantityAndLastSalePrice(Integer productId, Integer quantity, BigDecimal unitPrice) {
+        var product = findById(productId) ;
+        product.setQuantity(product.getQuantity() - quantity);
+        product.setLastSalePrice(unitPrice) ;
+        repository.save(product);
+    }
+
+    @Override
+    public void undoUpdateProductQuantityAndLastSalePrice(Integer productId, Integer quantity) {
+        var product = findById(productId) ;
+        product.setQuantity(product.getQuantity() + quantity);
         repository.save(product);
     }
 }

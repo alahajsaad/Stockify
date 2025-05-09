@@ -1,9 +1,7 @@
 package com.alabenhajsaad.api.business.supplier_order;
 
-import com.alabenhajsaad.api.business.Auditable;
-import com.alabenhajsaad.api.business.PaymentMode;
+import com.alabenhajsaad.api.business.utils.*;
 import com.alabenhajsaad.api.business.person.supplier.Supplier;
-import com.alabenhajsaad.api.business.product.Product;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -35,18 +32,13 @@ public class SupplierOrder extends Auditable {
     @Column(name = "total_including_tax")
     private BigDecimal totalIncludingTax;
 
+    @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_mode")
-    private PaymentMode paymentMode;
+    private PaymentStatus paymentStatus;
 
-    @Column(name = "payment_due_date")
-    private LocalDate paymentDueDate;
-
-    @Column(name = "desired_delivery_date")
-    private LocalDate desiredDeliveryDate;
-
-    @Column(name = "is_received")
-    private Boolean isReceived;
+    @Column(name = "reception_status")
+    @Enumerated(EnumType.STRING)
+    private ReceptionStatus receptionStatus;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SupplierOrderLine> orderLines = new ArrayList<>();

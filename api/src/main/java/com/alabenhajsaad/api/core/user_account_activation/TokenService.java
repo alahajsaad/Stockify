@@ -6,5 +6,4 @@ import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
 public interface TokenService {
     void activateAccount(String token);
     void sendValidationEmail(AppUser user);
-    void sendValidationEmail(UserResponseDto user);
 }

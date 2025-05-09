@@ -1,14 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {  useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { Button, Input, PasswordInput } from "src/components/ui";
-import { getUserById } from "src/services/api/user";
-import { useCreateAdminAccount } from "src/services/hooks/useUser";
-import { ApiResponse, User, UserResponseDto } from "src/types";
+import { createAdminAccount, useCreateAdminAccount, useGetUserById } from "src/services/api/user";
+import {  ApiResponse, User, UserResponseDto } from "src/types";
 import {  z } from "zod";
 
-// ✅ Validation schema
 const formSchema = z
   .object({
     firstName: z.string().min(1, "Remplissez votre prénom s'il vous plaît"),
@@ -38,53 +37,19 @@ type FormProps = {
 
 
 const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin }) => {
-  const [adminId,setAdminId] =useState<number>()
-  //const navigate = useNavigate()
-  console.log("adminId :" + adminId)
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
+  
+  const {register,handleSubmit,formState: { errors },} = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
   
 
-
-  const { data: userData } = useQuery<ApiResponse<UserResponseDto>, Error>({
-    queryKey: ['getUserById', adminId],
-    queryFn: () => getUserById(adminId!),
-    enabled: !!adminId,
-   
-  });
-  useEffect(() => {
-    if (userData?.data) {
-      setAdmin(userData.data);
-    }
-    
-  }, [userData?.data ,setAdmin]);
-  
-
-
-
-
-  const mutation = useCreateAdminAccount({
-    onSuccess: (response) => {
-      if (response.status === "success" && response.data) {
-        setAdmin(response.data);
-        setStep(2);
-      } else if (response.status === "error" && typeof response.data === 'number') {
-        setAdminId(response.data); // triggers useEffect
-      }
-    }
-    
-   
-  });
+  const { mutate: createAdminAccount, isPending, isError, error } = useCreateAdminAccount();
+  const {data , } = useGetUserById()
 
   const handleFormSubmit = (data: FormValues) => {
     const { firstName, lastName, email, password, telegramId } = data;
     const user: User = {firstName,lastName,email,password,telegramId};
-    mutation.mutate(user);
+    createAdminAccount(user);
   };
 
   return (
@@ -127,7 +92,7 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin }) => {
 
       <div className="flex justify-end mt-[20px]">
         <Button type="submit">
-          {mutation.isPending ? "Création en cours..." : "Créer le compte admin"}
+          {isPending ? "Création en cours..." : "Créer le compte admin"}
         </Button>
       </div>
       

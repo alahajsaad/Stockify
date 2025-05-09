@@ -1,5 +1,6 @@
-package com.alabenhajsaad.api.business.supplier_order_line;
+package com.alabenhajsaad.api.business.client_order_line;
 
+import com.alabenhajsaad.api.business.client_order.ClientOrder;
 import com.alabenhajsaad.api.business.product.Product;
 import com.alabenhajsaad.api.business.supplier_order.SupplierOrder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,9 +15,9 @@ import java.math.RoundingMode;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "supplier_order_line")
+@Table(name = "client_order_line")
 @Builder
-public class SupplierOrderLine {
+public class ClientOrderLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -25,19 +26,19 @@ public class SupplierOrderLine {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_order_id")
+    @ManyToOne()
+    @JoinColumn(name = "client_order_id")
     @JsonIgnore
-    private SupplierOrder order;
-
-
-
+    private ClientOrder order;
 
     private Integer quantity;
+
     @Column(name = "unit_price")
     private BigDecimal unitPrice;
+
     @Column(name = "value_added_tax")
     private Double valueAddedTax ;
+
 
     // --- Méthode pour total HT ---
     public BigDecimal getTotalExcludingTax() {
@@ -54,5 +55,6 @@ public class SupplierOrderLine {
         );
         return getTotalExcludingTax().multiply(multiplier).setScale(2, RoundingMode.HALF_UP);
     }
+
 }
 

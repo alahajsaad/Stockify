@@ -2,7 +2,11 @@ package com.alabenhajsaad.api.business.person.client;
 
 import com.alabenhajsaad.api.business.person.person.PersonService;
 import com.alabenhajsaad.api.business.person.supplier.Supplier;
+import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,14 +15,49 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
     private final PersonService<Client> personService;
-    private final ClientRepository clientRepository;
+    private final ClientRepository repository;
     @Override
     public Client save(Client client) {
         return personService.save(client);
     }
 
     @Override
-    public List<Client> findAll() {
-        return clientRepository.findAll();
+    public Client update(Client client) {
+        return personService.save(client);
     }
+
+    @Override
+    public Client findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("client ne pas trouvee"));
+    }
+
+
+    @Override
+    public Page<Client> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
+    public List<Client> searchByPhoneNumberOrName(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return List.of();
+        }
+
+        String trimmedKeyword = keyword.trim();
+        String digitsOnly = trimmedKeyword.replaceAll("[^\\d]", "");
+        Pageable pageable = PageRequest.of(0, 5);
+
+        if (isPhoneNumber(digitsOnly)) {
+            return repository.findByPhoneNumbersStartingWith(digitsOnly, pageable).getContent();
+        } else {
+            return repository.searchByName(trimmedKeyword, pageable).getContent();
+        }
+    }
+
+    private boolean isPhoneNumber(String field) {
+        return field.matches("\\d+") ;
+    }
+
+
 }

@@ -31,19 +31,18 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder ;
     private final UserMapper mapper ;
     private final TokenService tokenService ;
-    // This service is used to avoid the circular dependency issue
-    // (CompanyService depends on UserService and vice versa).
     private final UserCompanyRelationService companyService ;
 
     @Override
     @Transactional
     public UserResponseDto createAdminAccount(UserCreationDto dto) {
         AppUser user = mapper.toUser(dto);
-        if(Boolean.TRUE.equals(repository.existsByEmail(user.getEmail())) ){
-            log.info(String.valueOf(repository.findByEmail(user.getEmail()).get().getId()));
-            throw new ConflictException("Vous avez déjà un compte administrateur.",repository.findByEmail(user.getEmail()).get().getId());
 
-        }
+        repository.findByEmail(user.getEmail()).ifPresent(existingUser -> {
+            tokenService.sendValidationEmail(existingUser);
+            throw new ConflictException("Un compte administrateur avec cet email existe déjà.");
+        });
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ADMIN);
         user.setStatus(EntityStatus.INACTIVE);

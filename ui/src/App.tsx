@@ -10,6 +10,7 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import { Paths } from "./lib/paths";
 import ConsultProducts from "./features/product/pages/ConsultProducts";
+import ProductDetails from "./features/product/pages/ProductDetails";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -52,6 +53,7 @@ const App = () => {
             <Route path="dashboard" element={<div>Dashboard home</div>} />
             <Route path="products/add" element={<ProductForm />} />
             <Route path="products" element={<ConsultProducts />} />
+            <Route path="products/:id" element={<ProductDetails />} />
             {/* Add more protected routes here */}
           </Route>
         </Route>

@@ -1,11 +1,14 @@
 package com.alabenhajsaad.api.business.product;
 
 import com.alabenhajsaad.api.business.product.dto.ProductFilter;
+import com.alabenhajsaad.api.business.product.dto.ProductTransactionDTO;
 import com.alabenhajsaad.api.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,4 +49,13 @@ public class ProductController {
     public ResponseEntity<ApiResponse<Product>> updateProduct(@RequestBody Product product) {
         return ResponseEntity.ok(ApiResponse.success(productService.updateProduct(product),"Produit modifier avec sucess"));
     }
+
+    @GetMapping("/{productId}/transactions")
+    public ResponseEntity<Page<ProductTransactionDTO>> getProductTransactions(
+            @PathVariable Integer productId,
+            @PageableDefault(size = 10, sort = "transactionDate", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(productService.getAllProductTransactions(productId, pageable));
+    }
+
 }

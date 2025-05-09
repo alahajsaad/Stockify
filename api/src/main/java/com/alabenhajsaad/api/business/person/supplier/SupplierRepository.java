@@ -1,6 +1,5 @@
 package com.alabenhajsaad.api.business.person.supplier;
 
-import com.alabenhajsaad.api.business.person.client.Client;
 import com.alabenhajsaad.api.business.person.person.PersonRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

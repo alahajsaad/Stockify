@@ -2,7 +2,6 @@ package com.alabenhajsaad.api.business.person.supplier;
 
 import com.alabenhajsaad.api.business.person.person.PersonService;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

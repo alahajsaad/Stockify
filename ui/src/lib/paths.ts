@@ -15,4 +15,5 @@ export const Paths = {
     notAuthorized: "/notAuthorized",
     notFound: "*",
     stockify: "/stockify",
+    products : "/stockify/products"
   };

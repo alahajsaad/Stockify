@@ -1,6 +1,7 @@
-import { AdminInscriptionStatus, ApiResponse, User, UserResponseDto } from "src/types";
+import { ApiResponse, User, UserResponseDto } from "src/types";
 import request from "./request";
-import { toastHandler } from "./toastHandler";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 
 
@@ -10,19 +11,6 @@ export const createAdminAccount = (user: User): Promise<ApiResponse<UserResponse
     method: "post",
     data: user,
   });
-  toastHandler(response);
-  return response 
-
-};
-
-
-export const getAdminInscriptionStatus = (id: number): Promise<ApiResponse<AdminInscriptionStatus>> => {
-  const response = request<AdminInscriptionStatus>({
-    url:`/user/admin/inscription?id=${(id)}`,
-    method: "get",
-   
-  });
-  
   return response 
 };
 
@@ -30,7 +18,38 @@ export const getUserById = (id: number): Promise<ApiResponse<UserResponseDto>> =
   const response = request<UserResponseDto>({
     url:`/user?id=${(id)}`,
     method: "get",
-});
-  
+  });
   return response 
 };
+
+
+export const useCreateAdminAccount = () => {
+  return useMutation<ApiResponse<UserResponseDto>, Error, User>({
+    mutationFn: (user: User) =>
+      createAdminAccount(user).then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        toast.success(response.message);
+        return response as ApiResponse<UserResponseDto>; 
+      }),
+      
+  });
+};
+
+export const useGetUserById = (id: number) => {
+  return useQuery<UserResponseDto, Error>({
+    queryKey: ['users', id], 
+    queryFn: () => getUserById(id).then(response => {
+      if (response.status === 'error') {
+        throw new Error(response.message);
+      }
+      return response.data as UserResponseDto;
+    }),
+    enabled: false // Only run query when id is available
+  });
+};
+
+
+
+

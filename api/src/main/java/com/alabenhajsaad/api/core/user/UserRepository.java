@@ -9,6 +9,5 @@ public interface UserRepository extends JpaRepository<AppUser, Integer> {
     Boolean existsByTelegramId(String telegramId);
     Boolean existsByEmail(String email);
     List<AppUser> findUsersByCompany_Id(Integer companyId);
-
     Optional<AppUser> findByEmail(String username);
 }

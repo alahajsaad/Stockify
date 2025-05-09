@@ -38,6 +38,9 @@ public class Product {
     @Column(name = "last_purchase_price")
     private BigDecimal lastPurchasePrice;
 
+    @Column(name = "last_sale_price")
+    private BigDecimal lastSalePrice;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "stock_status")
     private StockStatus stockStatus ;

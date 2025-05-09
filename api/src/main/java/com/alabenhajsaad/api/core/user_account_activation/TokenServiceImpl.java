@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.core.user_account_activation;
 
+import com.alabenhajsaad.api.core.user.UserService;
 import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
 import com.alabenhajsaad.api.core.user.mapper.UserMapper;
 import com.alabenhajsaad.api.core.utils.CodeGenerator;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -26,6 +26,7 @@ public class TokenServiceImpl implements TokenService {
     private final EmailService emailService;
     private final CodeGenerator codeGenerator;
     private final UserMapper userMapper ;
+    private final UserService userService;
     @Transactional(noRollbackFor = TokenHasExpiredException.class)
     public void activateAccount(String token) {
         Token savedToken = repository.findByToken(token)
@@ -72,13 +73,5 @@ public class TokenServiceImpl implements TokenService {
                 EmailTemplateName.ACTIVATE_ACCOUNT
         );
     }
-
-    @Override
-    public void sendValidationEmail(UserResponseDto user) {
-        var appUser = userMapper.toUser(user);
-        sendValidationEmail(appUser);
-
-    }
-
 
 }

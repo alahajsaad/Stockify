@@ -3,10 +3,9 @@ import AdminSignUpForm from "../forms/AdminSignUpForm";
 import ValidationCodeForm from "../forms/ValidationCodeForm";
 import CompanyCreationForm from "../forms/CompanyCreationForm";
 import SignUpComplete from "../forms/SignUpComplete";
-import { ApiResponse, UserResponseDto } from "src/types";
+import { UserResponseDto } from "src/types";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getNewActivationCode } from "src/services/api/accountActivation";
+
 import { CompanyResponseDto } from "src/types/company";
 import { Button } from "src/components/ui";
 import { ArrowLeft } from 'lucide-react';
@@ -17,33 +16,22 @@ const CreateCompanyPage : React.FC = () => {
     const [company ,setCompany] = useState<CompanyResponseDto>()
    
 
-    const { refetch } = useQuery<ApiResponse<void>, Error>({
-      queryKey: ['getNewActivationCode', admin?.id],
-      queryFn: () => {
-        if (!admin) {
-          throw new Error("Admin data is not available");
-        }
-        console.log(admin)
-        return getNewActivationCode(admin);
-      },
-      enabled: false,
-    });
     
     const navigate = useNavigate();
     
-    useEffect(() => {
-      if (admin?.company != null) {
-        console.log("admin has company, go to /");
-        navigate('/?login=true');
-      } else if (admin?.status === 'ACTIVE' && admin.company == null) {
-        console.log("active admin but doesn't have a company, go to create company");
-        setCurrentStep(3);
-      } else if (admin?.status === 'INACTIVE' && admin.company == null && currentStep != 2) {
-        console.log("inactive admin and doesn't have a company, go to activate account");
-        refetch();
-        setCurrentStep(2);
-      }
-    }, [admin, navigate, refetch,currentStep]);
+    // useEffect(() => {
+    //   if (admin?.company != null) {
+    //     console.log("admin has company, go to /");
+    //     navigate('/?login=true');
+    //   } else if (admin?.status === 'ACTIVE' && admin.company == null) {
+    //     console.log("active admin but doesn't have a company, go to create company");
+    //     setCurrentStep(3);
+    //   } else if (admin?.status === 'INACTIVE' && admin.company == null && currentStep != 2) {
+    //     console.log("inactive admin and doesn't have a company, go to activate account");
+    //     refetch();
+    //     setCurrentStep(2);
+    //   }
+    // }, [admin, navigate, refetch,currentStep]);
     
  
 
