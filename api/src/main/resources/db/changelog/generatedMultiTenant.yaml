@@ -1,0 +1,605 @@
+databaseChangeLog:
+- changeSet:
+    id: 1747041568656-1
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: INT
+        - column:
+            constraints:
+              unique: true
+            name: name
+            type: VARCHAR(255)
+        tableName: category
+- changeSet:
+    id: 1747041568656-2
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: BIGINT
+        tableName: client
+- changeSet:
+    id: 1747041568656-3
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: created_at
+            type: date
+        - column:
+            defaultValueComputed: 'NULL'
+            name: updated_at
+            type: date
+        - column:
+            defaultValue: 'null'
+            name: delivery_status
+            type: ENUM('ALL', 'DELIVERED', 'UNDELIVERED')
+        - column:
+            constraints:
+              nullable: false
+            name: order_number
+            type: VARCHAR(255)
+        - column:
+            defaultValue: 'null'
+            name: payment_status
+            type: ENUM('ALL', 'PAID', 'UNPAID')
+        - column:
+            defaultValueComputed: 'NULL'
+            name: total_excluding_tax
+            type: DECIMAL(38, 2)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: total_including_tax
+            type: DECIMAL(38, 2)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: client_id
+            type: BIGINT
+        tableName: client_order
+- changeSet:
+    id: 1747041568656-4
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: quantity
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: unit_price
+            type: DECIMAL(38, 2)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: value_added_tax
+            type: DOUBLE
+        - column:
+            defaultValueComputed: 'NULL'
+            name: client_order_id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: product_id
+            type: INT
+        tableName: client_order_line
+- changeSet:
+    id: 1747041568656-5
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              unique: true
+            name: email
+            type: VARCHAR(255)
+        - column:
+            name: first_name
+            type: VARCHAR(255)
+        - column:
+            name: last_name
+            type: VARCHAR(255)
+        tableName: person
+- changeSet:
+    id: 1747041568656-6
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              unique: true
+            name: number
+            type: VARCHAR(255)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: person_id
+            type: BIGINT
+        tableName: phone_number
+- changeSet:
+    id: 1747041568656-7
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: critical_threshold
+            type: INT
+        - column:
+            constraints:
+              unique: true
+            name: designation
+            type: VARCHAR(255)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: last_purchase_price
+            type: DECIMAL(38, 2)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: last_sale_price
+            type: DECIMAL(38, 2)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: quantity
+            type: INT
+        - column:
+            constraints:
+              unique: true
+            name: reference
+            type: VARCHAR(255)
+        - column:
+            defaultValue: 'null'
+            name: stock_status
+            type: ENUM('ALL', 'IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK')
+        - column:
+            defaultValueComputed: 'NULL'
+            name: category_id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: vat_id
+            type: INT
+        tableName: product
+- changeSet:
+    id: 1747041568656-8
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: BIGINT
+        tableName: supplier
+- changeSet:
+    id: 1747041568656-9
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: created_at
+            type: date
+        - column:
+            defaultValueComputed: 'NULL'
+            name: updated_at
+            type: date
+        - column:
+            constraints:
+              nullable: false
+            name: order_number
+            type: VARCHAR(255)
+        - column:
+            defaultValue: 'null'
+            name: payment_status
+            type: ENUM('ALL', 'PAID', 'UNPAID')
+        - column:
+            defaultValue: 'null'
+            name: reception_status
+            type: ENUM('RECEIVED', 'UNRECEIVED')
+        - column:
+            defaultValueComputed: 'NULL'
+            name: total_excluding_tax
+            type: DECIMAL(38, 2)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: total_including_tax
+            type: DECIMAL(38, 2)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: supplier_id
+            type: BIGINT
+        tableName: supplier_order
+- changeSet:
+    id: 1747041568656-10
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: quantity
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: unit_price
+            type: DECIMAL(38, 2)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: value_added_tax
+            type: DOUBLE
+        - column:
+            defaultValueComputed: 'NULL'
+            name: supplier_order_id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: product_id
+            type: INT
+        tableName: supplier_order_line
+- changeSet:
+    id: 1747041568656-11
+    author: MSI (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: INT
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              unique: true
+            name: rate
+            type: DOUBLE
+        tableName: value_added_tax
+- changeSet:
+    id: 1747041568656-12
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: category_id
+        indexName: FK1mtsbur82frn64de7balymq9s
+        tableName: product
+- changeSet:
+    id: 1747041568656-13
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: supplier_order_id
+        indexName: FK2xcgxb04vmje238gj47wt0te
+        tableName: supplier_order_line
+- changeSet:
+    id: 1747041568656-14
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: supplier_id
+        indexName: FK3rpubvv45ovmdbs8e8eedhj3b
+        tableName: supplier_order
+- changeSet:
+    id: 1747041568656-15
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: product_id
+        indexName: FK46rdhakbv1u8sdo0o70vh9s2j
+        tableName: supplier_order_line
+- changeSet:
+    id: 1747041568656-16
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: person_id
+        indexName: FK4sjbpst35alcsan1qwbdb2nyu
+        tableName: phone_number
+- changeSet:
+    id: 1747041568656-17
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: client_order_id
+        indexName: FK5n3turfepneq8u6ptkvyrthuk
+        tableName: client_order_line
+- changeSet:
+    id: 1747041568656-18
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: client_id
+        indexName: FKcggjtc9f3otuprl7takbttwuk
+        tableName: client_order
+- changeSet:
+    id: 1747041568656-19
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: vat_id
+        indexName: FKof30dtd76g3m0233p7w7jcgnp
+        tableName: product
+- changeSet:
+    id: 1747041568656-20
+    author: MSI (generated)
+    changes:
+    - createIndex:
+        associatedWith: ''
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: product_id
+        indexName: FKop1519veij0ixob5twkulx5xn
+        tableName: client_order_line
+- changeSet:
+    id: 1747041568656-21
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: category_id
+        baseTableName: product
+        constraintName: FK1mtsbur82frn64de7balymq9s
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: category
+        validate: true
+- changeSet:
+    id: 1747041568656-22
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: supplier_order_id
+        baseTableName: supplier_order_line
+        constraintName: FK2xcgxb04vmje238gj47wt0te
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: supplier_order
+        validate: true
+- changeSet:
+    id: 1747041568656-23
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: supplier_id
+        baseTableName: supplier_order
+        constraintName: FK3rpubvv45ovmdbs8e8eedhj3b
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: supplier
+        validate: true
+- changeSet:
+    id: 1747041568656-24
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: product_id
+        baseTableName: supplier_order_line
+        constraintName: FK46rdhakbv1u8sdo0o70vh9s2j
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: product
+        validate: true
+- changeSet:
+    id: 1747041568656-25
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: person_id
+        baseTableName: phone_number
+        constraintName: FK4sjbpst35alcsan1qwbdb2nyu
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: person
+        validate: true
+- changeSet:
+    id: 1747041568656-26
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_order_id
+        baseTableName: client_order_line
+        constraintName: FK5n3turfepneq8u6ptkvyrthuk
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: client_order
+        validate: true
+- changeSet:
+    id: 1747041568656-27
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: id
+        baseTableName: supplier
+        constraintName: FK8gs3oi1iw8664rdcpqqqkdxxp
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: person
+        validate: true
+- changeSet:
+    id: 1747041568656-28
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_id
+        baseTableName: client_order
+        constraintName: FKcggjtc9f3otuprl7takbttwuk
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: client
+        validate: true
+- changeSet:
+    id: 1747041568656-29
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: vat_id
+        baseTableName: product
+        constraintName: FKof30dtd76g3m0233p7w7jcgnp
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: value_added_tax
+        validate: true
+- changeSet:
+    id: 1747041568656-30
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: product_id
+        baseTableName: client_order_line
+        constraintName: FKop1519veij0ixob5twkulx5xn
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: product
+        validate: true
+- changeSet:
+    id: 1747041568656-31
+    author: MSI (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: id
+        baseTableName: client
+        constraintName: FKr1e0j10i9v9i52l6tqfa69nj0
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: person
+        validate: true
+

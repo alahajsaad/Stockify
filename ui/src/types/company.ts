@@ -18,3 +18,4 @@ export type CompanyResponseDto = {
   phone : string;
 }
 
+

@@ -1,11 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { Button, Input } from "src/components/ui";
 import InputFile from "src/components/ui/inputs/InputFile";
-import { createCompany } from "src/services/api/company";
-import { ApiResponse } from "src/types";
-import { CompanyCreationDto, CompanyResponseDto } from "src/types/company";
+import { useCreateCompany } from "src/services/api/company";
+import { CompanyResponseDto } from "src/types/company";
 import { z } from "zod";
 const formSchema = z
   .object({
@@ -38,29 +37,26 @@ const CompanyCreationForm : React.FC<FormProps> = ({setStep , setCompany , admin
     const { register, handleSubmit,  control , formState: { errors } } = useForm<FormValues>({
        resolver: zodResolver(formSchema), // Using zodResolver for validation
     });
-    const handleFormSubmit = (data: FormValues) => {
-      if(admin_Id){
-        const adminId = admin_Id;
-        mutation.mutate({ company: data, adminId });
-      }
-      
-    };
-
-    const queryClient = useQueryClient();
-    const mutation = useMutation<ApiResponse<CompanyResponseDto>, Error, { company: CompanyCreationDto; adminId: number }>({
-      mutationFn: ({ company, adminId }) => createCompany(company, adminId),
-      onSuccess: (response) => {
-        if (response.data) {
-          queryClient.invalidateQueries({ queryKey: ["company"] });
-          setCompany(response.data);
-          setStep(4);
-        } else {
-          // Optional: Handle the case where response.data is null
-          console.error("Company creation response missing data");
+     // Mutation hook for creating company (placeholder implementation)
+  const { mutate: createCompany } = useCreateCompany();
+  
+  // Form submission handler
+  const handleFormSubmit = (data: FormValues) => {
+    if (admin_Id) {
+      createCompany({ company: data, adminId: admin_Id },
+        {
+          onSuccess: (response) => {
+            if (response.data)
+            setCompany(response.data)
+            setStep(4);
+            toast.success(response.message);
+          },
         }
-      }
-      
-    });
+      );
+    }
+  };
+
+    
     
 
     return (

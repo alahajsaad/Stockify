@@ -28,6 +28,7 @@ export type UserResponseDto = {
     company? : CompanyResponseDto
 } 
 
+
 export type CreateAdminResponse = {
     message: string;
     user: User;

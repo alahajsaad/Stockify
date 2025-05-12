@@ -20,11 +20,7 @@ public class SupplierOrderController {
         ));
     }
 
-    @PatchMapping("/{id}/receive")
-    public ResponseEntity<ApiResponse<Void>> setOrderAsReceived(@PathVariable Integer id) {
-        service.setSupplierOrderAsRecived(id);
-        return ResponseEntity.ok(ApiResponse.success(null, "Commande fournisseur marquée comme reçue."));
-    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<SupplierOrder>> getSupplierOrderById(@PathVariable Integer id) {

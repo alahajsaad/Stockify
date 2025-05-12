@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -36,13 +37,30 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto createAdminAccount(UserCreationDto dto) {
-        AppUser user = mapper.toUser(dto);
 
-        repository.findByEmail(user.getEmail()).ifPresent(existingUser -> {
+
+        Optional<AppUser> existingUserOptional = repository.findByEmail(dto.email());
+
+        if (existingUserOptional.isPresent()) {
+            AppUser existingUser = existingUserOptional.get();
+
+            // Null-safe company check
+            boolean hasCompany = existingUser.getCompany() != null &&
+                    existingUser.getCompany().getId() != null;
+
+            if (existingUser.getStatus() == EntityStatus.ACTIVE) {
+                if (hasCompany) {
+                    throw new ConflictException("User with email already has a company");
+                }
+                throw new ConflictException("User with email already has an active account");
+            }
+
+            // For inactive users
             tokenService.sendValidationEmail(existingUser);
-            throw new ConflictException("Un compte administrateur avec cet email existe déjà.");
-        });
+            throw new ConflictException("User with email exists. Validation email sent.");
+        }
 
+        AppUser user = mapper.toUser(dto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ADMIN);
         user.setStatus(EntityStatus.INACTIVE);
@@ -139,6 +157,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserDetailsById(Integer id) {
         return mapper.toUserResponseDto(getUserById(id));
+    }
+
+    @Override
+    public UserResponseDto findUserByEmail(String email) {
+        var user = repository.findByEmail(email).
+                orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return mapper.toUserResponseDto(user);
     }
 
 

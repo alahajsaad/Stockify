@@ -35,8 +35,6 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository repository;
     private final FileLoader fileLoader;
     private final CompanyMapper mapper ;
-    // This service is used to avoid the circular dependency issue
-    // (CompanyService depends on UserService and vice versa).
     private final CompanyUserRelationService userService;
     private final DynamicDataSourceService dynamicDataSourceService;
     private final com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceService dataSourceService;
@@ -47,6 +45,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
+    // todo - one single company per admin
     public CompanyResponseDto createCompany(CompanyCreationDto dto, Integer adminId) {
         // Check if tax number already exists
         if (Boolean.TRUE.equals(repository.existsByTaxNumber(dto.taxNumber()))) {
@@ -137,19 +136,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .orElseThrow(() -> new EntityNotFoundException("Company not found"));
     }
 
-    private String generateTenantId() {
-        String characters = "0123456789ABCDEF";
-        StringBuilder codeBuilder = new StringBuilder();
 
-        SecureRandom secureRandom = new SecureRandom();
-
-        for (int i = 0; i < 6; i++) {
-            int randomIndex = secureRandom.nextInt(characters.length());
-            codeBuilder.append(characters.charAt(randomIndex));
-        }
-
-        return codeBuilder.toString();
-    }
     public static String generateBase64TenantId() {
         UUID uuid = UUID.randomUUID();
         ByteBuffer byteBuffer = ByteBuffer.allocate(16);

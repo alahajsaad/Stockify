@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { StockStatus, useGetFiltredProducts } from "src/services/api/product";
 import ProductsFilter from "../components/consultProducts/ProductsFilter";
 import ProductsTable from "../components/consultProducts/ProductsTable";
-import { Button } from "src/components/ui";
 import { ChevronLeft, ChevronRight, Package} from "lucide-react";
 
 const ConsultProducts: React.FC = () => {

@@ -1,8 +1,6 @@
 package com.alabenhajsaad.api.core.user_account_activation;
 
-import com.alabenhajsaad.api.core.user.UserService;
-import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
-import com.alabenhajsaad.api.core.user.mapper.UserMapper;
+
 import com.alabenhajsaad.api.core.utils.CodeGenerator;
 import com.alabenhajsaad.api.email.EmailService;
 import com.alabenhajsaad.api.email.EmailTemplateName;
@@ -25,8 +23,6 @@ public class TokenServiceImpl implements TokenService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final CodeGenerator codeGenerator;
-    private final UserMapper userMapper ;
-    private final UserService userService;
     @Transactional(noRollbackFor = TokenHasExpiredException.class)
     public void activateAccount(String token) {
         Token savedToken = repository.findByToken(token)

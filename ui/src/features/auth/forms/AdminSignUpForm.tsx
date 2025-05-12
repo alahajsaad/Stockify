@@ -1,12 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import {  useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Button, Input, PasswordInput } from "src/components/ui";
-import { createAdminAccount, useCreateAdminAccount, useGetUserById } from "src/services/api/user";
-import {  ApiResponse, User, UserResponseDto } from "src/types";
-import {  z } from "zod";
+import { useCreateAdminAccount, useGetUserByEmail } from "src/services/api/user";
+import { User, UserResponseDto } from "src/types";
+import { z } from "zod";
+
+// Note: zodResolver would need to be imported properly without @hookform/resolvers/zod
+// The component assumes you'll add the proper import for zodResolver
 
 const formSchema = z
   .object({
@@ -31,73 +34,143 @@ type FormValues = z.infer<typeof formSchema>;
 
 type FormProps = {
   setStep: (step: number) => void;
-  setAdmin : (admin : UserResponseDto) => void
+  setAdmin: (admin: UserResponseDto) => void;
 };
 
-
-
-const AdminSignUpForm: React.FC<FormProps> = ({ setStep , setAdmin }) => {
+const AdminSignUpForm: React.FC<FormProps> = ({ setStep, setAdmin }) => {
+  const navigate = useNavigate();
+  const [formError, setFormError] = useState<string | null>(null);
   
-  const {register,handleSubmit,formState: { errors },} = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
   
+  // Monitor email input for potential lookups
+  const currentEmail = watch("email");
 
-  const { mutate: createAdminAccount, isPending, isError, error } = useCreateAdminAccount();
-  const {data , } = useGetUserById()
+  const { 
+    mutate: createAdminAccount, 
+    isPending: isCreatePending
+  } = useCreateAdminAccount();
+  
+  const { 
+    refetch: fetchAdminData 
+  } = useGetUserByEmail(currentEmail || "");
 
-  const handleFormSubmit = (data: FormValues) => {
+  const handleFormSubmit = async (data: FormValues) => {
+    setFormError(null);
     const { firstName, lastName, email, password, telegramId } = data;
-    const user: User = {firstName,lastName,email,password,telegramId};
-    createAdminAccount(user);
+    const user: User = { firstName, lastName, email, password, telegramId };
+    
+    createAdminAccount(user, {
+      onSuccess: (response) => {
+        if (response?.data) {
+          setAdmin(response.data);
+          setStep(2); // Account created, move to verification step
+          toast.success("Compte créé avec succès! Veuillez vérifier votre boîte mail pour le code d'activation.");
+        }
+      },
+      onError: (error: any) => {
+        const errorMessage = error?.response?.data?.message || error?.message || "Une erreur s'est produite";
+        
+        // Case 1: User already has a company
+        if (errorMessage.includes("User with email already has a company")) {
+          toast.info("Vous avez déjà une entreprise, essayez de vous connecter!");
+          navigate('/?login=true');
+          return;
+        }
+        
+        // Case 2: User has an active account but no company
+        if (errorMessage.includes("User with email already has an active account")) {
+          fetchAdminData()
+            .then(response => {
+              if (response?.data) {
+                setAdmin(response.data);
+                setStep(3); // Skip to company creation
+                toast.info("Vous avez déjà un compte administrateur, créez votre entreprise maintenant!");
+              }
+            })
+            .catch(() => {
+              setFormError("Impossible de récupérer les informations de votre compte");
+            });
+          return;
+        }
+        
+        // Case 3: User exists but needs validation
+        if (errorMessage.includes("User with email exists. Validation email sent")) {
+          fetchAdminData()
+            .then(response => {
+              if (response?.data) {
+                setAdmin(response.data);
+                setStep(2); // Go to verification step
+                toast.info("Vous avez déjà un compte administrateur mais il n'est pas activé. Consultez votre boîte mail pour le code d'activation.");
+              }
+            })
+            .catch(() => {
+              setFormError("Impossible de récupérer les informations de votre compte");
+            });
+          return;
+        }
+        
+        // Default error case
+        setFormError(errorMessage);
+      }
+    });
   };
 
+
   return (
-   
-     
     <form className="space-y-6" onSubmit={handleSubmit(handleFormSubmit)}>
-     
+      {formError && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-600">
+          {formError}
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Input placeholder="Ala" label="Prénom" {...register("firstName")} />
-          {errors.firstName && <p className="text-red-500">{errors.firstName.message}</p>}
+          {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
         </div>
         <div>
           <Input placeholder="Ben Haj Saad" label="Nom" {...register("lastName")} />
-          {errors.lastName && <p className="text-red-500">{errors.lastName.message}</p>}
+          {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
         </div>
       </div>
 
       <div>
         <Input placeholder="votre@email.com" label="Email" {...register("email")} />
-        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
       </div>
 
       <div>
         <PasswordInput label="Mot de passe" {...register("password")} />
-        {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
       </div>
 
       <div>
         <PasswordInput label="Confirmez le mot de passe" {...register("verifiedPassword")} />
         {errors.verifiedPassword && (
-          <p className="text-red-500">{errors.verifiedPassword.message}</p>
+          <p className="text-red-500 text-sm mt-1">{errors.verifiedPassword.message}</p>
         )}
       </div>
 
       <div>
-        <Input placeholder="Votre ID Telegram" label="Telegram ID" {...register("telegramId")} />
-        {errors.telegramId && <p className="text-red-500">{errors.telegramId.message}</p>}
+        <Input placeholder="Votre ID Telegram" label="Telegram ID (optionnel)" {...register("telegramId")} />
+        {errors.telegramId && <p className="text-red-500 text-sm mt-1">{errors.telegramId.message}</p>}
       </div>
 
-      <div className="flex justify-end mt-[20px]">
-        <Button type="submit">
-          {isPending ? "Création en cours..." : "Créer le compte admin"}
+      <div className="flex justify-end mt-6">
+        <Button type="submit" disabled={isCreatePending}>
+          {isCreatePending ? "Traitement en cours..." : "Créer le compte admin"}
         </Button>
       </div>
-      
     </form>
-   
   );
 };
 

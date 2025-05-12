@@ -47,6 +47,10 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserResponseDto>> getUserById(@RequestParam Integer id) {
         return ResponseEntity.ok(ApiResponse.success(userService.getUserDetailsById(id)));
     }
+    @GetMapping("/email")
+    public ResponseEntity<ApiResponse<UserResponseDto>> getUserByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(ApiResponse.success(userService.findUserByEmail(email)));
+    }
 
 
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AdminSignUpForm from "../forms/AdminSignUpForm";
 import ValidationCodeForm from "../forms/ValidationCodeForm";
 import CompanyCreationForm from "../forms/CompanyCreationForm";
@@ -19,19 +19,7 @@ const CreateCompanyPage : React.FC = () => {
     
     const navigate = useNavigate();
     
-    // useEffect(() => {
-    //   if (admin?.company != null) {
-    //     console.log("admin has company, go to /");
-    //     navigate('/?login=true');
-    //   } else if (admin?.status === 'ACTIVE' && admin.company == null) {
-    //     console.log("active admin but doesn't have a company, go to create company");
-    //     setCurrentStep(3);
-    //   } else if (admin?.status === 'INACTIVE' && admin.company == null && currentStep != 2) {
-    //     console.log("inactive admin and doesn't have a company, go to activate account");
-    //     refetch();
-    //     setCurrentStep(2);
-    //   }
-    // }, [admin, navigate, refetch,currentStep]);
+    
     
  
 

@@ -6,6 +6,7 @@ import com.alabenhajsaad.api.core.company.projection.CompanyFirstViewProjection;
 import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProjection;
 import com.alabenhajsaad.api.config.ApiResponse;
 import com.alabenhajsaad.api.fileManager.FileLoader;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;

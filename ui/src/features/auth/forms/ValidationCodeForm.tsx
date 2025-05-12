@@ -1,8 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
+import { toast } from "react-toastify";
 import { Button } from "src/components/ui";
 import OtpInput from "src/components/ui/inputs/OtpInput";
-import { useActivateAccount } from "src/services/hooks/useAccountActivation";
+import { useActivateAccount } from "src/services/api/accountActivation";
 import { UserResponseDto } from "src/types";
 import { z } from "zod";
 
@@ -30,23 +31,29 @@ const ValidationCodeForm: React.FC<FormProps> = ({ setStep, admin }) => {
   });
 
 
-  const mutation = useActivateAccount({
+ const { mutate } = useActivateAccount();
+
+  const handleFormSubmit = (data: FormValues) => {
+    mutate(data.otp,{
       onSuccess: (response) => {
-        if (response.status === "success") {
-          setStep(3);
-        }
+            setStep(3)
+            toast.success(response.message)
       },
-    });
-    const handleFormSubmit = (data: FormValues) => {
-      mutation.mutate(data.otp);
-    };
+       onError: (response) => {
+            
+            toast.error(response.message)
+            },
+       }
+            
+    
+   
+    ); // Trigger mutation
+    
+  };
 
  
 
-  const handleResendValidationCode = () => {
-    // Add logic to resend validation code
-    console.log("Resending validation code");
-  };
+ 
 
   return (
     <form 
@@ -78,7 +85,6 @@ const ValidationCodeForm: React.FC<FormProps> = ({ setStep, admin }) => {
       <Button 
         type="button" 
         variant="link" 
-        onClick={handleResendValidationCode}
       >
         Renvoyer le code
       </Button>
