@@ -15,5 +15,7 @@ export const Paths = {
     notAuthorized: "/notAuthorized",
     notFound: "*",
     stockify: "/stockify",
-    products : "/stockify/products"
+    products : "/stockify/products",
+    forgotPassword:"/forgotPassword",
+    resetPassword: "/resetPassword",
   };

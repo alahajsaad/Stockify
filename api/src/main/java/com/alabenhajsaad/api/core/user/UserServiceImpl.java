@@ -2,6 +2,7 @@ package com.alabenhajsaad.api.core.user;
 
 
 import com.alabenhajsaad.api.core.company.Company;
+import com.alabenhajsaad.api.core.exception.InactiveUserExistsException;
 import com.alabenhajsaad.api.core.user_account_activation.TokenService;
 import com.alabenhajsaad.api.core.user.mapper.UserMapper;
 import com.alabenhajsaad.api.core.enums.EntityStatus;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
     private final UserCompanyRelationService companyService ;
 
     @Override
-    @Transactional
+    @Transactional(dontRollbackOn = InactiveUserExistsException.class)
     public UserResponseDto createAdminAccount(UserCreationDto dto) {
 
 
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
             // For inactive users
             tokenService.sendValidationEmail(existingUser);
-            throw new ConflictException("User with email exists. Validation email sent.");
+            throw new InactiveUserExistsException("User with email exists. Validation email sent.");
         }
 
         AppUser user = mapper.toUser(dto);
@@ -140,7 +141,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public AppUser getUserByEmail(String email) {
         return repository.findByEmail(email).
-                orElseThrow(() -> new EntityNotFoundException("User not found"));
+                orElseThrow(() -> new EntityNotFoundException("Adresse email incorrect."));
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.alabenhajsaad.api.core.security;
 
 import com.alabenhajsaad.api.config.ApiResponse;
+import com.alabenhajsaad.api.core.security.dto.EmailDto;
 import com.alabenhajsaad.api.core.security.dto.LoginRequest;
-import com.alabenhajsaad.api.core.security.reset_token.ResetTokenDto;
+import com.alabenhajsaad.api.core.security.reset_token.PasswordResetRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -37,16 +39,16 @@ public class SecurityController {
 
     }
     @PostMapping("/forgetPassword")
-    public ResponseEntity<ApiResponse<Void>> forgetPassword(@RequestParam String email) {
-        securityService.forgetPassword(email);
+    public ResponseEntity<ApiResponse<Void>> forgetPassword(@RequestBody @Valid EmailDto emailDto) {
+        securityService.forgetPassword(emailDto.email());
         return ResponseEntity.ok(
                 ApiResponse.success(null, "Veuillez consulter votre boîte e-mail pour créer un nouveau mot de passe.")
         );
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<ApiResponse<Void>> resetPassword(@RequestBody ResetTokenDto resetTokenDto) {
-        securityService.resetPassword(resetTokenDto);
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
+        securityService.resetPassword(passwordResetRequestDto);
         return ResponseEntity.ok(
                 ApiResponse.success(null, "Votre mot de passe a été changé avec succès. Veuillez vous connecter.")
         );

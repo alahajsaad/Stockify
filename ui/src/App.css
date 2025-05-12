@@ -1,11 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
 
 
 .card {
-  @apply p-4 m-4 rounded border border-[#EBEBEB] bg-white ;
+  @apply p-4 m-4 rounded border border-[#EBEBEB] bg-white shadow-lg;
 }
 
 .center {

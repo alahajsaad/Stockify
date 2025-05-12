@@ -1,5 +1,8 @@
 package com.alabenhajsaad.api.core.user.dto;
 
+import lombok.Builder;
+
+@Builder
 public record UserCreationDto(
         Integer id ,
         String firstName,

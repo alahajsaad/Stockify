@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.core.exception;
 
 import com.alabenhajsaad.api.config.ApiResponse;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +34,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Integer>> handleConflictException(ConflictException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(e.getMessage()));
     }
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ApiResponse<Void>> handleConflictException(Exception e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(e.getMessage()));
-//    }
+    @ExceptionHandler(InactiveUserExistsException.class)
+    public ResponseEntity<ApiResponse<Integer>> handleInactiveUserExistsException(InactiveUserExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(e.getMessage()));
+    }
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleEntityNotFoundException(EntityNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
+    }
+
 
 
 

@@ -11,6 +11,9 @@ import "./App.css";
 import { Paths } from "./lib/paths";
 import ConsultProducts from "./features/product/pages/ConsultProducts";
 import ProductDetails from "./features/product/pages/ProductDetails";
+import ForgotPasswordForm from "./features/auth/forms/ForgotPasswordForm";
+import ForgotPasswordPage from "./features/auth/pages/ForgotPasswordPage";
+import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -41,6 +44,8 @@ const App = () => {
         {/* Public routes */}
         <Route path={Paths.landingPage} element={<LandingPage  setIsAuthenticated={setIsAuthenticated}/>} />
         <Route path={Paths.signUp} element={<CreateCompanyPage />} />
+        <Route path={Paths.forgotPassword} element={<ForgotPasswordPage />} />
+        <Route path={Paths.resetPassword} element={<ResetPasswordPage />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
@@ -61,7 +66,19 @@ const App = () => {
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
 
-      <ToastContainer />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 9999 }} // Très important pour apparaître devant les modals
+      />
     </>
   );
 };

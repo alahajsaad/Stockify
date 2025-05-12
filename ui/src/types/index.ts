@@ -13,7 +13,7 @@ export type Page<T> = {
     totalElements: number;
     size: number;
     number: number; // numéro de page actuel
-  }
+}
   
 export type LoginResponse = {
     access_token: string;
@@ -33,6 +33,13 @@ export type valueAddedTax = {
     id? : number ,
     rate? : number ,
     description? : string
+}
+
+export type PasswordResetRequestDto = {
+    email: string,
+    password:string,
+    confirmPassword:string,
+    token:string
 }
 export type { CompanyCreationDto } from "./company"
 export type { CompanyResponseDto } from "./company"
