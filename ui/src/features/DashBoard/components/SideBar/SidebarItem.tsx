@@ -1,62 +1,88 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { LucideIcon, Plus } from 'lucide-react';
-import { SidebarItemData } from './SideBarData';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { LucideIcon, Plus } from "lucide-react";
 
 interface SidebarItemProps {
-  path: string;
+  openLink: string;
+  addlink?: string;
   title: string;
   icon: LucideIcon;
   isExpanded: boolean;
   toggleSideBar?: () => void;
-  addButtonPath?: string;
-  childrenItems?: SidebarItemData[];
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
-  path,
+  openLink,
+  addlink,
   title,
   icon: Icon,
   isExpanded,
   toggleSideBar,
-  addButtonPath,
-  childrenItems,
 }) => {
- 
+  const location = useLocation();
+  const isActive = location.pathname === openLink;
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div className="relative">
       <Link
         onClick={toggleSideBar}
-        to={path}
-        className="flex items-center py-3 px-4 my-1 mx-2 rounded-lg text-sm hover:bg-gray-100 focus:bg-blue-50 focus:text-blue-600 transition-all duration-200 group"
+        to={openLink}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`flex items-center py-3 px-4 my-1 mx-2 rounded-lg text-sm transition-all duration-200 group
+          ${isActive 
+            ? "bg-blue-50 text-blue-600 shadow-sm" 
+            : "hover:bg-gray-50 hover:text-gray-900"
+          }`}
       >
-        <span className="text-xl">
-          <Icon />
+        <span className={`flex-shrink-0 transition-all duration-200 ${isActive ? "text-blue-500" : ""}`}>
+          <Icon size={isActive ? 20 : 18} strokeWidth={isActive ? 2 : 1.5} />
         </span>
-
+        
         {isExpanded && (
-          <span className="ml-3 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center justify-between w-full">
-            {title}
-            {addButtonPath && (
-              <Link
-                to={addButtonPath}
-                onClick={(e) => e.stopPropagation()}
-                className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-md p-1 hover:bg-blue-100"
-              >
-                <Plus size={16} />
-              </Link>
+          <div className="ml-3 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center justify-between w-full">
+            <span className="transition-all duration-200">{title}</span>
+            
+            {addlink && (
+              <div className="ml-2 flex items-center">
+                <Link
+                  to={addlink}
+                  onClick={(e) => e.stopPropagation()}
+                  className={`flex items-center justify-center rounded-full p-1.5 transition-all duration-200
+                    ${isHovered || isActive
+                      ? "opacity-100 bg-blue-100 hover:bg-blue-200 text-blue-700"
+                      : "opacity-0 hover:bg-blue-100"
+                    }`}
+                  aria-label={`Add new ${title}`}
+                  title={`Add new ${title}`}
+                >
+                  <Plus size={14} strokeWidth={2.5} />
+                </Link>
+              </div>
             )}
-          </span>
+          </div>
         )}
-
+        
         {!isExpanded && (
-          <div className="absolute left-20 m-2 w-auto p-2 min-w-max rounded-md shadow-md text-blue-800 bg-white text-xs font-medium transition-all duration-100 scale-0 origin-left group-hover:scale-100 z-20">
-            {title}
+          <div className="absolute left-16 px-3 py-2 min-w-max rounded-md shadow-md text-gray-700 bg-white text-xs font-medium transition-all duration-150 scale-0 origin-left group-hover:scale-100 z-20 border border-gray-100">
+            <div className="flex items-center justify-between gap-2">
+              <span>{title}</span>
+              {addlink && (
+                <Link
+                  to={addlink}
+                  onClick={(e) => e.stopPropagation()}
+                  className="rounded-full p-1 hover:bg-blue-100 transition-colors duration-150"
+                  aria-label={`Add new ${title}`}
+                  title={`Add new ${title}`}
+                >
+                  <Plus size={12} />
+                </Link>
+              )}
+            </div>
           </div>
         )}
       </Link>
-
-      
     </div>
   );
 };

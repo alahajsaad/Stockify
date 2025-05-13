@@ -1,4 +1,4 @@
-import { ApiResponse, valueAddedTax } from "src/types";
+import { ApiResponse, valueAddedTax, valueAddedTaxFullDto } from "src/types";
 import request from "./request";
 import { toastHandler } from "./toastHandler";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,8 +15,8 @@ export const addNewValueAddedTax = (tax: valueAddedTax): Promise<ApiResponse<val
     return response; 
   };
 
-export const  getAllTaxValue = (): Promise<valueAddedTax[]> => {
-    const  response = request<valueAddedTax[]>({
+export const  getAllTaxValue = (): Promise<valueAddedTaxFullDto[]> => {
+    const  response = request<valueAddedTaxFullDto[]>({
       url: "/vat",
       method: "get",
   });
@@ -42,18 +42,17 @@ export const updateValueAddedTax = (vat : valueAddedTax): Promise<ApiResponse<va
   return response 
 };
 
-export const deleteValueAddedTax = (id : number): Promise<ApiResponse<void>> => {
-    const response = request<void>({
-      url:  `/vat?id=${(id)}`,
-      method: "delete",
+export const deleteValueAddedTax = (id: number): Promise<ApiResponse<void>> => {
+  return request<void>({
+    url: `/vat/${id}`, // ✅ match @PathVariable
+    method: "delete",
   });
-  toastHandler(response)
-  return response 
 };
 
 
+
 export const useGetValueAddedTaxList = (isEnabled = true) =>{
-    return useQuery<valueAddedTax[],Error>(
+    return useQuery<valueAddedTaxFullDto[],Error>(
        { 
         queryKey : ['ListOfValueAddedTax'] , 
         queryFn : getAllTaxValue ,

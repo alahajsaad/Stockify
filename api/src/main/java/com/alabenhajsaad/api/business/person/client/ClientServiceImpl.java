@@ -1,12 +1,15 @@
 package com.alabenhajsaad.api.business.person.client;
 
 import com.alabenhajsaad.api.business.person.person.PersonService;
-import com.alabenhajsaad.api.business.person.supplier.Supplier;
+import com.alabenhajsaad.api.business.product.Product;
+import com.alabenhajsaad.api.business.product.ProductSpecification;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,8 +37,14 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public Page<Client> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Client> findAll(Pageable pageable , String keyWord) {
+        Specification<Client> specification = Specification
+                .where(ClientSpecification.hasNameOrPhoneNumberLike(keyWord));
+
+        if (pageable.getSort().isUnsorted()) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+        }
+        return repository.findAll(specification , pageable);
     }
 
     @Override

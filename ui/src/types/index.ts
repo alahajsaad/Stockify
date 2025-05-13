@@ -34,6 +34,11 @@ export type valueAddedTax = {
     rate? : number ,
     description? : string
 }
+export type valueAddedTaxFullDto = {
+    id : number ,
+    rate : number ,
+    description : string
+}
 
 export type PasswordResetRequestDto = {
     email: string,

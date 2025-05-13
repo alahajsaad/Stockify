@@ -1,52 +1,89 @@
-// sidebarData.ts
-import { LucideIcon } from "lucide-react";
-import { Book,ShoppingBasket } from 'lucide-react';
+import { LucideIcon, Book, ShoppingBasket ,Percent , Shapes , Users , User  } from "lucide-react";
+import { Paths } from "src/lib/paths";
 
-
-
+export type ItemType = "Parent" | "Child";
 
 export interface SidebarItemData {
-  path: string;
+  type: "Child";
+  openLink: string;
+  addLink?: string;
   title: string;
   icon: LucideIcon;
-  addButtonPath?:string;
-  children?:SidebarItemData[]
 }
 
-export const sidebarData: SidebarItemData[] = [
+export interface SidebarParentItemData {
+  type: "Parent";
+  title: string;
+  icon: LucideIcon;
+  children: SidebarItemData[];
+}
+
+export const sidebarData: (SidebarItemData | SidebarParentItemData)[] = [
   {
+    type: "Parent",
     title: "Tableau de bord",
-    path: "/stockify",
     icon: Book,
-    children : [
-      {title: "Tableau de bord", path: "/dashboard",icon: Book,},
-      {title: "Tableau de bord", path: "/dashboard",icon: Book,}
-    ]
+    children: [
+      {
+        type: "Child",
+        openLink: "/anyThing",
+        addLink: "/addlink",
+        title: "newLink",
+        icon: Book,
+      },
+      {
+        type: "Child",
+        openLink: "/anyThing2",
+        title: "newLink2",
+        icon: Book,
+      },
+    ],
   },
   {
+    type: "Child",
+    title: "Accueil",
+    openLink: "/stockify",
+    icon: Book,
+  },
+  {
+    type: "Child",
     title: "Produits",
-    path: "/stockify/products",
+    openLink: "/stockify/products",
     icon: ShoppingBasket,
-    addButtonPath : "/stockify/products/add"
+    addLink: "/stockify/products/add",
   },
   {
+    type: "Child",
     title: "Historique de réparation",
-    path: "/reparationFilter",
+    openLink: "/reparationFilter",
     icon: Book,
   },
   {
-    title: "Tickets",
-    path: "/tickets",
-    icon: Book,
+    type: "Child",
+    title: "Fournisseurs",
+    openLink: Paths.suppliers,
+    addLink:Paths.addSupplier,
+    icon: User ,
+  },
+   {
+    type: "Child",
+    title: "Clients",
+    openLink: Paths.clients,
+    addLink:Paths.addClient,
+    icon: Users ,
   },
   {
-    title: "Profil",
-    path: "/profile",
-    icon: Book,
+    type: "Child",
+    title: "Categories",
+    openLink: Paths.categories,
+    addLink:Paths.addCategory,
+    icon: Shapes ,
   },
   {
-    title: "Paramètres",
-    path: "/settings",
-    icon: Book,
-  }
+    type: "Child",
+    title: "TVA",
+    openLink: Paths.vats,
+    addLink:Paths.addVat,
+    icon: Percent ,
+  },
 ];

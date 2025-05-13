@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import SidebarItem from "./SidebarItem";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { sidebarData } from "./SideBarData";
+import { sidebarData, SidebarItemData, SidebarParentItemData } from "./SideBarData";
 import { useIsMobile } from "src/hooks/useMobile";
+import SideBarParentItem from "./SideBarParentItem";
 
 interface SidebarProps {
   isExpanded: boolean;
@@ -29,6 +30,32 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
     }
   }, [isExpanded, isMobile]);
 
+  const renderSidebarItem = (item: SidebarItemData | SidebarParentItemData, index: number) => {
+    if (item.type === "Parent") {
+      return (
+        <SideBarParentItem
+          key={index}
+          title={item.title}
+          icon={item.icon}
+          isExpanded={isExpanded}
+          children={item.children}
+        />
+      );
+    } else {
+      return (
+        <SidebarItem
+          key={index}
+          openLink={item.openLink}
+          title={item.title}
+          icon={item.icon}
+          addlink={item.addLink}
+          isExpanded={isExpanded}
+          toggleSideBar={isMobile ? toggleSidebar : undefined}
+        />
+      );
+    }
+  };
+
   return (
     <>
       {/* Desktop Sidebar */}
@@ -41,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
           <div className="flex items-center h-16 justify-between p-4 border-b border-gray-200">
             {isExpanded ? (
               <div className="flex items-center">
-                <span className="ml-3 font-bold text-lg">RepairPro</span>
+                <span className="ml-3 font-bold text-lg">Stockify</span>
               </div>
             ) : (
               <div className="w-full flex justify-center"></div>
@@ -59,16 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
           </div>
 
           <div className="py-4">
-            {sidebarData.map((item, index) => (
-              <SidebarItem
-                key={index}
-                path={item.path}
-                title={item.title}
-                icon={item.icon}
-                addButtonPath={item.addButtonPath}
-                isExpanded={isExpanded}
-              />
-            ))}
+            {sidebarData.map((item, index) => renderSidebarItem(item, index))}
           </div>
         </div>
       )}
@@ -92,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
           >
             <div className="flex items-center h-16 justify-between p-4 border-b border-gray-200">
               <div className="flex items-center">
-                <span className="ml-3 font-bold text-lg">RepairPro</span>
+                <span className="ml-3 font-bold text-lg">Stockify</span>
               </div>
               <button
                 onClick={toggleSidebar}
@@ -103,16 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
             </div>
 
             <div className="py-4">
-              {sidebarData.map((item, index) => (
-                <SidebarItem
-                  key={index}
-                  path={item.path}
-                  title={item.title}
-                  icon={item.icon}
-                  isExpanded={true}
-                  toggleSideBar={toggleSidebar}
-                />
-              ))}
+              {sidebarData.map((item, index) => renderSidebarItem(item, index))}
             </div>
           </div>
         </>

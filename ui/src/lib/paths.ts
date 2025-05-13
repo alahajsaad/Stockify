@@ -18,4 +18,12 @@ export const Paths = {
     products : "/stockify/products",
     forgotPassword:"/forgotPassword",
     resetPassword: "/resetPassword",
+    vats: "vats",   // relative should not be /vats
+    addVat: "vats/add",
+    categories:"categories",
+    addCategory:"categories/add",
+    clients:"clients",
+    addClient:"client/add",
+    suppliers:"suppliers",
+    addSupplier:"supplier/add",
   };

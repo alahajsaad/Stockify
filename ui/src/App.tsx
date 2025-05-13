@@ -11,9 +11,12 @@ import "./App.css";
 import { Paths } from "./lib/paths";
 import ConsultProducts from "./features/product/pages/ConsultProducts";
 import ProductDetails from "./features/product/pages/ProductDetails";
-import ForgotPasswordForm from "./features/auth/forms/ForgotPasswordForm";
 import ForgotPasswordPage from "./features/auth/pages/ForgotPasswordPage";
 import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
+
+import { AddCategoryPage, ConsultCategoriesPage } from "./features/category";
+import { AddVatPage, ConsultVatsPage } from "./features/value_added_tax";
+import { AddClientPage } from "./features/client";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -59,7 +62,13 @@ const App = () => {
             <Route path="products/add" element={<ProductForm />} />
             <Route path="products" element={<ConsultProducts />} />
             <Route path="products/:id" element={<ProductDetails />} />
-            {/* Add more protected routes here */}
+            <Route path={Paths.addVat} element={<AddVatPage />} />
+            <Route path={Paths.vats} element={<ConsultVatsPage />} />
+            <Route path={Paths.categories} element={<ConsultCategoriesPage />} />
+            <Route path={Paths.addCategory} element={<AddCategoryPage />} />
+            <Route path={Paths.addClient} element={<AddClientPage />} />
+
+           
           </Route>
         </Route>
 

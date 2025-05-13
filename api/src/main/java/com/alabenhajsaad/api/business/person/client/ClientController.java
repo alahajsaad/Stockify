@@ -17,8 +17,8 @@ import java.util.List;
 @RequestMapping("api/v1/client")
 public class ClientController {
     private final ClientService service;
-    @PostMapping()
-    public ResponseEntity<ApiResponse<Client>> addSupplier(@RequestBody Client client){
+    @PostMapping
+    public ResponseEntity<ApiResponse<Client>> addClient(@RequestBody Client client){
         return ResponseEntity.ok(ApiResponse.success(service.save(client) ,"client ajoutée avec succès."));
     }
     @PutMapping
@@ -30,9 +30,12 @@ public class ClientController {
         return ResponseEntity.ok(ApiResponse.success(service.findById(id)));
     }
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<Client>>> getAll(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<ApiResponse<Page<Client>>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size ,
+            @RequestParam(required = false) String keyWord){
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(ApiResponse.success(service.findAll(pageable)));
+        return ResponseEntity.ok(ApiResponse.success(service.findAll(pageable , keyWord)));
     }
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<Client>>> search(@RequestParam String keyword){

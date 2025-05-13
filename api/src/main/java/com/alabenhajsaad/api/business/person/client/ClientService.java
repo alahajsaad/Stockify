@@ -10,6 +10,6 @@ public interface ClientService {
     Client save(Client client);
     Client update(Client client) ;
     Client findById(Long id);
-    Page<Client> findAll(Pageable pageable);
+    Page<Client> findAll(Pageable pageable , String keyWord);
     List<Client> searchByPhoneNumberOrName(String keyword) ;
 }

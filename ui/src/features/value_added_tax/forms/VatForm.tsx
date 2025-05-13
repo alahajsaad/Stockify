@@ -14,10 +14,11 @@ type FormValues = z.infer<typeof formSchema>;
 
 type VatFormProps = {
   initialVat?: valueAddedTax;
+  onUpdateSuccess? : (bool : boolean) => void
   toggleForm?: (isEditing: boolean) => void;
 };
 
-const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat }) => {
+const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat ,onUpdateSuccess }) => {
   // Utiliser les hooks conditionnellement selon le mode (ajout ou modification)
   const { mutate: addValueAddedTax, isPending: isAddLoading } = useAddValueAddedTax();
   const { mutate: updateValueAddedTax, isPending: isUpdateLoading } = useUpdateValueAddedTax();
@@ -56,6 +57,8 @@ const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat }) => {
         onSuccess: () => {
           reset();
           toggleForm?.(false);
+          onUpdateSuccess?.(true);
+
         }
       });
     } else {
@@ -79,6 +82,7 @@ const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat }) => {
       <div>
         <Input 
           type="number" 
+          min={0}
           label="Taux en pourcentage *" 
           {...register("rate")} 
         />
