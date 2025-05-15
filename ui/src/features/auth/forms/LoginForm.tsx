@@ -4,12 +4,12 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail  } from 'lucide-react';
-import { ApiResponse, LoginRequest, LoginResponse } from "src/types";
+import { LoginRequest } from "src/types";
 import { useAuth } from "../components/AuthProvider";
-import { useMutation } from "@tanstack/react-query";
-import { authenticate } from "src/services/api/auth";
+import {  useAuthenticate } from "src/services/api/auth";
 import { Link } from "react-router-dom";
 import { Paths } from "src/lib/paths";
+import { useState } from "react";
 
 const formSchema = z.object({
     email: z.string().email('Adresse email invalide'),
@@ -19,25 +19,36 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const  LoginForm : React.FC = () => {
+    const [authError,setAuthError] = useState<string>()
     const { login } = useAuth();
     const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
        resolver: zodResolver(formSchema),
       });
+    
+    const {mutate : authenticate , isPending , error} = useAuthenticate()
     const handleFormSubmit = async (data: FormValues) => {
-        try {
-          const response = await mutation.mutateAsync({ username: data.email, password: data.password });
-          if (response.data){
-            login(response.data?.access_token)
-          }
-          reset();
-        } catch (error) {
-          console.error("Login failed", error);
+
+       const credential : LoginRequest = {
+        username : data.email,
+        password : data.password
+       }
+      authenticate(credential, {
+      onSuccess: (response) => {
+        if (!response.data) {
+          console.error("Login failed: No data returned");
+          return;
         }
+
+        login(response.data.access_token);
+      },
+      onError:(response) => {
+        setAuthError(response.message)
+      }
+});
+
       };
       
-      const mutation = useMutation<ApiResponse<LoginResponse>,Error,LoginRequest>({
-        mutationFn : authenticate,
-      })
+      
       return (
         <form className="space-y-6" onSubmit={handleSubmit(handleFormSubmit)} >
           <div>
@@ -49,9 +60,12 @@ const  LoginForm : React.FC = () => {
             {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
           </div>
           <div className='flex flex-col mt-[20px]'>
-              <Button type="submit">Se connecter</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Connexion..." : "Se connecter"}
+              </Button>
               <div className="flex justify-end mt-2">
-                
+              {authError && <p className="text-red-500">{authError}</p>}
+              {error && <p className="text-red-500">{error.message}</p>}
                 <Link className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors" to={Paths.forgotPassword}>mot de passe oublié</Link>
               </div>
           </div> 

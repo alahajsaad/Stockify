@@ -5,6 +5,8 @@ type VariantType =
   | "WithNavigation" 
   | "WithActions";
 
+
+
 type TableProps<T extends { id: number }> = {
   data: T[];
   head: string[]; // Headers for the table
@@ -20,7 +22,7 @@ const Table = <T extends { id: number }>({
   route,
   variant,
   onEdit,
-  onDelete
+  onDelete,
 }: TableProps<T>) => {
   const navigate = useNavigate();
   const isActionVariant = variant === "WithActions";
@@ -35,11 +37,17 @@ const Table = <T extends { id: number }>({
     console.warn("onEdit and onDelete props are required when using WithActions variant");
   }
 
+  // const handleRowClick = (id: number) => {
+  //   if (isNavigationVariant && route) {
+  //     navigate(`${route}/${id}`);
+  //   }
+  // };
   const handleRowClick = (id: number) => {
-    if (isNavigationVariant && route) {
-      navigate(`${route}/${id}`);
-    }
-  };
+  if (isNavigationVariant && route) {
+    navigate(route.replace(":id", id.toString()));
+  }
+};
+
 
   // Handle action clicks with stopPropagation to prevent row navigation
   const handleEditClick = (id:number ,e: React.MouseEvent) => {
@@ -58,6 +66,7 @@ const Table = <T extends { id: number }>({
     : []);
 
   return (
+   
     <div className="relative overflow-x-auto rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
       <table className="w-full text-sm text-left text-gray-700 dark:text-gray-300">
         <thead className="text-xs uppercase bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 text-gray-800 dark:text-gray-200">
@@ -104,6 +113,7 @@ const Table = <T extends { id: number }>({
         </tbody>
       </table>
     </div>
+
   );
 };
 

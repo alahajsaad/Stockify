@@ -22,7 +22,7 @@ const ClientTable : React.FC<ClientTableProps> = ({clients}) => {
     const head = ["Client", "Email", "Numéros de téléphone"];
 
     return (
-        <Table data={formattedData} head={head} variant={"WithNavigation"} route={Paths.clients}/>
+        <Table data={formattedData} head={head} variant={"WithNavigation"} route={Paths.client}/>
     );
 }
 export default ClientTable ;

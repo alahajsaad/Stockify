@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { StockStatus, useGetFiltredProducts } from "src/services/api/product";
 import ProductsFilter from "../components/consultProducts/ProductsFilter";
 import ProductsTable from "../components/consultProducts/ProductsTable";
-import { ChevronLeft, ChevronRight, Package} from "lucide-react";
+import { Package} from "lucide-react";
+import TableNav from "src/components/ui/TableNav";
 
 const ConsultProducts: React.FC = () => {
   const [page, setPage] = useState(0);
@@ -52,41 +53,7 @@ const ConsultProducts: React.FC = () => {
       ) : data?.content && data.content.length > 0 ? (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
           <ProductsTable data={data.content || []} />
-        
-          <div className="flex items-center justify-between px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-700 rounded-b-lg">
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              <p className="font-medium">Total: <span className="font-bold">{data.totalElements}</span> produits</p>
-              <p>Page <span className="font-semibold">{data.number + 1}</span> sur <span className="font-semibold">{data.totalPages}</span></p>
-            </div>
-            
-            <div className="flex gap-3">
-              <button
-                className={`px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition-all ${
-                  page === 0 
-                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400' 
-                  : 'bg-white text-indigo-600 hover:bg-indigo-50 border border-indigo-200 dark:bg-gray-700 dark:text-indigo-300 dark:hover:bg-gray-600'
-                }`}
-                onClick={() => setPage(prev => prev - 1)}
-                disabled={page === 0}
-              >
-                <ChevronLeft size={16} />
-                Précédent
-              </button>
-              
-              <button
-                className={`px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition-all ${
-                  data && page >= data.totalPages - 1
-                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400'
-                  : 'bg-white text-indigo-600 hover:bg-indigo-50 border border-indigo-200 dark:bg-gray-700 dark:text-indigo-300 dark:hover:bg-gray-600'
-                }`}
-                onClick={() => setPage(prev => prev + 1)}
-                disabled={data && page >= data.totalPages - 1}
-              >
-                Suivant
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
+          <TableNav data={data} page={page} setPage={setPage} />
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-16 bg-white dark:bg-gray-800 rounded-lg shadow-md">

@@ -23,7 +23,7 @@ const request = async <T = unknown>( options: AxiosRequestConfig ): Promise<ApiR
     const axiosError = error as AxiosError<ApiResponse<any>>;
 
     if (axiosError.response && axiosError.response.data) {
-      // If the backend sent a structured ApiResponse error
+
       return axiosError.response.data;
     }
 

@@ -156,10 +156,11 @@ public class ClientOrderServiceImpl implements ClientOrderService{
 
 
     @Override
-    public Page<ClientOrder> getClientOrders(Pageable pageable, LocalDate fromDate ,LocalDate toDate ,DeliveryStatus deliveryStatus , PaymentStatus paymentStatus,String keyWord) {
+    public Page<ClientOrder> getClientOrders(Pageable pageable, LocalDate fromDate ,LocalDate toDate ,DeliveryStatus deliveryStatus , PaymentStatus paymentStatus,String keyWord,Integer clientId) {
         Specification<ClientOrder> specification = Specification
                 .where(ClientOrderSpecification.hasDate(fromDate,toDate))
                 .and(ClientOrderSpecification.hasKeyWord(keyWord))
+                .and(ClientOrderSpecification.hasClientId(clientId))
                 .and(ClientOrderSpecification.hasDeliveryStatus(deliveryStatus))
                 .and(ClientOrderSpecification.hasPaymentStatus(paymentStatus)) ;
 

@@ -17,6 +17,8 @@ import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
 import { AddCategoryPage, ConsultCategoriesPage } from "./features/category";
 import { AddVatPage, ConsultVatsPage } from "./features/value_added_tax";
 import { AddClientPage } from "./features/client";
+import ConsultClientsPage from "./features/client/pages/ConsultClientsPage";
+import ConsultClientPage from "./features/client/pages/ConsultClientPage";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -67,6 +69,15 @@ const App = () => {
             <Route path={Paths.categories} element={<ConsultCategoriesPage />} />
             <Route path={Paths.addCategory} element={<AddCategoryPage />} />
             <Route path={Paths.addClient} element={<AddClientPage />} />
+            {/* <Route path={Paths.clients} element={<ConsultClientsPage />} />
+            <Route path={Paths.client} element={<ConsultClientPage />} /> */}
+
+            <Route path="clients">
+              <Route index element={<ConsultClientsPage />} />
+              <Route path=":id" element={<ConsultClientPage />} />
+          </Route>
+
+
 
            
           </Route>

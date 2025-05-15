@@ -23,7 +23,10 @@ export const Paths = {
     categories:"categories",
     addCategory:"categories/add",
     clients:"clients",
+    client:":id" ,
     addClient:"client/add",
     suppliers:"suppliers",
     addSupplier:"supplier/add",
+
+
   };

@@ -33,7 +33,7 @@ export const addProduct = (product: Product): Promise<ApiResponse<Product>> => {
 
 export const getProductById = (id:number) : Promise<ApiResponse<Product>> =>  {
   return request<Product>({
-    url: `/category?id=${(id)}`,
+    url: `/product?id=${(id)}`,
     method: "get",
   });
 }

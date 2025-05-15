@@ -2,7 +2,7 @@
 import { useMutation } from "@tanstack/react-query";
 import request from "./request";
 
-import { ApiResponse, LoginRequest, LoginResponse, PasswordResetRequestDto } from "src/types";
+import { ApiResponse, LoginRequest, LoginResponse, NewTokenResponse, PasswordResetRequestDto } from "src/types";
 
 
 
@@ -29,6 +29,21 @@ export const resetPassword = (passwordResetRequestDto : PasswordResetRequestDto)
       method: "post",
       data: passwordResetRequestDto
     });
+}
+
+export const generateNewAccessToken = (refreshToken : string) :Promise<ApiResponse<NewTokenResponse>> =>{
+   return request<NewTokenResponse>({
+      url: `/auth/refresh${(refreshToken)}`,
+      method: "post",
+    });
+}
+
+export const useAuthenticate = () => {
+ return useMutation<ApiResponse<LoginResponse>,Error,LoginRequest>({
+        mutationFn : (loginRequest : LoginRequest) => {
+          return authenticate(loginRequest);
+        }
+      })
 }
 
 export const useForgetPassword = () => {
