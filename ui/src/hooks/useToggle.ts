@@ -16,10 +16,7 @@ const useToggle = () => {
       const target = event.target as Node;
       
       if (
-        ref.current && 
-        !ref.current.contains(target) && 
-        parentRef.current && 
-        !parentRef.current.contains(target)
+        ref.current && !ref.current.contains(target) && parentRef.current && !parentRef.current.contains(target)
       ) {
         setIsOpen(false);
       }
@@ -31,7 +28,7 @@ const useToggle = () => {
     };
   }, []);
 
-  return { isOpen, toggle, ref, parentRef };
+  return { isOpen,setIsOpen, toggle, ref, parentRef };
 };
 
 export default useToggle;

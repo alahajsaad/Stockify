@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 
+
 export type ApiResponse<T> = {
   status: 'success' | 'error';
   data: T | null;
@@ -9,6 +10,8 @@ export type ApiResponse<T> = {
 const client = axios.create({
   baseURL: 'http://localhost:8088/api/v1',
 });
+
+
 
 const request = async <T = unknown>( options: AxiosRequestConfig ): Promise<ApiResponse<T>> => {
   if(localStorage.getItem('access_token') != null){
@@ -22,11 +25,7 @@ const request = async <T = unknown>( options: AxiosRequestConfig ): Promise<ApiR
   } catch (error) {
     const axiosError = error as AxiosError<ApiResponse<any>>;
 
-    if (axiosError.response && axiosError.response.data) {
-
-      return axiosError.response.data;
-    }
-
+  
     // Fallback in case there's no response (e.g., network error)
     return {
       status: 'error',
@@ -38,19 +37,20 @@ const request = async <T = unknown>( options: AxiosRequestConfig ): Promise<ApiR
 
 export default request;
 
-// const request = async <T = unknown>(options: AxiosRequestConfig): Promise<ApiResponse<T>> => {
-//   const token = localStorage.getItem('access_token');
 
-//   const config: AxiosRequestConfig = {
-//     ...options,
-//     headers: {
-//       ...(options.headers || {}),
-//       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-//     },
-//   };
+// src/api/request.ts
 
+// export type ApiResponse<T> = {
+//   status: 'success' | 'error';
+//   data: T | null;
+//   message: string;
+// };
+
+// const request = async <T = unknown>(
+//   options: AxiosRequestConfig
+// ): Promise<ApiResponse<T>> => {
 //   try {
-//     const response = await client.request<ApiResponse<T>>(config);
+//     const response = await axiosInstance.request<ApiResponse<T>>(options);
 //     return response.data;
 //   } catch (error) {
 //     const axiosError = error as AxiosError<ApiResponse<any>>;
@@ -68,3 +68,4 @@ export default request;
 // };
 
 // export default request;
+

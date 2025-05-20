@@ -1,22 +1,14 @@
 package com.alabenhajsaad.api.core.security;
 
-import com.alabenhajsaad.api.core.security.refresh_token.RefreshTokenService;
 import com.alabenhajsaad.api.core.user.AppUser;
-import com.alabenhajsaad.api.core.user.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +22,7 @@ public class AccessTokenService {
         // Utiliser claims() pour ajouter plusieurs revendications
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(instant)
-                .expiresAt(instant.plus(1, ChronoUnit.DAYS))
+                .expiresAt(instant.plus(5, ChronoUnit.DAYS))
                 .subject(user.getUsername())
                 .claim("fullName", user.getFullName())
                 .claim("scope", "ROLE_" + user.getRole())                // Ajouter scope comme une revendication distincte

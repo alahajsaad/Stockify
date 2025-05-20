@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.core.security.refresh_token;
 
+import com.alabenhajsaad.api.core.exception.ExpiredRefreshTokenException;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import com.alabenhajsaad.api.core.user.AppUser;
 import jakarta.servlet.http.HttpServletRequest;
@@ -69,7 +70,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return repository.findByToken(hashedToken)
                 .filter(token -> !token.isRevoked())
                 .filter(token -> token.getExpiresAt().isAfter(Instant.now()))
-                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired refresh token"));
+                .orElseThrow(() -> new ExpiredRefreshTokenException("Invalid or expired refresh token"));
     }
 
     @Override

@@ -33,6 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsServiceImp ;
+    private final CustomAuthenticationEntryPoint customAuthEntryPoint;
     private static final List<String> WITHOUT_JWT = Arrays.asList(
             "/api/v1/auth/**",
             "/api/v1/auth/login",
@@ -60,7 +61,10 @@ public class SecurityConfig {
                         .requestMatchers("api/v1/user/**","api/v1/vat/**","/api/v1/auth/**","/api/v1/company/**","api/v1/accountActivation/**","/v3/api-docs/**","/swagger-ui/**").permitAll()
                         .anyRequest().authenticated())
 
-                .oauth2ResourceServer(oa -> oa.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(Customizer.withDefaults())
+                        .authenticationEntryPoint(customAuthEntryPoint)  // 👈 This handles JWT errors
+                )
                 .userDetailsService(userDetailsServiceImp)
                 .build() ;
     }

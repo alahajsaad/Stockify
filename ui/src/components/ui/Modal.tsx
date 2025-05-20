@@ -17,7 +17,7 @@ const Modal = ({ children, title, isOpen, onClose, size = 'md' }: ModalProps) =>
   const sizeClasses = {
     sm: 'max-w-md',
     md: 'max-w-lg',
-    lg: 'max-w-2xl',
+    lg: 'max-w-xl',
   }[size];
 
   // Close modal when Escape key is pressed

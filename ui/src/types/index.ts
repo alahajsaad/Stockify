@@ -18,9 +18,6 @@ export type Page<T> = {
 export type LoginResponse = {
     access_token: string;
 };
-export type NewTokenResponse = {
-    access_token: string;
-}
 
 export type LoginRequest = {
     username: string;

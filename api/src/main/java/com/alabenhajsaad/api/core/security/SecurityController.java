@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.core.security;
 
 import com.alabenhajsaad.api.config.ApiResponse;
+import com.alabenhajsaad.api.core.exception.ExpiredRefreshTokenException;
 import com.alabenhajsaad.api.core.security.dto.EmailDto;
 import com.alabenhajsaad.api.core.security.dto.LoginRequest;
 import com.alabenhajsaad.api.core.security.refresh_token.TokenPairService;
@@ -10,9 +11,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -22,11 +27,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityController {
 
     private final SecurityService securityService ;
-    private final TokenPairService tokenPairService ;
-
+    @Value("${spring.profiles.active:dev}")
+    private String activeProfile;
     @GetMapping("/profile")
     public Authentication profile(Authentication authentication){
         return authentication ;
@@ -40,31 +46,30 @@ public class SecurityController {
     ) {
         // Authenticate and generate tokens
         Map<String, String> tokens = securityService.login(loginRequest, request);
-//
-//        String accessToken = tokens.get("access_token");
-//        String refreshToken = tokens.get("refresh_token");
-//
-//        // Extract access token ID (could be the token itself, a hash, or a claim from it)
-//        String accessTokenId = securityService.extractTokenId(accessToken);
-//
-//        // Store the token pair
-//        Duration refreshValidity = Duration.ofDays(7); // Match your cookie expiry
-//        tokenPairService.storeTokenPair(accessTokenId, refreshToken, refreshValidity);
-//
-//        // Set refresh token in cookie
-//        Cookie cookie = new Cookie("refresh_token", refreshToken);
-//        cookie.setHttpOnly(true);
-//        cookie.setSecure(true);
-//        cookie.setPath("/api/auth/refresh");
-//        cookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
-//
-//        response.addCookie(cookie);
-//
-//        // Remove refresh token from response body
+
+        String refreshToken = tokens.get("refresh_token");
+
+        // Determine cookie security settings based on environment
+        boolean isProduction = "prod".equalsIgnoreCase(activeProfile);
+
+        // Construct cookie dynamically based on profile
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+               // .secure(isProduction) // secure=true only in production (requires HTTPS)
+                .path("/")
+                .maxAge(Duration.ofDays(7))
+               // .sameSite(isProduction ? "None" : "Lax") // SameSite=None for cross-origin in prod, Lax for localhost
+                .build();
+
+        // Add cookie to response
+        response.setHeader("Set-Cookie", cookie.toString());
+
+        // Remove refresh token from response body
         tokens.remove("refresh_token");
 
         return ResponseEntity.ok(ApiResponse.success(tokens));
     }
+
 
 
 
@@ -89,81 +94,50 @@ public class SecurityController {
     }
 
 
-//    @PostMapping("/refresh")
-//    public ResponseEntity<ApiResponse<Map<String, String>>> refreshToken(
-//            @RequestParam String expiredAccessToken,
-//            HttpServletRequest request,
-//            HttpServletResponse response
-//    ) {
-//        try {
-//            // Extract access token ID from the expired token
-//            String accessTokenId = securityService.extractTokenId(expiredAccessToken);
-//
-//            // Get the corresponding refresh token from our mapping
-//            String expectedRefreshToken = tokenPairService.getRefreshToken(accessTokenId);
-//
-//            if (expectedRefreshToken == null) {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                        .body(ApiResponse.error("No valid refresh token found for this session"));
-//            }
-//
-//            // Get actual refresh token from cookie
-//            Cookie[] cookies = request.getCookies();
-//            String actualRefreshToken = null;
-//
-//            if (cookies != null) {
-//                for (Cookie cookie : cookies) {
-//                    if ("refresh_token".equals(cookie.getName())) {
-//                        actualRefreshToken = cookie.getValue();
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            // Verify the refresh token from cookie matches the one in our mapping
-//            if (actualRefreshToken == null || !expectedRefreshToken.equals(actualRefreshToken)) {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                        .body(ApiResponse.error("Invalid refresh token"));
-//            }
-//
-//            // Generate new tokens
-//            Map<String, String> newTokens = securityService.generateNewAccessToken(actualRefreshToken);
-//
-//            // Extract new token values
-//            String newAccessToken = newTokens.get("access_token");
-//            String newRefreshToken = newTokens.getOrDefault("refresh_token", actualRefreshToken);
-//
-//            // Extract new access token ID
-//            String newAccessTokenId = securityService.extractTokenId(newAccessToken);
-//
-//            // Update token pair in storage
-//            tokenPairService.updateTokenPair(
-//                    accessTokenId,
-//                    newAccessTokenId,
-//                    newRefreshToken,
-//                    Duration.ofDays(7)
-//            );
-//
-//            // Update refresh token cookie if a new one was generated
-//            if (newTokens.containsKey("refresh_token")) {
-//                Cookie cookie = new Cookie("refresh_token", newRefreshToken);
-//                cookie.setHttpOnly(true);
-//                cookie.setSecure(true);
-//                cookie.setPath("/api/auth/refresh");
-//                cookie.setMaxAge(7 * 24 * 60 * 60);
-//
-//                response.addCookie(cookie);
-//
-//                // Remove refresh token from response body
-//                newTokens.remove("refresh_token");
-//            }
-//
-//            return ResponseEntity.ok(ApiResponse.success(newTokens));
-//
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body(ApiResponse.error("Failed to refresh token: " + e.getMessage()));
-//        }
-//    }
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<Map<String, String>>> refreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String actualRefreshToken = null;
+        log.info("cookies: {}", cookies);
+        // Extract the refresh token from cookies
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refresh_token".equals(cookie.getName())) {
+                    actualRefreshToken = cookie.getValue();
+                    log.info("Refresh token: {}", actualRefreshToken);
+                    break;
+                }
+            }
+        }
+
+        // If token not found in cookies
+        if (actualRefreshToken == null || actualRefreshToken.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("Refresh token is missing"));
+        }
+
+        try {
+            // Generate new access token using the refresh token
+            Map<String, String> newToken = securityService.generateNewAccessToken(actualRefreshToken);
+            return ResponseEntity.ok(ApiResponse.success(newToken));
+
+        } catch (ExpiredRefreshTokenException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("Refresh token expired"));
+
+        } catch (JwtException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("Invalid refresh token"));
+
+        } catch (Exception ex) {
+            // Catch any other unexpected exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("An unexpected error occurred: " + ex.getMessage()));
+        }
+    }
+
+
+
+
 
 }

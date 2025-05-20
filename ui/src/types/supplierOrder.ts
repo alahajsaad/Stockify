@@ -3,7 +3,6 @@ export type PaymentMode =  | 'CHEQUE' | 'BANK_TRANSFER' | 'CASH' | 'CREDIT_CARD'
 export type OrderLine = {
     quantity : number,
     unitPrice : number,
-    valueAddedTax : number ,
     product:{
         id : number
     }

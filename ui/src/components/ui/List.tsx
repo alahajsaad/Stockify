@@ -1,46 +1,78 @@
-import { useClickOutside } from "src/hooks/useClickOutSide";
+import { useEffect, useRef } from "react";
 
 interface ListProps<T> {
   data?: T[];
   showedAttribute: (keyof T)[];
   setSelectedItem: (item: T | null) => void;
-  isOpen : boolean;
-  setIsOpen : (bool : boolean) => void;
+  isOpen: boolean;
+  setIsOpen: (bool: boolean) => void;
 }
 
-const List = <T,>({ data, showedAttribute, setSelectedItem, isOpen, setIsOpen }: ListProps<T>) => {
-  const { ref } = useClickOutside<HTMLUListElement>(() => setIsOpen(false));
+const List = <T,>({
+  data,
+  showedAttribute,
+  setSelectedItem,
+  isOpen,
+  setIsOpen,
+}: ListProps<T>) => {
+  // Fix: Changed HTMLElement to HTMLUListElement to match the ul element
+  const ref = useRef<HTMLUListElement>(null);
 
   const handleSelect = (item: T) => {
     setSelectedItem(item);
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      
+      if (ref.current && !ref.current.contains(target)) {
+        setIsOpen(false);
+      }
+    };
+    
+    // Only add the event listener if the dropdown is open
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, setIsOpen]);
+
   return (
     <>
       {isOpen && (
         <ul
           ref={ref}
-          className="w-full mt-1 text-sm font-medium text-gray-900 bg-white border border-blue-400 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white absolute z-10"
+          role="listbox"
+          className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg dark:bg-gray-700 dark:border-gray-600"
         >
-          {data?.map((d, index) => (
-            <li
-              key={index}
-              className="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
-              onClick={() => handleSelect(d)}
-            >
-              {showedAttribute.map((att, idx) => (
-                <span key={idx}>
-                  {String(d[att])}
-                  {idx < showedAttribute.length - 1 ? " / " : ""}
-                </span>
-              ))}
-            </li>
-          ))}
+          {data?.length ? (
+            data.map((d, index) => (
+              <li
+                key={index}
+                role="option"
+                className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-blue-100 dark:text-white dark:hover:bg-gray-600"
+                onClick={() => handleSelect(d)}
+              >
+                {showedAttribute.map((att, idx) => (
+                  <span key={idx}>
+                    {String(d[att])}
+                    {idx < showedAttribute.length - 1 ? " / " : ""}
+                  </span>
+                ))}
+              </li>
+            ))
+          ) : (
+            <li className="px-4 py-2 text-sm text-gray-500 dark:text-gray-300">Aucun résultat</li>
+          )}
         </ul>
       )}
     </>
   );
 };
 
-export default List
+export default List;

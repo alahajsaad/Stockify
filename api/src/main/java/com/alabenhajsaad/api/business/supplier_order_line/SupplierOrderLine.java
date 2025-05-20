@@ -47,8 +47,8 @@ public class SupplierOrderLine {
 
     // --- Méthode pour total TTC ---
     public BigDecimal getTotalIncludingTax() {
-        if (unitPrice == null || quantity == null || valueAddedTax == null) return BigDecimal.ZERO;
-        BigDecimal tvaRate = BigDecimal.valueOf(valueAddedTax);
+        if (unitPrice == null || quantity == null || product.getVat().getRate() == null) return BigDecimal.ZERO;
+        BigDecimal tvaRate = BigDecimal.valueOf(product.getVat().getRate());
         BigDecimal multiplier = BigDecimal.ONE.add(
                 tvaRate.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)
         );

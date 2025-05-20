@@ -91,7 +91,7 @@ const generateProductCacheKey = (params: {
 }): QueryKey => {
   // Create a stable cache key that doesn't depend on object reference
   const { status, keyword, page = 0, size = 10 } = params;
-  return ['Products', 'filtered', status || 'all', keyword || '', page, size];
+  return ['Products', 'filteredProducts', status || 'all', keyword || '', page, size];
 };
 
 /**
@@ -143,7 +143,7 @@ export const useGetFiltredProducts = (
     gcTime: Infinity, // Keep data in cache until app is closed
     staleTime: 1000 * 60 * 15, // Consider data fresh for 15 minutes
     refetchOnMount: false, // Don't refetch when component mounts
-    enabled: false // Don't fetch automatically, require explicit refetch
+    enabled: true // Don't fetch automatically, require explicit refetch
   });
 };
 
@@ -168,7 +168,7 @@ export const useGetProductById = (id: number) => {
     queryFn: () => {
       // First, check if we have this product in any existing filtered product queries
       const queriesData = queryClient.getQueriesData<Page<Product>>({
-        queryKey: ['Products', 'filtered'],
+        queryKey: ['Products', 'filteredProducts'],
       });
       
       // Look through all filtered product queries

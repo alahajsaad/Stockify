@@ -19,6 +19,7 @@ import { AddVatPage, ConsultVatsPage } from "./features/value_added_tax";
 import { AddClientPage } from "./features/client";
 import ConsultClientsPage from "./features/client/pages/ConsultClientsPage";
 import ConsultClientPage from "./features/client/pages/ConsultClientPage";
+import AddSupplierOrderPage from "./features/supplier_order/pages/AddSupplierOrderPage";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -75,7 +76,13 @@ const App = () => {
             <Route path="clients">
               <Route index element={<ConsultClientsPage />} />
               <Route path=":id" element={<ConsultClientPage />} />
-          </Route>
+            </Route>
+
+            <Route path={Paths.addSupplierOrder} element={<AddSupplierOrderPage />} />
+            <Route path={Paths.supplierOrders}>
+              <Route index element={<ConsultClientsPage />} />
+              <Route path=":id" element={<ConsultClientPage />} />
+            </Route>
 
 
 

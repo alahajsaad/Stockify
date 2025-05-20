@@ -11,7 +11,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   
 }
 
-const Input: React.FC<Partial<InputProps>> = ({type='text' , label, Icon, testId, children , ...props }) => {
+const Input: React.FC<Partial<InputProps>> = ({type='text' , label, Icon, testId, children , ...props}) => {
   const id = useId();
   return (
     <div>
@@ -31,6 +31,7 @@ const Input: React.FC<Partial<InputProps>> = ({type='text' , label, Icon, testId
           </div>
         )}
         <input
+         
           type={type}
           id={id}
           data-testid={testId}

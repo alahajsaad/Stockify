@@ -27,6 +27,10 @@ export const Paths = {
     addClient:"client/add",
     suppliers:"suppliers",
     addSupplier:"supplier/add",
+    supplierOrders:"supplierOrders",
+    addSupplierOrder:"supplierOrder/add",
+    clientOrders:"clientOrders",
+    addClientOrder:"clientOrder/add"
 
 
   };

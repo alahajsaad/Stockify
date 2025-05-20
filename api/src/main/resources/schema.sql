@@ -29,11 +29,12 @@ CREATE TABLE IF NOT EXISTS category (
 
 -- Création de la table product (produit)
 CREATE TABLE IF NOT EXISTS product (
-                                       id INT AUTO_INCREMENT PRIMARY KEY,
-                                       designation VARCHAR(255) UNIQUE,
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   designation VARCHAR(255) UNIQUE,
     reference VARCHAR(255) UNIQUE,
     quantity INT CHECK (quantity >= 0),
     last_purchase_price DECIMAL(10,2),
+    last_sale_price DECIMAL(10,2),
     critical_threshold INT,
     stock_status VARCHAR(255),
     category_id INT,
@@ -46,13 +47,14 @@ CREATE TABLE IF NOT EXISTS product (
 
 -- Création de la table Person (table parent)
 CREATE TABLE IF NOT EXISTS person (
-                                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                      first_name VARCHAR(255),
-    last_name VARCHAR(255),
-    email VARCHAR(255),
-    created_at DATE,
-    updated_at DATE
-    );
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        first_name VARCHAR(255),
+        last_name VARCHAR(255),
+        email VARCHAR(255),
+        address VARCHAR(255),
+        created_at DATE,
+        updated_at DATE
+        );
 
 -- Création de la table Client (hérite de Person)
 CREATE TABLE IF NOT EXISTS client (

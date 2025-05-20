@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.business.person.person;
 
 import com.alabenhajsaad.api.business.person.PhoneNumber;
+import com.alabenhajsaad.api.business.utils.Auditable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Person {
+public class Person extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +28,8 @@ public class Person {
     private String lastName;
     @Column(unique = true)
     private String email;
+
+    private String address ;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
     private List<PhoneNumber> phoneNumbers ;

@@ -1,7 +1,6 @@
 package com.alabenhajsaad.api.business.supplier_order;
 
-import com.alabenhajsaad.api.business.client_order.ClientOrder;
-import com.alabenhajsaad.api.business.utils.DeliveryStatus;
+
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.business.utils.ReceptionStatus;
 import org.springframework.data.domain.Page;

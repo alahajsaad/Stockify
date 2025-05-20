@@ -1,4 +1,4 @@
-import { LucideIcon, Book, ShoppingBasket ,Percent , Shapes , Users , User  } from "lucide-react";
+import { LucideIcon, Book, ShoppingBasket ,Percent , Shapes , Users , User ,PackageMinus ,PackagePlus  } from "lucide-react";
 import { Paths } from "src/lib/paths";
 
 export type ItemType = "Parent" | "Child";
@@ -41,9 +41,17 @@ export const sidebarData: (SidebarItemData | SidebarParentItemData)[] = [
   },
   {
     type: "Child",
-    title: "Accueil",
-    openLink: "/stockify",
-    icon: Book,
+    title: "Commandes client",
+    openLink: Paths.clientOrders,
+    icon: PackageMinus ,
+    addLink: Paths.addClientOrder,
+  },
+  {
+    type: "Child",
+    title: "Commandes fournisseur",
+    openLink: Paths.supplierOrders,
+    icon: PackagePlus,
+    addLink: Paths.addSupplierOrder,
   },
   {
     type: "Child",
@@ -51,12 +59,6 @@ export const sidebarData: (SidebarItemData | SidebarParentItemData)[] = [
     openLink: "/stockify/products",
     icon: ShoppingBasket,
     addLink: "/stockify/products/add",
-  },
-  {
-    type: "Child",
-    title: "Historique de réparation",
-    openLink: "/reparationFilter",
-    icon: Book,
   },
   {
     type: "Child",

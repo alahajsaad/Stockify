@@ -1,8 +1,8 @@
 // src/api/auth.ts
 import { useMutation } from "@tanstack/react-query";
-import request from "./request";
 
-import { ApiResponse, LoginRequest, LoginResponse, NewTokenResponse, PasswordResetRequestDto } from "src/types";
+import { ApiResponse, LoginRequest, LoginResponse, PasswordResetRequestDto } from "src/types";
+import request from "./request";
 
 
 
@@ -31,12 +31,34 @@ export const resetPassword = (passwordResetRequestDto : PasswordResetRequestDto)
     });
 }
 
-export const generateNewAccessToken = (refreshToken : string) :Promise<ApiResponse<NewTokenResponse>> =>{
-   return request<NewTokenResponse>({
-      url: `/auth/refresh${(refreshToken)}`,
-      method: "post",
-    });
-}
+
+// export const generateNewAccessToken = async (): Promise<ApiResponse<LoginResponse>> => {
+//     try {
+//       const { data }: AxiosResponse<LoginResponse> = await axios.post(`http://localhost:8088/api/v1/auth/refresh`);
+//       localStorage.setItem('access_token', data.access_token);
+//       console.log("from the generate new access token method : " + data)
+//       return {
+//         status: 'success',
+//         data,
+//         message: 'Token refreshed successfully'
+//       };
+//     } catch (error) {
+//       console.error('Failed to refresh token:', error);
+//       // Clear tokens on refresh failure
+//       localStorage.removeItem('access_token');
+//       // Force logout through the auth context
+//       window.location.href = '/'; 
+      
+//       return {
+//         status: 'error',
+//         data: null,
+//         message: 'Failed to refresh token'
+//       };
+//     }
+// };
+
+
+
 
 export const useAuthenticate = () => {
  return useMutation<ApiResponse<LoginResponse>,Error,LoginRequest>({
