@@ -1,17 +1,11 @@
 package com.alabenhajsaad.api.business.supplier_order;
 
-import com.alabenhajsaad.api.business.client_order.ClientOrder;
-import com.alabenhajsaad.api.business.client_order.ClientOrderSpecification;
-import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
-import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLineRepository;
 import com.alabenhajsaad.api.business.utils.CodeGeneratorService;
 import com.alabenhajsaad.api.business.product.external.ProductExternalService;
-import com.alabenhajsaad.api.business.utils.DeliveryStatus;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.business.utils.ReceptionStatus;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +27,6 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     private final SupplierOrderRepository repository;
     private final ProductExternalService productService ;
     private final ProductExternalService productExternalService ;
-    private final SupplierOrderLineRepository lineRepository;
 
     @Override
     public SupplierOrder saveSupplierOrder(SupplierOrder supplierOrder) {
@@ -97,7 +90,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
                     productExternalService.undoUpdateProductQuantityAndLastSalePrice(
                             oldLine.getProduct().getId(), oldLine.getQuantity());
                 }
-                lineRepository.deleteById(oldOrder.getId());
+               // lineRepository.deleteById(oldOrder.getId());
             }
             return toRemove;
         });
@@ -123,7 +116,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
             oldLine.setProduct(newLine.getProduct());
             oldLine.setQuantity(newLine.getQuantity());
             oldLine.setUnitPrice(newLine.getUnitPrice());
-            oldLine.setValueAddedTax(newLine.getValueAddedTax());
+
     }
 
 

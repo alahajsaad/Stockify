@@ -1,12 +1,18 @@
 package com.alabenhajsaad.api.business.category;
 
+import com.alabenhajsaad.api.business.product.Product;
+import com.alabenhajsaad.api.business.product.ProductSpecification;
+import com.alabenhajsaad.api.business.product.StockStatus;
 import com.alabenhajsaad.api.business.product.external.ProductExternalService;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,9 +46,10 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public List<Category> getAllCategory() {
-        return repository.findAll();
+    public Page<Category> getCategories(Pageable pageable, String keyword) {
+        return repository.findAll(CategorieSpecification.hasKeyword(keyword), pageable);
     }
+
 
     @Override
     public Category getCategoryById(int id) {
@@ -64,11 +71,7 @@ public class CategoryServiceImpl implements CategoryService{
         repository.deleteById(id);
     }
 
-    @Override
-    public List<Category> searchCategory(String searchKey) {
-        Pageable pageable = PageRequest.of(0, 5);
-        return repository.findByNameStartingWith(searchKey , pageable).getContent();
-    }
+
 
 
 

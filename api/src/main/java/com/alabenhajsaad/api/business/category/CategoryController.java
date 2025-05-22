@@ -2,6 +2,8 @@ package com.alabenhajsaad.api.business.category;
 
 import com.alabenhajsaad.api.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +29,7 @@ public class CategoryController {
         );
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<Category>>> searchCategory(@RequestParam String searchKey) {
-        return ResponseEntity.ok(
-                ApiResponse.success(service.searchCategory(searchKey))
-        );
-    }
+
     @PutMapping
     public ResponseEntity<ApiResponse<Category>> updateCategory(@RequestBody Category category) {
         return ResponseEntity.ok(
@@ -41,9 +38,13 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Category>>> getAllCategories() {
+    public ResponseEntity<ApiResponse<Page<Category>>> getCategories(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "8") Integer size
+    ) {
         return ResponseEntity.ok(
-                ApiResponse.success(service.getAllCategory(), "Liste des catégories récupérée avec succès")
+                ApiResponse.success(service.getCategories(PageRequest.of(page, size),keyword), "Liste des catégories récupérée avec succès")
         );
     }
 

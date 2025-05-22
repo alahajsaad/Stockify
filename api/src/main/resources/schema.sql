@@ -58,9 +58,9 @@ CREATE TABLE IF NOT EXISTS person (
 
 -- Création de la table Client (hérite de Person)
 CREATE TABLE IF NOT EXISTS client (
-                                      id BIGINT PRIMARY KEY,
-                                      FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
-    );
+      id BIGINT PRIMARY KEY,
+      FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
+);
 
 -- Création de la table Supplier (hérite de Person)
 CREATE TABLE IF NOT EXISTS supplier (
@@ -106,27 +106,58 @@ CREATE TABLE client_order (
 
 -- Création de la table supplier_order_line (ligne de commande fournisseur)
 CREATE TABLE supplier_order_line (
-                                     id INT AUTO_INCREMENT PRIMARY KEY,
-                                     product_id INT,
-                                     supplier_order_id INT,
-                                     quantity INT,
-                                     unit_price DECIMAL(10,2),
-                                     value_added_tax DOUBLE,
-                                     FOREIGN KEY (product_id) REFERENCES product(id),
-                                     FOREIGN KEY (supplier_order_id) REFERENCES supplier_order(id) ON DELETE CASCADE
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     product_id INT,
+     supplier_order_id INT,
+     quantity INT,
+     unit_price DECIMAL(10,2),
+     FOREIGN KEY (product_id) REFERENCES product(id),
+     FOREIGN KEY (supplier_order_id) REFERENCES supplier_order(id) ON DELETE CASCADE
 );
 
 -- Création de la table client_order_line (ligne de commande client)
 CREATE TABLE client_order_line (
-                                   id INT AUTO_INCREMENT PRIMARY KEY,
-                                   product_id INT,
-                                   client_order_id INT,
-                                   quantity INT,
-                                   unit_price DECIMAL(10,2),
-                                   value_added_tax DOUBLE,
-                                   FOREIGN KEY (product_id) REFERENCES product(id),
-                                   FOREIGN KEY (client_order_id) REFERENCES client_order(id) ON DELETE CASCADE
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       product_id INT,
+       client_order_id INT,
+       quantity INT,
+       unit_price DECIMAL(10,2),
+       FOREIGN KEY (product_id) REFERENCES product(id),
+       FOREIGN KEY (client_order_id) REFERENCES client_order(id) ON DELETE CASCADE
 );
+
+
+CREATE OR REPLACE VIEW product_transactions AS
+SELECT
+    col.id AS line_id,
+    co.order_number AS order_number,
+    col.product_id,
+    col.quantity,
+    col.unit_price,
+    'SALE' AS transaction_type,
+    c.id AS counterpart_id,
+    c.name AS counterpart_name,
+    co.created_at AS transaction_date
+FROM client_order_line col
+         JOIN client_order co ON col.order_id = co.id
+         JOIN client c ON co.client_id = c.id
+
+UNION ALL
+
+SELECT
+    sol.id AS line_id,
+    so.order_number AS order_number,
+    sol.product_id,
+    sol.quantity,
+    sol.unit_price,
+    'PURCHASE' AS transaction_type,
+    s.id AS counterpart_id,
+    s.name AS counterpart_name,
+    so.created_at AS transaction_date
+FROM supplier_order_line sol
+         JOIN supplier_order so ON sol.order_id = so.id
+         JOIN supplier s ON so.supplier_id = s.id;
+
 
 -- Création d'index pour améliorer les performances
 CREATE INDEX idx_supplier_order_supplier ON supplier_order(supplier_id);

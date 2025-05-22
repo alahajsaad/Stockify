@@ -1,7 +1,7 @@
 package com.alabenhajsaad.api.business.product;
 
-import com.alabenhajsaad.api.business.product.dto.ProductFilter;
-import com.alabenhajsaad.api.business.product.dto.ProductTransactionDTO;
+import com.alabenhajsaad.api.business.product_transaction.ProductTransactionView;
+import com.alabenhajsaad.api.business.product_transaction.ProductTransactionService;
 import com.alabenhajsaad.api.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,43 +19,39 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+
     @PostMapping("/multi")
-    public ResponseEntity<ApiResponse<List<Product>>> addProduct(@RequestBody List<Product> products) {
+    public ResponseEntity<ApiResponse<List<Product>>> addProducts(@RequestBody List<Product> products) {
         return ResponseEntity.ok(ApiResponse.success(productService.addMultipleProducts(products),"Produits ajoutée avec succès"));
     }
+
     @PostMapping
     public ResponseEntity<ApiResponse<Product>> addProduct(@RequestBody Product product) {
         return ResponseEntity.ok(ApiResponse.success(productService.addProduct(product),"Produit ajoutée avec succès"));
     }
+
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<Product>>> getFiltredProducts(
+    public ResponseEntity<ApiResponse<Page<Product>>> getProducts(
             @RequestParam(required = false) StockStatus status,
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "8") Integer size
     ) {
-
         return ResponseEntity.ok(ApiResponse.success(
-                productService.getFiltredProducts(status, keyword, PageRequest.of(page, size))
+                productService.getProducts(status, keyword, PageRequest.of(page, size))
         ));
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Product>> getFiltredProducts(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<Product>> getProductById(@PathVariable Integer id) {
         return ResponseEntity.ok(ApiResponse.success(productService.getProductById(id)));
     }
+
     @PutMapping
     public ResponseEntity<ApiResponse<Product>> updateProduct(@RequestBody Product product) {
         return ResponseEntity.ok(ApiResponse.success(productService.updateProduct(product),"Produit modifier avec sucess"));
     }
 
-    @GetMapping("/{productId}/transactions")
-    public ResponseEntity<Page<ProductTransactionDTO>> getProductTransactions(
-            @PathVariable Integer productId,
-            @PageableDefault(size = 10, sort = "transactionDate", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        return ResponseEntity.ok(productService.getAllProductTransactions(productId, pageable));
-    }
+
 
 }

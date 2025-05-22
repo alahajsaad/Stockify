@@ -2,7 +2,7 @@ package com.alabenhajsaad.api.business.client_order;
 
 import com.alabenhajsaad.api.business.utils.Auditable;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
-import com.alabenhajsaad.api.business.person.client.Client;
+//import com.alabenhajsaad.api.business.partner.old.client.Client;
 import com.alabenhajsaad.api.business.utils.DeliveryStatus;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import jakarta.persistence.*;
@@ -44,8 +44,8 @@ public class ClientOrder extends Auditable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClientOrderLine> orderLines = new ArrayList<>();
 
-    @ManyToOne
-    private Client client;
+//    @ManyToOne
+//    private Client client;
 
     // Helper methods to manage bidirectional relationship
 //    public void addOrderLine(ClientOrderLine orderLine) {

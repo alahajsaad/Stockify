@@ -30,14 +30,10 @@ public class SupplierOrderLine {
     @JsonIgnore
     private SupplierOrder order;
 
-
-
-
     private Integer quantity;
     @Column(name = "unit_price")
     private BigDecimal unitPrice;
-    @Column(name = "value_added_tax")
-    private Double valueAddedTax ;
+
 
     // --- Méthode pour total HT ---
     public BigDecimal getTotalExcludingTax() {

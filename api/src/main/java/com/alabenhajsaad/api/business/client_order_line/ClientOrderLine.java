@@ -36,9 +36,6 @@ public class ClientOrderLine {
     @Column(name = "unit_price")
     private BigDecimal unitPrice;
 
-    @Column(name = "value_added_tax")
-    private Double valueAddedTax ;
-
 
     // --- Méthode pour total HT ---
     public BigDecimal getTotalExcludingTax() {
@@ -48,8 +45,8 @@ public class ClientOrderLine {
 
     // --- Méthode pour total TTC ---
     public BigDecimal getTotalIncludingTax() {
-        if (unitPrice == null || quantity == null || valueAddedTax == null) return BigDecimal.ZERO;
-        BigDecimal tvaRate = BigDecimal.valueOf(valueAddedTax);
+        if (unitPrice == null || quantity == null || product.getVat().getRate() == null) return BigDecimal.ZERO;
+        BigDecimal tvaRate = BigDecimal.valueOf(product.getVat().getRate());
         BigDecimal multiplier = BigDecimal.ONE.add(
                 tvaRate.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)
         );

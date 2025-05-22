@@ -138,7 +138,7 @@ public class ClientOrderServiceImpl implements ClientOrderService{
             oldLine.setUnitPrice(newLine.getUnitPrice());
         }
 
-        oldLine.setValueAddedTax(newLine.getValueAddedTax());
+
     }
 
     private void recalculateTotals(ClientOrder order) {

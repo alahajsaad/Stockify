@@ -11,7 +11,6 @@ public class ProductMapperImpl implements ProductMapper{
         return Product.builder()
                 .designation(dto.designation())
                 .reference(dto.reference())
-
                 .build();
     }
 }
