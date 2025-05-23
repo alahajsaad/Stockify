@@ -5,6 +5,7 @@ import com.alabenhajsaad.api.business.partner.PhoneNumber;
 import com.alabenhajsaad.api.business.partner.RoleType;
 import com.alabenhajsaad.api.business.utils.Auditable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,8 @@ public abstract class Partner extends Auditable {
     @Column(name = "role_type")
     private RoleType roleType;
 
+    @Column(unique = true)
+    @Email(message = "Veuillez saisir une adresse e-mail valide.")
     private String email ;
     @OneToMany(mappedBy = "partner", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
     private List<PhoneNumber> phoneNumbers ;

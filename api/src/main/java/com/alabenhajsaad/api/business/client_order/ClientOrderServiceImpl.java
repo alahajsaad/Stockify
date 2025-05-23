@@ -1,13 +1,18 @@
 package com.alabenhajsaad.api.business.client_order;
 
 
+import com.alabenhajsaad.api.business.client_order.mapper.ClientOrderMapper;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
+import com.alabenhajsaad.api.business.client_order_line.ClientOrderLineResponseDto;
+import com.alabenhajsaad.api.business.utils.LineAction;
 import com.alabenhajsaad.api.business.product.external.ProductExternalService;
 import com.alabenhajsaad.api.business.utils.CodeGeneratorService;
 import com.alabenhajsaad.api.business.utils.DeliveryStatus;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,15 +22,17 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Objects;
+
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ClientOrderServiceImpl implements ClientOrderService{
     private final ClientOrderRepository repository;
     private final ProductExternalService productExternalService;
+    private final ClientOrderMapper mapper ;
     @Override
     public ClientOrder saveClientOrder(ClientOrder clientOrder) {
 
@@ -56,8 +63,11 @@ public class ClientOrderServiceImpl implements ClientOrderService{
 
 
     @Override
-    public ClientOrder updateClientOrder(ClientOrder clientOrder) {
-        ClientOrder oldClientOrder = getClientOrderById(clientOrder.getId());
+    @Transactional
+    public ClientOrder updateClientOrder(ClientOrderResponseDto clientOrder) {
+        ClientOrder oldClientOrder = repository.findById(clientOrder.id()).orElseThrow(
+                () -> new ResourceNotFoundException("commande client n'est pas trouvee !")
+        );
 
         updateOrderStatus(clientOrder, oldClientOrder);
         updateOrderLines(clientOrder, oldClientOrder);
@@ -66,79 +76,59 @@ public class ClientOrderServiceImpl implements ClientOrderService{
         return repository.save(oldClientOrder);
     }
 
-    private void updateOrderStatus(ClientOrder newOrder, ClientOrder oldOrder) {
-        if (newOrder.getPaymentStatus() != oldOrder.getPaymentStatus()) {
-            oldOrder.setPaymentStatus(newOrder.getPaymentStatus());
+    private void updateOrderStatus(ClientOrderResponseDto newOrder, ClientOrder oldOrder) {
+        if (newOrder.paymentStatus() != oldOrder.getPaymentStatus()) {
+            oldOrder.setPaymentStatus(newOrder.paymentStatus());
         }
-        if (newOrder.getDeliveryStatus() != oldOrder.getDeliveryStatus()) {
-            oldOrder.setDeliveryStatus(newOrder.getDeliveryStatus());
-        }
-    }
-
-    private void updateOrderLines(ClientOrder newOrder, ClientOrder oldOrder) {
-        List<ClientOrderLine> newLines = newOrder.getOrderLines();
-        List<ClientOrderLine> oldLines = oldOrder.getOrderLines();
-
-        Set<Integer> newLineIds = newLines.stream()
-                .filter(line -> line.getId() != null)
-                .map(ClientOrderLine::getId)
-                .collect(Collectors.toSet());
-
-        // Supprimer les lignes supprimées
-        oldLines.removeIf(oldLine -> {
-            boolean toRemove = oldLine.getId() != null && !newLineIds.contains(oldLine.getId());
-            if (toRemove) {
-                oldLine.setOrder(null);
-                productExternalService.undoUpdateProductQuantityAndLastSalePrice(
-                        oldLine.getProduct().getId(), oldLine.getQuantity());
-            }
-            return toRemove;
-        });
-
-        // Ajouter ou mettre à jour les lignes
-        for (ClientOrderLine newLine : newLines) {
-            newLine.setOrder(oldOrder);
-
-            if (newLine.getId() == null) {
-                // nouvelle ligne
-                oldLines.add(newLine);
-                productExternalService.updateProductQuantityAndLastSalePrice(
-                        newLine.getProduct().getId(),
-                        newLine.getQuantity(),
-                        newLine.getUnitPrice());
-            } else {
-                // mise à jour
-                oldLines.stream()
-                        .filter(oldLine -> oldLine.getId().equals(newLine.getId()))
-                        .findFirst()
-                        .ifPresent(oldLine -> updateLine(oldLine, newLine));
-            }
+        if (newOrder.deliveryStatus() != oldOrder.getDeliveryStatus()) {
+            oldOrder.setDeliveryStatus(newOrder.deliveryStatus());
         }
     }
 
-    private void updateLine(ClientOrderLine oldLine, ClientOrderLine newLine) {
-        if (!oldLine.getProduct().getId().equals(newLine.getProduct().getId())) {
-            // produit changé : on annule l'effet précédent et on applique le nouveau
-            productExternalService.undoUpdateProductQuantityAndLastSalePrice(
-                    oldLine.getProduct().getId(), oldLine.getQuantity());
+    private void updateOrderLines(ClientOrderResponseDto updatedOrder, ClientOrder oldOrder) {
+        for (ClientOrderLineResponseDto orderLineDto : updatedOrder.orderLines()) {
+            for (Map.Entry<LineAction, ClientOrderLine> entry : orderLineDto.clientOrderLine().entrySet()) {
+                LineAction action = entry.getKey();
+                ClientOrderLine line = entry.getValue();
 
-            productExternalService.updateProductQuantityAndLastSalePrice(
-                    newLine.getProduct().getId(), newLine.getQuantity(), newLine.getUnitPrice());
+                switch (action) {
+                    case DO_NOTHING -> {
+                        // Nothing to do
+                    }
+                    case DO_REMOVE -> {
+                        productExternalService.undoUpdateProductQuantityAndLastSalePrice(
+                                line.getProduct().getId(), line.getQuantity());
+                        oldOrder.getOrderLines().removeIf(l -> Objects.equals(l.getId(), line.getId()));
+                    }
+                    case DO_SAVE -> {
+                        line.setOrder(oldOrder);
+                        oldOrder.getOrderLines().add(line);
+                        productExternalService.updateProductQuantityAndLastPurchasePrice(
+                                line.getProduct().getId(), line.getQuantity(), line.getUnitPrice());
+                    }
+                    case DO_UPDATE -> {
+                        ClientOrderLine oldLine = oldOrder.getOrderLines().stream()
+                                .filter(l -> Objects.equals(l.getId(), line.getId()))
+                                .findFirst()
+                                .orElse(null);
+                        if (oldLine == null) continue; // or log an error
 
-            oldLine.setProduct(newLine.getProduct());
-            oldLine.setQuantity(newLine.getQuantity());
-            oldLine.setUnitPrice(newLine.getUnitPrice());
-        } else if (!oldLine.getQuantity().equals(newLine.getQuantity())
-                || !oldLine.getUnitPrice().equals(newLine.getUnitPrice())) {
-            // même produit mais quantité/prix changé
-            productExternalService.updateProductQuantityAndLastSalePrice(
-                    newLine.getProduct().getId(), newLine.getQuantity(), newLine.getUnitPrice());
+                        if (!oldLine.getProduct().equals(line.getProduct())) {
+                            oldLine.setProduct(line.getProduct());
+                        }
 
-            oldLine.setQuantity(newLine.getQuantity());
-            oldLine.setUnitPrice(newLine.getUnitPrice());
+                        if (!oldLine.getQuantity().equals(line.getQuantity()) || !oldLine.getUnitPrice().equals(line.getUnitPrice())) {
+                            int delta = line.getQuantity() - oldLine.getQuantity();
+                            oldLine.setQuantity(line.getQuantity());
+                            oldLine.setUnitPrice(line.getUnitPrice());
+                            productExternalService.updateProductQuantityAndLastSalePrice(delta,line.getQuantity(), line.getUnitPrice());
+                        }
+
+
+                    }
+                }
+            }
         }
-
-
     }
 
     private void recalculateTotals(ClientOrder order) {
@@ -172,15 +162,16 @@ public class ClientOrderServiceImpl implements ClientOrderService{
     }
 
     @Override
-    public ClientOrder getClientOrderById(Integer supplierOrderId) {
-        return repository.findById(supplierOrderId).orElseThrow(
+    public ClientOrderResponseDto getClientOrderById(Integer supplierOrderId) {
+        ClientOrder clientOrder = repository.findById(supplierOrderId).orElseThrow(
                 () -> new ResourceNotFoundException("commande client n'est pas trouvee !")
         );
+        return mapper.toClientOrderResponseDto(clientOrder) ;
     }
 
     @Override
     public String getNewClientOrderNumber() {
-        return CodeGeneratorService.generateNew(repository.findLastOrderNumber(),"CMF") ;
+        return CodeGeneratorService.generateNew(repository.findLastOrderNumber(),"CMC") ;
 
     }
 }

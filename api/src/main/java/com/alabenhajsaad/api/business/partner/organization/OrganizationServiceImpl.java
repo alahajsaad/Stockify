@@ -1,6 +1,9 @@
 package com.alabenhajsaad.api.business.partner.organization;
 
+import com.alabenhajsaad.api.business.partner.PhoneNumber;
 import com.alabenhajsaad.api.business.partner.RoleType;
+import com.alabenhajsaad.api.business.partner.person.Person;
+import com.alabenhajsaad.api.business.utils.ErrorMessages;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 import com.alabenhajsaad.api.core.exception.ValidationException;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,21 +17,20 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationRepository organizationRepository;
 
     @Override
+    @Transactional
     public Organization createOrganization(Organization organization) {
-
-        // Vérifier l'unicité du numéro d'enregistrement
         if (organizationRepository.findByRegistrationNumber(organization.getRegistrationNumber()).isPresent()) {
-            throw new ConflictException("Organization with registration number " +
-                    organization.getRegistrationNumber() + " already exists");
+            throw new ConflictException("Une organisation avec le numéro d'enregistrement '" + organization.getRegistrationNumber() + "' existe déjà.");
         }
+        validatePhoneNumbers(organization,false);
         handleOrganizationRelations(organization);
 
         return organizationRepository.save(organization);
@@ -117,4 +119,22 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
     }
 
+    private void validatePhoneNumbers(Organization organization, boolean isUpdate) {
+        List<PhoneNumber> numberList = organization.getPhoneNumbers();
+        if (numberList == null || numberList.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessages.NO_PHONE_NUMBER);
+        }
+
+        numberList.forEach(phone -> {
+            Optional<Organization> existingOrg = organizationRepository.findOrganizationByPhoneNumber(phone.getNumber());
+            if (existingOrg.isPresent()) {
+                boolean sameOrganization = existingOrg.get().getId().equals(organization.getId());
+                if (!isUpdate || !sameOrganization) {
+                    throw new ConflictException("Le numéro de téléphone '" + phone.getNumber() +
+                            "' est déjà utilisé par " + existingOrg.get().getCompanyName());
+
+                }
+            }
+        });
+    }
 }

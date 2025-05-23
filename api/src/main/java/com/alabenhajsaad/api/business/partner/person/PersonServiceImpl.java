@@ -1,7 +1,9 @@
 package com.alabenhajsaad.api.business.partner.person;
 
+import com.alabenhajsaad.api.business.partner.PhoneNumber;
 import com.alabenhajsaad.api.business.partner.RoleType;
 import com.alabenhajsaad.api.business.partner.organization.Organization;
+import com.alabenhajsaad.api.business.utils.ErrorMessages;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -14,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,15 +28,15 @@ public class PersonServiceImpl implements PersonService{
 
     @Override
     public Person createPerson(Person person) {
-        // Vérifier l'unicité du numéro d'enregistrement
         if (personRepository.findByEmail(person.getEmail()).isPresent()) {
-            throw new ConflictException("Organization with registration number " +
-                    person.getEmail() + " already exists");
+            throw new ConflictException("Une personne avec l'adresse e-mail '" + person.getEmail() + "' existe déjà.");
         }
+        validatePhoneNumbers(person, false);
         handlePersonRelations(person);
 
         return personRepository.save(person);
     }
+
 
     @Override
     @Transactional
@@ -113,5 +116,26 @@ public class PersonServiceImpl implements PersonService{
             person.getPhoneNumbers().forEach(phone -> phone.setPartner(person));
         }
     }
+
+    private void validatePhoneNumbers(Person person, boolean isUpdate) {
+        List<PhoneNumber> numberList = person.getPhoneNumbers();
+        if (numberList == null || numberList.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessages.NO_PHONE_NUMBER);
+        }
+
+        numberList.forEach(phone -> {
+            Optional<Person> existingPerson = personRepository.findPersonByPhoneNumber(phone.getNumber());
+            if (existingPerson.isPresent()) {
+                boolean samePerson = existingPerson.get().getId().equals(person.getId());
+                if (!isUpdate || !samePerson) {
+                    throw new ConflictException("Le numéro de téléphone '" + phone.getNumber() +
+                            "' est déjà utilisé par " + existingPerson.get().getFullName());
+
+                }
+            }
+        });
+    }
+
+
 }
 

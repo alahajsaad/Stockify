@@ -22,5 +22,9 @@ public class Person extends Partner {
     @Column(name = "last_name")
     private String lastName;
 
+    public String getFullName() {
+        return this.getFirstName() + " " + this.getLastName();
+    }
+
 }
 

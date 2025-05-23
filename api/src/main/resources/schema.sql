@@ -6,25 +6,21 @@ DROP TABLE IF EXISTS client_order_line;
 DROP TABLE IF EXISTS supplier_order_line;
 DROP TABLE IF EXISTS client_order;
 DROP TABLE IF EXISTS supplier_order;
-DROP TABLE IF EXISTS phone_number;
-DROP TABLE IF EXISTS supplier;
-DROP TABLE IF EXISTS client;
-DROP TABLE IF EXISTS person;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS value_added_tax;
 
 -- Création de la table value_added_tax (taux de TVA)
 CREATE TABLE IF NOT EXISTS value_added_tax (
-                                               id INT AUTO_INCREMENT PRIMARY KEY,
-                                               rate DOUBLE NOT NULL UNIQUE,
-                                               description VARCHAR(255)
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       rate DOUBLE NOT NULL UNIQUE,
+       description VARCHAR(255)
     );
 
 -- Création de la table category (catégorie de produit)
 CREATE TABLE IF NOT EXISTS category (
-                                        id INT AUTO_INCREMENT PRIMARY KEY,
-                                        name VARCHAR(255) UNIQUE
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE
     );
 
 -- Création de la table product (produit)
@@ -45,36 +41,53 @@ CREATE TABLE IF NOT EXISTS product (
     FOREIGN KEY (vat_id) REFERENCES value_added_tax(id)
     );
 
--- Création de la table Person (table parent)
-CREATE TABLE IF NOT EXISTS person (
-        id BIGINT AUTO_INCREMENT PRIMARY KEY,
-        first_name VARCHAR(255),
-        last_name VARCHAR(255),
-        email VARCHAR(255),
-        address VARCHAR(255),
-        created_at DATE,
-        updated_at DATE
-        );
-
--- Création de la table Client (hérite de Person)
-CREATE TABLE IF NOT EXISTS client (
-      id BIGINT PRIMARY KEY,
-      FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
-);
-
--- Création de la table Supplier (hérite de Person)
-CREATE TABLE IF NOT EXISTS supplier (
-                                        id BIGINT PRIMARY KEY,
-                                        FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
+-- Table principale Partner (table parent pour l'héritage)
+CREATE TABLE IF NOT EXISTS partner (
+                                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                       entity_type VARCHAR(50) NOT NULL,
+    role_type VARCHAR(20),
+    email VARCHAR(255) UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255)
     );
 
--- Création de la table PhoneNumber
+-- Table Person (hérite de Partner)
+CREATE TABLE IF NOT EXISTS person (
+                                      id BIGINT PRIMARY KEY,
+                                      first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    FOREIGN KEY (id) REFERENCES partner(id) ON DELETE CASCADE
+    );
+
+-- Table Organization (hérite de Partner)
+CREATE TABLE IF NOT EXISTS organization (
+                                            id BIGINT PRIMARY KEY,
+                                            company_name VARCHAR(255),
+    registration_number VARCHAR(255),
+    tax_number VARCHAR(255),
+    FOREIGN KEY (id) REFERENCES partner(id) ON DELETE CASCADE
+    );
+
+-- Table PhoneNumber
 CREATE TABLE IF NOT EXISTS phone_number (
                                             id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                            number VARCHAR(255),
-    person_id BIGINT,
-    FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE CASCADE
+                                            number VARCHAR(255) UNIQUE,
+    partner_id BIGINT,
+    FOREIGN KEY (partner_id) REFERENCES partner(id) ON DELETE CASCADE
     );
+
+-- Table Address
+CREATE TABLE IF NOT EXISTS address (
+                                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                       street_address VARCHAR(255),
+    city VARCHAR(255),
+    partner_id BIGINT,
+    FOREIGN KEY (partner_id) REFERENCES partner(id) ON DELETE CASCADE
+    );
+
+
 
 -- Création de la table supplier_order (commande fournisseur)
 CREATE TABLE supplier_order (
@@ -84,10 +97,10 @@ CREATE TABLE supplier_order (
                                 total_including_tax DECIMAL(10,2),
                                 payment_status ENUM('ALL', 'PAID', 'UNPAID'),
                                 reception_status ENUM('RECEIVED', 'UNRECEIVED'),
-                                supplier_id BIGINT,
+                                partner_id BIGINT,
                                 created_at DATE,
                                 updated_at DATE,
-                                FOREIGN KEY (supplier_id) REFERENCES supplier(id)
+                                FOREIGN KEY (partner_id) REFERENCES partner(id)
 );
 
 -- Création de la table client_order (commande client)
@@ -98,10 +111,10 @@ CREATE TABLE client_order (
                               total_including_tax DECIMAL(10,2),
                               payment_status ENUM('ALL', 'PAID', 'UNPAID'),
                               delivery_status ENUM('ALL', 'DELIVERED', 'UNDELIVERED'),
-                              client_id BIGINT,
+                              partner_id BIGINT,
                               created_at DATE,
                               updated_at DATE,
-                              FOREIGN KEY (client_id) REFERENCES client(id)
+                              FOREIGN KEY (partner_id) REFERENCES partner(id)
 );
 
 -- Création de la table supplier_order_line (ligne de commande fournisseur)
@@ -168,4 +181,10 @@ CREATE INDEX idx_supplier_order_line_product ON supplier_order_line(product_id);
 CREATE INDEX idx_client_order_line_product ON client_order_line(product_id);
 CREATE INDEX idx_product_category ON product(category_id);
 CREATE INDEX idx_product_vat ON product(vat_id);
-CREATE INDEX idx_phone_person ON phone_number(person_id);
+
+
+-- Index pour améliorer les performances
+CREATE INDEX IF NOT EXISTS idx_partner_email ON partner(email);
+CREATE INDEX IF NOT EXISTS idx_partner_entity_type ON partner(entity_type);
+CREATE INDEX IF NOT EXISTS idx_phone_number_partner_id ON phone_number(partner_id);
+CREATE INDEX IF NOT EXISTS idx_address_partner_id ON address(partner_id);

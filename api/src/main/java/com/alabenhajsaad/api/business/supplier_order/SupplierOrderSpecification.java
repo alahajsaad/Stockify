@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.business.supplier_order;
 
+import com.alabenhajsaad.api.business.client_order.ClientOrder;
 import com.alabenhajsaad.api.business.utils.DeliveryStatus;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.business.utils.ReceptionStatus;
@@ -44,6 +45,14 @@ public class SupplierOrderSpecification {
             return criteriaBuilder.or(
                     criteriaBuilder.like(criteriaBuilder.lower(root.get("client").get("firstName")), pattern)
             );
+        };
+    }
+    public static Specification<SupplierOrder> hasSupplierId(Integer supplierId) {
+        return (root, query, criteriaBuilder) -> {
+            if (supplierId == null) {
+                return criteriaBuilder.conjunction(); // returns a predicate that always evaluates to true
+            }
+            return criteriaBuilder.equal(root.get("partner").get("id"), supplierId);
         };
     }
 }

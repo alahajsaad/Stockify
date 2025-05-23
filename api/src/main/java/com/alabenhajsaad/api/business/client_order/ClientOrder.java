@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.business.client_order;
 
+import com.alabenhajsaad.api.business.partner.partner.Partner;
 import com.alabenhajsaad.api.business.utils.Auditable;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
 //import com.alabenhajsaad.api.business.partner.old.client.Client;
@@ -44,27 +45,9 @@ public class ClientOrder extends Auditable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClientOrderLine> orderLines = new ArrayList<>();
 
-//    @ManyToOne
-//    private Client client;
+    @ManyToOne
+    @JoinColumn(name = "partner_id", nullable = false)
+    private Partner partner;
 
-    // Helper methods to manage bidirectional relationship
-//    public void addOrderLine(ClientOrderLine orderLine) {
-//        orderLines.add(orderLine);
-//        orderLine.setOrder(this);
-//    }
-//
-//    public void removeOrderLine(ClientOrderLine orderLine) {
-//        orderLines.remove(orderLine);
-//        orderLine.setOrder(null);
-//    }
-//
-//    public void setOrderLines(List<ClientOrderLine> orderLines) {
-//        // Clear existing lines
-//        this.orderLines.clear();
-//
-//        // Add all new lines and maintain the relationship
-//        if (orderLines != null) {
-//            orderLines.forEach(this::addOrderLine);
-//        }
-//    }
+
 }

@@ -9,8 +9,8 @@ import java.time.LocalDate;
 
 public interface ClientOrderService {
     ClientOrder saveClientOrder(ClientOrder clientOrder);
-    ClientOrder updateClientOrder(ClientOrder clientOrder);
+    ClientOrder updateClientOrder(ClientOrderResponseDto clientOrder);
     Page<ClientOrder> getClientOrders(Pageable pageable, LocalDate fromDate , LocalDate toDate , DeliveryStatus deliveryStatus , PaymentStatus paymentStatus, String keyWord ,Integer clientId);
-    ClientOrder getClientOrderById(Integer clientOrderId);
+    ClientOrderResponseDto getClientOrderById(Integer clientOrderId);
     String getNewClientOrderNumber();
 }

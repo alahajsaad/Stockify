@@ -52,7 +52,7 @@ public class ClientOrderSpecification {
             if (clientId == null) {
                 return criteriaBuilder.conjunction(); // returns a predicate that always evaluates to true
             }
-            return criteriaBuilder.equal(root.get("client").get("id"), clientId);
+            return criteriaBuilder.equal(root.get("partner").get("id"), clientId);
         };
     }
 

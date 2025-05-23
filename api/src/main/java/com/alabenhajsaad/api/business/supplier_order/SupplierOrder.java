@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.business.supplier_order;
 
+import com.alabenhajsaad.api.business.partner.partner.Partner;
 import com.alabenhajsaad.api.business.utils.*;
 //import com.alabenhajsaad.api.business.partner.old.supplier.Supplier;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
@@ -42,8 +43,9 @@ public class SupplierOrder extends Auditable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SupplierOrderLine> orderLines = new ArrayList<>();
 
-//    @ManyToOne
-//    private Supplier supplier;
+    @ManyToOne
+    @JoinColumn(name = "partner_id", nullable = false)
+    private Partner partner;
 
     // Helper methods to manage bidirectional relationship
     public void addOrderLine(SupplierOrderLine orderLine) {
