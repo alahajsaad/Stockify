@@ -27,7 +27,6 @@ public class TenantFilter extends OncePerRequestFilter {
             "/api/v1/auth/**",
             "/api/v1/datasource",
             "/v3/api-docs/**",
-            "/v3/api-docs/**",
             "/swagger-ui/**"
     );
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
@@ -46,6 +45,10 @@ public class TenantFilter extends OncePerRequestFilter {
             String authHeader = request.getHeader("Authorization");
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
+                if(jwtService.isSuperAdminToken(token)){
+                    filterChain.doFilter(request, response); // proceed for SUPER_ADMIN
+                    return;
+                }
                 String tenantId = jwtService.getTenantIdFromToken(token);
                 if (tenantId != null) {
                     TenantContext.setCurrentTenant(tenantId);

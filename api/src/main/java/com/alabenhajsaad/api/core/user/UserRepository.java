@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.core.user;
 
+import com.alabenhajsaad.api.core.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface UserRepository extends JpaRepository<AppUser, Integer> {
     Boolean existsByEmail(String email);
     List<AppUser> findUsersByCompany_Id(Integer companyId);
     Optional<AppUser> findByEmail(String username);
+    Optional<AppUser> findByRole(Role role);
 }

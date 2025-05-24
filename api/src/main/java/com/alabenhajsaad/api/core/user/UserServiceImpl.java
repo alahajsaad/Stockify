@@ -2,6 +2,8 @@ package com.alabenhajsaad.api.core.user;
 
 
 import com.alabenhajsaad.api.core.company.Company;
+import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceService;
+import com.alabenhajsaad.api.core.datasource_config.multitenant.DynamicDataSourceService;
 import com.alabenhajsaad.api.core.exception.InactiveUserExistsException;
 import com.alabenhajsaad.api.core.user_account_activation.TokenService;
 import com.alabenhajsaad.api.core.user.mapper.UserMapper;
@@ -12,10 +14,12 @@ import com.alabenhajsaad.api.core.exception.ConflictException;
 import com.alabenhajsaad.api.core.user.dto.UserCreationDto;
 import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
 import com.alabenhajsaad.api.core.user.dto.UserUpdateHigthLevelDto;
+import com.alabenhajsaad.api.core.utils.CodeGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,37 +38,42 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper ;
     private final TokenService tokenService ;
     private final UserCompanyRelationService companyService ;
+    private final DynamicDataSourceService dynamicDataSourceService;
+    private final DataSourceService dataSourceService ;
+    @Value("${database.tenant.prefix}")
+    private String dbPrefix;
 
     @Override
     @Transactional(dontRollbackOn = InactiveUserExistsException.class)
     public UserResponseDto createAdminAccount(UserCreationDto dto) {
-
-
-        Optional<AppUser> existingUserOptional = repository.findByEmail(dto.email());
-
-        if (existingUserOptional.isPresent()) {
-            AppUser existingUser = existingUserOptional.get();
-
-            // Null-safe company check
-            boolean hasCompany = existingUser.getCompany() != null &&
-                    existingUser.getCompany().getId() != null;
-
-            if (existingUser.getStatus() == EntityStatus.ACTIVE) {
-                if (hasCompany) {
-                    throw new ConflictException("User with email already has a company");
-                }
-                throw new ConflictException("User with email already has an active account");
-            }
-
-            // For inactive users
-            tokenService.sendValidationEmail(existingUser);
-            throw new InactiveUserExistsException("User with email exists. Validation email sent.");
+        // check if the user already exists
+        if(Boolean.TRUE.equals(repository.existsByEmail(dto.email()))){
+            throw new ConflictException("vous avez deja un compte administrateur") ;
         }
+
+
+        // Generate tenant ID and set it
+        String tenantId = CodeGenerator.generateBase64TenantId();
+        // Construct the database URL dynamically
+        String databaseUrl = dbPrefix + tenantId + "?createDatabaseIfNotExist=true";
 
         AppUser user = mapper.toUser(dto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ADMIN);
         user.setStatus(EntityStatus.INACTIVE);
+        user.setTenantId(tenantId);
+
+        try {
+            // Register new tenant
+            dynamicDataSourceService.registerTenant(tenantId, databaseUrl);
+            dataSourceService.addDataSource(tenantId,databaseUrl);
+
+        } catch (Exception e) {
+            // Log the error and handle rollback properly
+            log.error("Failed to register tenant {}: {}", tenantId, e.getMessage(), e);
+            throw new RuntimeException("Error during registring the db, please try again.");
+        }
+
         var savedUser = repository.save(user);
 
         tokenService.sendValidationEmail(savedUser);
@@ -72,13 +81,12 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     @Transactional
-    // This function is used by the company admin to add a new employee.
-    // It adds a new employee along with their company and updates the number of users in the company.
     public AppUser createEmployeeAccount(UserCreationDto dto , Integer companyId) {
-        AppUser user = mapper.toUser(dto);
-        if(repository.existsByEmail(user.getEmail()) || repository.existsByTelegramId(user.getTelegramId())){
-            throw new ConflictException("L'utilisateur existe déjà",repository.findByEmail(user.getEmail()).get().getId());
+        if(Boolean.TRUE.equals(repository.existsByEmail(dto.email()))){
+            throw new ConflictException("cette employee a deja un compte avec l'adress email :"+dto.email());
         }
+
+        AppUser user = mapper.toUser(dto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.EMPLOYEE);
         user.setStatus(EntityStatus.ACTIVE);

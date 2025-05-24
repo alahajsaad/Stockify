@@ -36,57 +36,27 @@ public class CompanyServiceImpl implements CompanyService {
     private final FileLoader fileLoader;
     private final CompanyMapper mapper ;
     private final CompanyUserRelationService userService;
-    private final DynamicDataSourceService dynamicDataSourceService;
-    private final com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceService dataSourceService;
-
-    @Value("${database.tenant.prefix}")
-    private String dbPrefix;
-
 
     @Override
     @Transactional
-    // todo - one single company per admin
     public CompanyResponseDto createCompany(CompanyCreationDto dto, Integer adminId) {
         // Check if tax number already exists
         if (Boolean.TRUE.equals(repository.existsByTaxNumber(dto.taxNumber()))) {
             throw new ConflictException("Une entreprise avec ce numéro fiscal : " + dto.taxNumber() + " existe déjà");
         }
-
         // Convert DTO to Entity
         Company company = mapper.toCompany(dto);
-
         // Upload logo if provided
         if (dto.logo() != null) {
             company.setLogo(fileLoader.uploadFile(dto.logo()));
         }
-
-        // Generate tenant ID and set it
-        String tenantId = generateBase64TenantId();
-        company.setTenantId(tenantId);
-
         // Assign admin to the company
         AppUser admin = userService.getUserById(adminId);
         admin.setCompany(company);
-        admin.setTenantId(tenantId);
         userService.updateUser(admin);
 
-        // Set initial company state
+        company.setTenantId(admin.getTenantId());
         company.setNumberOfUser(1);
-
-        // Construct the database URL dynamically
-        String databaseUrl = dbPrefix + tenantId + "?createDatabaseIfNotExist=true";
-
-
-        try {
-            // Register new tenant
-            dynamicDataSourceService.registerTenant(tenantId, databaseUrl);
-            dataSourceService.addDataSource(tenantId,databaseUrl);
-
-        } catch (Exception e) {
-            // Log the error and handle rollback properly
-            log.error("Failed to register tenant {}: {}", tenantId, e.getMessage(), e);
-            throw new RuntimeException("Error during company creation, please try again.");
-        }
 
         // Persist the company entity
         return mapper.toCompanyResponseDto(repository.save(company));
@@ -134,16 +104,5 @@ public class CompanyServiceImpl implements CompanyService {
     public Company getCompanyById(Integer id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found"));
-    }
-
-
-    public static String generateBase64TenantId() {
-        UUID uuid = UUID.randomUUID();
-        ByteBuffer byteBuffer = ByteBuffer.allocate(16);
-        byteBuffer.putLong(uuid.getMostSignificantBits());
-        byteBuffer.putLong(uuid.getLeastSignificantBits());
-
-        // Encode to Base64 URL-safe and remove trailing '=' padding
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(byteBuffer.array());
     }
 }
