@@ -49,6 +49,8 @@ public class CompanyController {
         return ResponseEntity.ok(ApiResponse.success(company,"Entreprise bien trouvée"));
     }
 
+
+
     @GetMapping("/{id}/logo")
     public ResponseEntity<Resource> getCompanyLogo(@PathVariable Integer id) {
         Company company = companyService.getCompanyById(id);
@@ -74,8 +76,10 @@ public class CompanyController {
     }
 
 
-    @PutMapping
-    public ResponseEntity<ApiResponse<Company>> updateCompany(@RequestBody CompanyCreationDto dto) {
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<Company>> updateCompany(
+            @ModelAttribute CompanyCreationDto dto
+    ) {
         return ResponseEntity.ok(ApiResponse.success(companyService.updateCompany(dto),"Entreprise mise à jour avec succès"));
     }
 

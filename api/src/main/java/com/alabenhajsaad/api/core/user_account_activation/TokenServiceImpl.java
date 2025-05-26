@@ -22,7 +22,6 @@ public class TokenServiceImpl implements TokenService {
     private final TokenRepository repository;
     private final UserRepository userRepository;
     private final EmailService emailService;
-    private final CodeGenerator codeGenerator;
     @Transactional(noRollbackFor = TokenHasExpiredException.class)
     public void activateAccount(String token) {
         Token savedToken = repository.findByToken(token)
@@ -46,7 +45,7 @@ public class TokenServiceImpl implements TokenService {
 
     private String generateAndSaveActivationToken(AppUser user) {
         // Generate a token
-        String generatedToken = codeGenerator.generate(6);
+        String generatedToken = CodeGenerator.generate(6);
         var token = Token.builder()
                 .token(generatedToken)
                 .createdAt(LocalDateTime.now())

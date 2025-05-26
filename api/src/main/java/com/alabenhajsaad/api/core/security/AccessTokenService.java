@@ -26,11 +26,16 @@ public class AccessTokenService {
                 .issuedAt(now)
                 .expiresAt(now.plus(15, ChronoUnit.MINUTES)) // Consider refresh tokens
                 .subject(user.getUsername())
+                .claim("id",user.getId())
+                .claim("fullName", user.getFullName())
+                .claim("companyId", user.getCompany() != null && user.getCompany().getId() != null ? user.getCompany().getId() : 0L)
+
                 .claim("scope", ROLE_PREFIX + user.getRole());
 
         if (user.getRole() != Role.SUPER_ADMIN) {
-            claimsBuilder.claim("fullName", user.getFullName());
             claimsBuilder.claim("tenantId", user.getTenantId());
+
+
         }
 
         JwtClaimsSet claims = claimsBuilder.build();

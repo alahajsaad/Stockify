@@ -31,10 +31,13 @@ public class Company {
     private String zipCode;
     private String logo ;
     private Integer numberOfUser ;
-    private boolean isNew ;
+    private Boolean isNew ;
     private String tenantId ;
     @Enumerated(EnumType.STRING)
     private Subscription subscription;
+
+    private LocalDate subscriptionStartDate;
+    private LocalDate subscriptionEndDate;
 
     private LocalDate createdAt ;
     private LocalDate updatedAt ;
@@ -54,9 +57,7 @@ public class Company {
         this.updatedAt = LocalDate.now();
     }
 
-    public boolean isActive() {
-        return !this.subscription.equals(Subscription.BLOCKED);
-    }
+
 
 
 }

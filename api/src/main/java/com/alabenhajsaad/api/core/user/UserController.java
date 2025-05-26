@@ -43,6 +43,8 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(userService.getUsersByCompany(id),"Utilisateurs bien trouvés"));
     }
 
+
+
     @GetMapping()
     public ResponseEntity<ApiResponse<UserResponseDto>> getUserById(@RequestParam Integer id) {
         return ResponseEntity.ok(ApiResponse.success(userService.getUserDetailsById(id)));

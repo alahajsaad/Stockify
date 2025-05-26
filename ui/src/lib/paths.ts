@@ -5,7 +5,7 @@ export const Paths = {
     home: "/home",
     about: "/about",
     contact: "/contact",
-    dashboard: "/dashboard",
+    dashboard: "dashboard",
     calorieCalculator: "/mifflin-st-jeor-equation-calculator-for-nutrition",
     profile: "/profile",
     adminPage: "/admin/admin-panel",
@@ -30,7 +30,8 @@ export const Paths = {
     supplierOrders:"supplierOrders",
     addSupplierOrder:"supplierOrder/add",
     clientOrders:"clientOrders",
-    addClientOrder:"clientOrder/add"
+    addClientOrder:"clientOrder/add",
+    company:"company" 
 
 
   };

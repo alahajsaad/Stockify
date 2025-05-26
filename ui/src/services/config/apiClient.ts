@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 import { TokenService } from 'src/features/auth/components/AuthProvider';
+import { BASE_URL } from 'src/lib/utils';
 
 export type ApiResponse<T> = {
   status: 'success' | 'error';
@@ -9,7 +10,7 @@ export type ApiResponse<T> = {
 
 // Create axios instance
 const client = axios.create({
-  baseURL: 'http://localhost:8088/api/v1',
+  baseURL: BASE_URL,
   withCredentials: true, // Important for cookies to be sent with requests
 });
 

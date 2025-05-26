@@ -2,7 +2,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { ApiResponse, LoginRequest, LoginResponse, PasswordResetRequestDto } from "src/types";
-import request from "./request";
+import request from "../config/request";
 
 
 

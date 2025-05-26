@@ -18,15 +18,10 @@ public class CompanyMapperImpl implements CompanyMapper {
                 .address(dto.address())
                 .city(dto.city())
                 .zipCode(dto.zipCode())
-                .subscription(Subscription.FIFTEEN_DAY_TRIAL)
-                .isNew(true)
                 .build();
     }
 
-    @Override
-    public void updateCompanyFromDto(CompanyCreationDto dto, Company existingCompany) {
 
-    }
 
     @Override
     public CompanyResponseDto toCompanyResponseDto(Company company) {

@@ -25,7 +25,7 @@ export type UserResponseDto = {
     email : string
     role : Role,
     status : EntityStatus,
-    company? : CompanyResponseDto
+    //company? : CompanyResponseDto
 } 
 
 

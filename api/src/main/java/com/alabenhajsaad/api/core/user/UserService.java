@@ -18,4 +18,5 @@ public interface UserService {
     void changePassword(String email, String password , String confirmedPassword);
     UserResponseDto getUserDetailsById(Integer id);
     UserResponseDto findUserByEmail(String email);
+
 }

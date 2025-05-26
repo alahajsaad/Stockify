@@ -1,4 +1,4 @@
-export type { TokenPayload } from '../features/auth/types/TokenPayload'; 
+
 
 
 export type ApiResponse<T> = {
@@ -48,10 +48,14 @@ export type PasswordResetRequestDto = {
 }
 export type { CompanyCreationDto } from "./company"
 export type { CompanyResponseDto } from "./company"
+export type { Company } from "./company"
 
 export type { User } from './user'
 export type { CreateAdminResponse } from './user'
 export type { UserResponseDto } from './user'
 export type { AdminInscriptionStatus } from './user'
+export type { Role } from './TokenPayload'
+export type { TokenPayload } from './TokenPayload'
+
 
 

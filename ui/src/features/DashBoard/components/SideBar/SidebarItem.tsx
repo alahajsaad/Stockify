@@ -46,6 +46,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             
             {addlink && (
               <div className="ml-2 flex items-center">
+                // TODO: Refactor this function to improve performance
                 <Link
                   to={addlink}
                   onClick={(e) => e.stopPropagation()}

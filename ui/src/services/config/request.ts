@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
+import { BASE_URL } from 'src/lib/utils';
 
 
 export type ApiResponse<T> = {
@@ -8,7 +9,7 @@ export type ApiResponse<T> = {
 };
 
 const client = axios.create({
-  baseURL: 'http://localhost:8088/api/v1',
+  baseURL:   BASE_URL,
 });
 
 

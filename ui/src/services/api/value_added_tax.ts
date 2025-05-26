@@ -1,7 +1,7 @@
 import { ApiResponse, valueAddedTax, valueAddedTaxFullDto } from "src/types";
 import { toastHandler } from "./toastHandler";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import request from "./apiClient";
+import request from "../config/apiClient";
 
 
 

@@ -8,6 +8,7 @@ import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProje
 
 import com.alabenhajsaad.api.core.datasource_config.multitenant.DynamicDataSourceService;
 import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceEntity;
+import com.alabenhajsaad.api.core.enums.Subscription;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 
 import com.alabenhajsaad.api.fileManager.FileLoader;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +57,10 @@ public class CompanyServiceImpl implements CompanyService {
         admin.setCompany(company);
         userService.updateUser(admin);
 
+        company.setSubscription(Subscription.FIFTEEN_DAY_TRIAL);
+        company.setIsNew(Boolean.TRUE);
+        company.setSubscriptionStartDate(LocalDate.now());
+        company.setSubscriptionEndDate(LocalDate.now().plusDays(15));
         company.setTenantId(admin.getTenantId());
         company.setNumberOfUser(1);
 
@@ -67,12 +73,41 @@ public class CompanyServiceImpl implements CompanyService {
     public Company updateCompany(CompanyCreationDto dto) {
         Company existingCompany = getCompanyById(dto.id());
 
-        mapper.updateCompanyFromDto(dto, existingCompany);
-        if (dto.logo() != null) {
+        if (dto.name() != null && !dto.name().equals(existingCompany.getName())) {
+            existingCompany.setName(dto.name());
+        }
+
+        if (dto.taxNumber() != null && !dto.taxNumber().equals(existingCompany.getTaxNumber())) {
+            existingCompany.setTaxNumber(dto.taxNumber());
+        }
+
+        if (dto.email() != null && !dto.email().equals(existingCompany.getEmail())) {
+            existingCompany.setEmail(dto.email());
+        }
+
+        if (dto.phone() != null && !dto.phone().equals(existingCompany.getPhone())) {
+            existingCompany.setPhone(dto.phone());
+        }
+
+        if (dto.address() != null && !dto.address().equals(existingCompany.getAddress())) {
+            existingCompany.setAddress(dto.address());
+        }
+
+        if (dto.city() != null && !dto.city().equals(existingCompany.getCity())) {
+            existingCompany.setCity(dto.city());
+        }
+
+        if (dto.zipCode() != null && !dto.zipCode().equals(existingCompany.getZipCode())) {
+            existingCompany.setZipCode(dto.zipCode());
+        }
+
+        if (dto.logo() != null && !dto.logo().isEmpty()) {
             existingCompany.setLogo(fileLoader.uploadFile(dto.logo()));
         }
+
         return repository.save(existingCompany);
     }
+
 
     @Override
     public List<CompanyFirstViewProjection> getNewCompanies() {
@@ -85,24 +120,27 @@ public class CompanyServiceImpl implements CompanyService {
         return repository.findCompanyByIdWithEmployeeView(id);
     }
 
-//    @Override
-//    public Page<CompanyProjection> getFiltredCompanies(
-//            String name ,
-//            Subscription subscription ,
-//            LocalDate startDate ,
-//            LocalDate endDate ,
-//            Pageable pageable)
-//    {
-//        Specification<CompanyProjection> spec = Specification
-//                .where(CompanySpecification.hasSubscription(subscription))
-//                .and();
-//        return repository.findAll(spec, pageable);
-//    }
+
 
 
     @Override
     public Company getCompanyById(Integer id) {
-        return repository.findById(id)
+        Company company = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+        checkAndUpdateSubscriptionStatus(company);
+
+        return company;
+    }
+
+
+    public void checkAndUpdateSubscriptionStatus(Company company) {
+        if (company.getSubscription() != Subscription.EXPIRED
+                && company.getSubscriptionEndDate() != null
+                && company.getSubscriptionEndDate().isBefore(LocalDate.now())) {
+
+            company.setSubscription(Subscription.EXPIRED);
+            repository.save(company);
+        }
     }
 }

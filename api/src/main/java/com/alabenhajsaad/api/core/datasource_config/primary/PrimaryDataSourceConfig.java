@@ -45,6 +45,7 @@ public class PrimaryDataSourceConfig {
         bean.setDataSource(dataSource);
         bean.setPackagesToScan("com.alabenhajsaad.api.core");
 
+
         JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         bean.setJpaVendorAdapter(adapter);
 

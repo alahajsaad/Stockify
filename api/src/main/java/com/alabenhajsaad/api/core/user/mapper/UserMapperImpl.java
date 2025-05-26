@@ -75,9 +75,9 @@ public class UserMapperImpl implements UserMapper{
                 .email(user.getEmail())
                 .role(user.getRole())
                 .status(user.getStatus())
-                .company(user.getCompany() == null
-                        ? null
-                        : companyMapper.toCompanyResponseDto(user.getCompany()))
+//                .company(user.getCompany() == null
+//                        ? null
+//                        : companyMapper.toCompanyResponseDto(user.getCompany()))
                 .build();
     }
 

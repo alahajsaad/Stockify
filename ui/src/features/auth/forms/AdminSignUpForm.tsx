@@ -78,31 +78,31 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep, setAdmin }) => {
       onError: (error: any) => {
         const errorMessage = error?.response?.data?.message || error?.message || "Une erreur s'est produite";
         
-        // Case 1: User already has a company
-        if (errorMessage.includes("User with email already has a company")) {
-          toast.info("Vous avez déjà une entreprise, essayez de vous connecter!");
+        // Case 1: User already has an active account
+        if (errorMessage.includes("Vous avez déjà un compte administrateur.")) {
+          toast.info("Vous avez déjà inscrit, essayez de vous connecter!");
           navigate('/?login=true');
           return;
         }
         
-        // Case 2: User has an active account but no company
-        if (errorMessage.includes("User with email already has an active account")) {
-          fetchAdminData()
-            .then(response => {
-              if (response?.data) {
-                setAdmin(response.data);
-                setStep(3); // Skip to company creation
-                toast.info("Vous avez déjà un compte administrateur, créez votre entreprise maintenant!");
-              }
-            })
-            .catch(() => {
-              setFormError("Impossible de récupérer les informations de votre compte");
-            });
-          return;
-        }
+        // // Case 2: User has an active account but no company
+        // if (errorMessage.includes("User with email already has an active account")) {
+        //   fetchAdminData()
+        //     .then(response => {
+        //       if (response?.data) {
+        //         setAdmin(response.data);
+        //         setStep(3); // Skip to company creation
+        //         toast.info("Vous avez déjà un compte administrateur, créez votre entreprise maintenant!");
+        //       }
+        //     })
+        //     .catch(() => {
+        //       setFormError("Impossible de récupérer les informations de votre compte");
+        //     });
+        //   return;
+        // }
         
         // Case 3: User exists but needs validation
-        if (errorMessage.includes("User with email exists. Validation email sent")) {
+        if (errorMessage.includes("Le compte existe mais n'est pas actif.")) {
           fetchAdminData()
             .then(response => {
               if (response?.data) {

@@ -8,5 +8,5 @@ export function cn(...inputs: ClassValue[]) {
 const isLocal = window.location.hostname === 'localhost';
 
 export const BASE_URL = isLocal 
-  ? `http://localhost:8080/api` 
-  : `http://${window.location.hostname}:8080/api`;
+  ? `http://localhost:8088/api/v1` 
+  : `http://${window.location.hostname}:8080/api/v1`;

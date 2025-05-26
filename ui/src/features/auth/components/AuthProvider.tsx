@@ -50,6 +50,7 @@ type AuthContextType = {
   setAuthLoading: (isAuthLoading: boolean) => void;
   setIsAuthenticated: (bool: boolean) => void;
   refreshToken: () => Promise<boolean>;
+  updateUser : (updatedUser: TokenPayload) => void ;
 };
 
 // Create the Auth Context
@@ -116,21 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const decoded = jwtDecode<TokenPayload>(token);
     setUser(decoded);
     setAuthLoading(false);
-    
-    // Redirect based on role
-    switch (decoded.scope) {
-      case 'ROLE_ADMIN':
-        navigate('/dashboard');
-        break;
-      case 'ROLE_TECHNICIAN':
-        navigate('/technician');
-        break;
-      case 'ROLE_SECRETARY':
-        navigate('/secretary');
-        break;
-      default:
-        navigate('/dashboard');
-    }
+    navigate('/dashboard');
   };
 
   // Logout function
@@ -160,6 +147,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateUser = (updatedUser: TokenPayload) => {
+    setUser(updatedUser);
+};
+
   // Provide auth context
   return (
     <AuthContext.Provider value={{ 
@@ -170,7 +161,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setAuthLoading, 
       isAuthLoading, 
       setIsAuthenticated,
-      refreshToken 
+      refreshToken ,
+      updateUser
     }}>
       {children}
     </AuthContext.Provider>

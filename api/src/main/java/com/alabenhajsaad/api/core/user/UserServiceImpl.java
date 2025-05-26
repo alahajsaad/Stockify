@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -46,12 +47,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(dontRollbackOn = InactiveUserExistsException.class)
     public UserResponseDto createAdminAccount(UserCreationDto dto) {
-        // check if the user already exists
-        if(Boolean.TRUE.equals(repository.existsByEmail(dto.email()))){
-            throw new ConflictException("vous avez deja un compte administrateur") ;
+        Optional<AppUser> optionalUser = repository.findByEmail(dto.email());
+
+        if (optionalUser.isPresent()) {
+            AppUser savedUser = optionalUser.get();
+
+            if (savedUser.getStatus() == EntityStatus.INACTIVE) {
+                tokenService.sendValidationEmail(savedUser);
+                throw new InactiveUserExistsException("Le compte existe mais n'est pas actif.");
+            }
+            throw new ConflictException("Vous avez déjà un compte administrateur.");
         }
-
-
         // Generate tenant ID and set it
         String tenantId = CodeGenerator.generateBase64TenantId();
         // Construct the database URL dynamically
@@ -130,10 +136,8 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException("Company does not exist");
         }
 
-        List<AppUser> users = repository.findUsersByCompany_Id(companyId);
-        if (users.isEmpty()) {
-            return Collections.emptyList();
-        }
+        List<AppUser> users = Optional.ofNullable(repository.findUsersByCompany_Id(companyId))
+                .orElse(Collections.emptyList());
 
         return users.stream()
                 .map(mapper::toUserResponseDto)
@@ -174,6 +178,9 @@ public class UserServiceImpl implements UserService {
                 orElseThrow(() -> new EntityNotFoundException("User not found"));
         return mapper.toUserResponseDto(user);
     }
+
+
+
 
 
 }

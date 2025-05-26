@@ -1,5 +1,5 @@
 import { ApiResponse, User, UserResponseDto } from "src/types";
-import request from "./request";
+import request from "../config/request";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
@@ -30,6 +30,12 @@ export const getUserByEmail = (email :string) : Promise<ApiResponse<UserResponse
   return response 
 }
 
+export const getUsersByCompany = (id: number): Promise<ApiResponse<UserResponseDto[]>> => {
+  return request<UserResponseDto[]>({
+        url: `/user/company/${id}`,
+        method: "get",  
+    });
+};
 
 export const useCreateAdminAccount = () => {
   return useMutation<ApiResponse<UserResponseDto>, Error, User>({
@@ -68,6 +74,19 @@ export const useGetUserByEmail = (email: string) => {
         throw new Error(response.message);
       }
       return response.data as UserResponseDto;
+    }),
+    enabled: false 
+  });
+};
+
+export const useGetUsersByCompany = (id: number) => {
+  return useQuery<UserResponseDto[], Error>({
+    queryKey: ['users', id], 
+    queryFn: () => getUsersByCompany(id).then(response => {
+      if (response.status === 'error') {
+        throw new Error(response.message);
+      }
+      return response.data as UserResponseDto[];
     }),
     enabled: false 
   });

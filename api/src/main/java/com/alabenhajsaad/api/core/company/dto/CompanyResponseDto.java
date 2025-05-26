@@ -1,7 +1,6 @@
 package com.alabenhajsaad.api.core.company.dto;
 
 
-import com.alabenhajsaad.api.core.enums.Subscription;
 import lombok.Builder;
 
 @Builder

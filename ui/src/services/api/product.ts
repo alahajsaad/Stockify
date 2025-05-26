@@ -1,5 +1,5 @@
 import { ApiResponse, Page, valueAddedTax } from "src/types"
-import request from "./request";
+import request from "../config/request";
 import { useMutation, useQuery, useQueryClient ,QueryKey} from "@tanstack/react-query";
 import { toast } from "react-toastify";
 

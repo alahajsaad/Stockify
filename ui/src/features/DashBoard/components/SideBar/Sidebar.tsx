@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SidebarItem from "./SidebarItem";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { sidebarData, SidebarItemData, SidebarParentItemData } from "./SideBarData";
+import {  SidebarItemData, SidebarParentItemData, useSidebarData } from "./SideBarData";
 import { useIsMobile } from "src/hooks/useMobile";
 import SideBarParentItem from "./SideBarParentItem";
 
@@ -13,7 +13,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
   const isMobile = useIsMobile();
   const [isRendered, setIsRendered] = useState(false);
-
+  const sidebarData = useSidebarData();
   // Handle render/unrender for animation
   useEffect(() => {
     if (isMobile) {

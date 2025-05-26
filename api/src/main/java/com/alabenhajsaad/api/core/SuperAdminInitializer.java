@@ -1,10 +1,9 @@
-package com.alabenhajsaad.api;
+package com.alabenhajsaad.api.core;
 
 import com.alabenhajsaad.api.core.enums.Role;
 import com.alabenhajsaad.api.core.user.AppUser;
 import com.alabenhajsaad.api.core.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,6 @@ import java.util.Optional;
 import java.util.Scanner;
 
 @Component
-@Profile("superadmin-init")
 public class SuperAdminInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -33,13 +31,16 @@ public class SuperAdminInitializer implements CommandLineRunner {
             System.out.println("Un administrateur global existe déjà : " + existingAdmin.get().getEmail());
             return;
         }
-
+        String firstname;
+        String lastname;
         String email;
         String password;
 
         Console console = System.console();
 
         if (console != null) {
+            firstname = console.readLine("Entrez le prénom du Super Admin : ");
+            lastname = console.readLine("Entrez le nom du Super Admin : ");
             email = console.readLine("Entrez l'email du Super Admin : ");
 
             char[] passwordArray;
@@ -60,6 +61,13 @@ public class SuperAdminInitializer implements CommandLineRunner {
 
         } else {
             Scanner scanner = new Scanner(System.in);
+
+            System.out.print("Entrez le prénom du Super Admin : ");
+            firstname = scanner.nextLine();
+
+            System.out.print("Entrez le nom du Super Admin : ");
+            lastname = scanner.nextLine();
+
             System.out.print("Entrez l'email du Super Admin : ");
             email = scanner.nextLine();
 
@@ -94,6 +102,8 @@ public class SuperAdminInitializer implements CommandLineRunner {
         AppUser admin = AppUser.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
+                .firstName(firstname)
+                .lastName(lastname)
                 .role(Role.SUPER_ADMIN)
                 .build();
 
