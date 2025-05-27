@@ -2,17 +2,33 @@ import { ApiResponse, User, UserResponseDto } from "src/types";
 import request from "../config/request";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { EmployeeCreationDto } from "src/types/user";
 
-
+type CreateEmployeeVariables = {
+  user: EmployeeCreationDto;
+  companyId: number;
+};
 
 export const createAdminAccount = (user: User): Promise<ApiResponse<UserResponseDto>> => {
-  const response = request<UserResponseDto>({
+  return request<UserResponseDto>({
     url: "/user/admin",
     method: "post",
     data: user,
   });
-  return response 
 };
+
+export const createEmployeeAccount = (
+  variables: CreateEmployeeVariables
+): Promise<ApiResponse<UserResponseDto>> => {
+  const { user, companyId } = variables;
+
+  return request<UserResponseDto>({
+    url: `/user/employee/${companyId}`,
+    method: "post",
+    data: user,
+  });
+};
+
 
 export const getUserById = (id: number): Promise<ApiResponse<UserResponseDto>> => {
   const response = request<UserResponseDto>({
@@ -53,6 +69,19 @@ export const useCreateAdminAccount = () => {
   });
 };
 
+export const useCreateEmployeeAccount = () => {
+  return useMutation<ApiResponse<UserResponseDto>, Error, CreateEmployeeVariables>({
+    mutationFn: createEmployeeAccount,
+    onSuccess: (response) => {
+      if (response.status === 'error') {
+        throw new Error(response.message);
+      }
+      toast.success(response.message);
+      console.log(response);
+    },
+  });
+};
+
 export const useGetUserById = (id: number) => {
   return useQuery<UserResponseDto, Error>({
     queryKey: ['users', id], 
@@ -79,16 +108,16 @@ export const useGetUserByEmail = (email: string) => {
   });
 };
 
-export const useGetUsersByCompany = (id: number) => {
+export const useGetUsersByCompany = (companyId: number) => {
   return useQuery<UserResponseDto[], Error>({
-    queryKey: ['users', id], 
-    queryFn: () => getUsersByCompany(id).then(response => {
+    queryKey: ['users', companyId], 
+    queryFn: () => getUsersByCompany(companyId).then(response => {
       if (response.status === 'error') {
         throw new Error(response.message);
       }
       return response.data as UserResponseDto[];
     }),
-    enabled: false 
+    enabled: true 
   });
 };
 

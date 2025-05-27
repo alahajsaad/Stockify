@@ -7,11 +7,13 @@ import Modal from "src/components/ui/Modal";
 import CompanyForm from "../components/CompanyForm";
 import { useGetCompanyById } from "src/services/api/company";
 import CompanyInfo from "../components/CompanyInfo";
+import EmployeeList from "../components/EmployeeList";
+import CreateEmployeeAccountForm from "src/features/auth/forms/CreateEmployeeAccountForm";
 
 const CompanyPage: React.FC = () => {
     const { user , updateUser } = useAuth();
-    // Only call the API if user has a valid companyId (not 0)
-    const shouldFetchCompany = user?.companyId && user.companyId > 0;
+    // Only call the API if user has a valid companyId (not 0) and the only for the admin 
+    const shouldFetchCompany = user?.companyId && user.companyId > 0 && user.scope === "ROLE_ADMIN";
     const { data, isPending, refetch } = useGetCompanyById(
         shouldFetchCompany ? user.companyId : 0
     );
@@ -39,6 +41,9 @@ const CompanyPage: React.FC = () => {
     const toggleForm = (isEditing: boolean) => {
         setIsEditingCompany(isEditing);
     };
+    const onSuccessEmployeeCreation = () => {
+        setShowAddEmployee(false)
+    }
 
    const handleCompanyCreated = (newCompany: Company) => {
     setCompany(newCompany);
@@ -127,10 +132,14 @@ const CompanyPage: React.FC = () => {
                 </div>
 
                 {/* body section */}
-                <div>
+                <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+                    <div className="lg:col-span-1 h-full">
                     <CompanyInfo company={company} />
+                    </div>
+                    <div className="lg:col-span-2 h-full">
+                        <EmployeeList companyId={company.id}/>
+                    </div>
                 </div>
-
                 {/* Modal pour éditer l'entreprise */}
                 <Modal
                     title="Modifier l'entreprise"
@@ -154,7 +163,7 @@ const CompanyPage: React.FC = () => {
                     size="md"
                 >
                     {/* Composant pour ajouter un employé à implémenter */}
-                    <div>Formulaire d'ajout d'employé à implémenter</div>
+                    <CreateEmployeeAccountForm onSuccess={onSuccessEmployeeCreation} companyId={company.id} />
                 </Modal>
             </div>
 }

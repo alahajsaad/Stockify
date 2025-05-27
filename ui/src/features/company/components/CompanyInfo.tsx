@@ -10,7 +10,7 @@ const CompanyInfo : React.FC<CompanyInfoProps> = ({company}) => {
      
 return (
     <Card className="h-fit">
-      <CardHeader>
+      <CardHeader className="flex flex-row gap-2 items-center">
         <Building2 className="h-5 w-5" />
         <span>Company Information</span>
       </CardHeader>

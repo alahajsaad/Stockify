@@ -5,6 +5,7 @@ import com.alabenhajsaad.api.core.company.Company;
 import com.alabenhajsaad.api.core.datasource_config.datasource.DataSourceService;
 import com.alabenhajsaad.api.core.datasource_config.multitenant.DynamicDataSourceService;
 import com.alabenhajsaad.api.core.exception.InactiveUserExistsException;
+import com.alabenhajsaad.api.core.user.dto.EmployeeCreationDto;
 import com.alabenhajsaad.api.core.user_account_activation.TokenService;
 import com.alabenhajsaad.api.core.user.mapper.UserMapper;
 import com.alabenhajsaad.api.core.enums.EntityStatus;
@@ -15,6 +16,8 @@ import com.alabenhajsaad.api.core.user.dto.UserCreationDto;
 import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
 import com.alabenhajsaad.api.core.user.dto.UserUpdateHigthLevelDto;
 import com.alabenhajsaad.api.core.utils.CodeGenerator;
+import com.alabenhajsaad.api.email.EmailService;
+import com.alabenhajsaad.api.email.EmailTemplateName;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final UserCompanyRelationService companyService ;
     private final DynamicDataSourceService dynamicDataSourceService;
     private final DataSourceService dataSourceService ;
+    private final EmailService emailService ;
     @Value("${database.tenant.prefix}")
     private String dbPrefix;
 
@@ -87,22 +91,36 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     @Transactional
-    public AppUser createEmployeeAccount(UserCreationDto dto , Integer companyId) {
+    public UserResponseDto createEmployeeAccount(EmployeeCreationDto dto , Integer companyId) {
         if(Boolean.TRUE.equals(repository.existsByEmail(dto.email()))){
             throw new ConflictException("cette employee a deja un compte avec l'adress email :"+dto.email());
         }
 
-        AppUser user = mapper.toUser(dto);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(Role.EMPLOYEE);
-        user.setStatus(EntityStatus.ACTIVE);
+        AppUser user = AppUser.builder()
+                .firstName(dto.firstName())
+                .lastName(dto.lastName())
+                .email(dto.email())
+                .role(Role.EMPLOYEE)
+                .status(EntityStatus.ACTIVE)
+                .build();
+        String password = CodeGenerator.generate(6) ;
+        user.setPassword(passwordEncoder.encode(password));
+
 
         Company company = companyService.getCompanyById(companyId);
         user.setCompany(company);
         user.setTenantId(company.getTenantId());
         companyService.updateNumberOfUserOfCompany(company);
 
-        return repository.save(user);
+        repository.save(user);
+        emailService.sendEmailForNewEmployee(
+                user.getEmail(),
+                "Nouveau compte employé",
+                password,
+                user,
+                EmailTemplateName.NEW_EMPLOYEE_ACCOUNT
+        );
+        return mapper.toUserResponseDto(user);
     }
 
     @Override

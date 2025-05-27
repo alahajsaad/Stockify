@@ -1,4 +1,3 @@
-import { CompanyResponseDto } from "./company";
 
 export type User = {
     id?: number;
@@ -9,10 +8,8 @@ export type User = {
     telegramId?:string
    
 }
-export type Role = 
-  | 'ADMIN'
-  | 'EMPLOYEE'
-  | 'TOPADMIN' ;
+
+export type Role = |"ADMIN" |"EMPLOYEE" |"SUPER_ADMIN" ;
 
 export type EntityStatus =
   | 'ACTIVE'
@@ -28,13 +25,16 @@ export type UserResponseDto = {
     //company? : CompanyResponseDto
 } 
 
+export type EmployeeCreationDto = {
+    firstName:string,
+    lastName:string,
+    email:string
+}
+
 
 export type CreateAdminResponse = {
     message: string;
     user: User;
   };
 
-export type AdminInscriptionStatus =
-  | 'ADMIN_HAS_COMPANY'
-  | 'ACTIVE_ADMIN_WITHOUT_COMPANY'
-  | 'INACTIVE_ADMIN_WITHOUT_COMPANY';
+

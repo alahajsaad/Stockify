@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.core.user;
 
 import com.alabenhajsaad.api.config.ApiResponse;
+import com.alabenhajsaad.api.core.user.dto.EmployeeCreationDto;
 import com.alabenhajsaad.api.core.user.dto.UserCreationDto;
 import com.alabenhajsaad.api.core.user.dto.UserResponseDto;
 import com.alabenhajsaad.api.core.user.dto.UserUpdateHigthLevelDto;
@@ -22,9 +23,9 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(userService.createAdminAccount(dto),"Nouveau compte administrateur créé avec succès"));
     }
 
-    @PostMapping("/employee/{id}")
-    public ResponseEntity<ApiResponse<AppUser>> createEmployeeAccount(@RequestBody UserCreationDto dto, @PathVariable Integer id) {
-        return ResponseEntity.ok(ApiResponse.success(userService.createEmployeeAccount(dto,id),"Nouveau compte employé créé avec succès"));
+    @PostMapping("/employee/{companyId}")
+    public ResponseEntity<ApiResponse<UserResponseDto>> createEmployeeAccount(@RequestBody EmployeeCreationDto dto, @PathVariable Integer companyId) {
+        return ResponseEntity.ok(ApiResponse.success(userService.createEmployeeAccount(dto,companyId),"Nouveau compte employé créé avec succès"));
     }
 
     @PutMapping("/employee")

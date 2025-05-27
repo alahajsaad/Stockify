@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum EmailTemplateName {
 
     ACTIVATE_ACCOUNT("activate_account"),
-    RESET_PASSWORD("reset_password");
+    RESET_PASSWORD("reset_password"),
+    NEW_EMPLOYEE_ACCOUNT("new_employee_account"),;
 
     private final String name;
     EmailTemplateName(String name) {
