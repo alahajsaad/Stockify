@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LucideIcon, Plus } from "lucide-react";
 
 interface SidebarItemProps {
@@ -20,19 +20,42 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   toggleSideBar,
 }) => {
   const location = useLocation();
-  const isActive = location.pathname === openLink;
+  const navigate = useNavigate();
+
+  // Extract path after /stockify for comparison
+   const currentPath = location.pathname.replace(/^\/stockify\//, '') || '';
+
+  const targetPath = openLink.replace(/^\/stockify/, '') || '/';
+
+  const isActive = currentPath === targetPath || 
+    (targetPath !== "/" && currentPath.startsWith(targetPath + "/"));
+
   const [isHovered, setIsHovered] = useState(false);
+  const handleAddClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (addlink) {
+      navigate(addlink);
+    }
+  };
+
+
+  const handleMainClick = () => {
+    if (toggleSideBar) {
+      toggleSideBar();
+    }
+  };
 
   return (
     <div className="relative">
       <Link
-        onClick={toggleSideBar}
+        onClick={handleMainClick}
         to={openLink}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={`flex items-center py-3 px-4 my-1 mx-2 rounded-lg text-sm transition-all duration-200 group
-          ${isActive 
-            ? "bg-blue-50 text-blue-600 shadow-sm" 
+          ${isActive
+            ? "bg-blue-50 text-blue-600 shadow-sm"
             : "hover:bg-gray-50 hover:text-gray-900"
           }`}
       >
@@ -46,10 +69,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             
             {addlink && (
               <div className="ml-2 flex items-center">
-                // TODO: Refactor this function to improve performance
-                <Link
-                  to={addlink}
-                  onClick={(e) => e.stopPropagation()}
+                <button
+                  onClick={handleAddClick}
                   className={`flex items-center justify-center rounded-full p-1.5 transition-all duration-200
                     ${isHovered || isActive
                       ? "opacity-100 bg-blue-100 hover:bg-blue-200 text-blue-700"
@@ -59,7 +80,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   title={`Add new ${title}`}
                 >
                   <Plus size={14} strokeWidth={2.5} />
-                </Link>
+                </button>
               </div>
             )}
           </div>
@@ -70,15 +91,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             <div className="flex items-center justify-between gap-2">
               <span>{title}</span>
               {addlink && (
-                <Link
-                  to={addlink}
-                  onClick={(e) => e.stopPropagation()}
+                <button
+                  onClick={handleAddClick}
                   className="rounded-full p-1 hover:bg-blue-100 transition-colors duration-150"
                   aria-label={`Add new ${title}`}
                   title={`Add new ${title}`}
                 >
                   <Plus size={12} />
-                </Link>
+                </button>
               )}
             </div>
           </div>

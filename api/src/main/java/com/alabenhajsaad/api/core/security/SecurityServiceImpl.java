@@ -1,8 +1,9 @@
 package com.alabenhajsaad.api.core.security;
 
 import com.alabenhajsaad.api.core.security.dto.LoginRequest;
+import com.alabenhajsaad.api.core.security.dto.UpdatePasswordRequest;
 import com.alabenhajsaad.api.core.security.refresh_token.RefreshTokenService;
-import com.alabenhajsaad.api.core.security.reset_token.PasswordResetRequestDto;
+import com.alabenhajsaad.api.core.security.dto.PasswordResetRequestDto;
 import com.alabenhajsaad.api.core.security.reset_token.ResetTokenService;
 import com.alabenhajsaad.api.core.user.AppUser;
 import com.alabenhajsaad.api.core.user.UserService;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -30,6 +32,8 @@ public class SecurityServiceImpl implements SecurityService{
     private final AuthenticationManager authenticationManager ;
     private final EmailService emailService ;
     private final ResetTokenService resetTokenService ;
+    private final PasswordEncoder passwordEncoder ;
+
     @Override
     public Map<String, String> generateNewAccessToken(String refreshToken) {
         var validatedRefreshToken = refreshTokenService.validateRefreshToken(refreshToken);
@@ -70,6 +74,16 @@ public class SecurityServiceImpl implements SecurityService{
                 EmailTemplateName.RESET_PASSWORD
         );
     }
+
+    @Override
+    public void updatePassword(UpdatePasswordRequest dto) {
+        AppUser user = userService.getUserByEmail(dto.email()) ;
+        if(!passwordEncoder.matches(dto.actualPassword(), user.getPassword())) {
+            throw new  RuntimeException("mot de passe actuelle incorrect");
+        }
+        userService.changePassword(dto.email() , dto.password() , dto.confirmPassword());
+    }
+
     @Override
     public void resetPassword(PasswordResetRequestDto dto) {
         if(!resetTokenService.validateToken(dto.token())){
@@ -77,12 +91,6 @@ public class SecurityServiceImpl implements SecurityService{
         }
         userService.changePassword(dto.email() , dto.password() , dto.confirmPassword());
     }
-
-    @Override
-    public void changePassword(String oldPassword, String newPassword) {
-
-    }
-
 
 
 

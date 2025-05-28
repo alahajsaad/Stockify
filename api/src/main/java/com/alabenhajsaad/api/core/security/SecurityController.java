@@ -4,8 +4,8 @@ import com.alabenhajsaad.api.config.ApiResponse;
 import com.alabenhajsaad.api.core.exception.ExpiredRefreshTokenException;
 import com.alabenhajsaad.api.core.security.dto.EmailDto;
 import com.alabenhajsaad.api.core.security.dto.LoginRequest;
-import com.alabenhajsaad.api.core.security.refresh_token.TokenPairService;
-import com.alabenhajsaad.api.core.security.reset_token.PasswordResetRequestDto;
+import com.alabenhajsaad.api.core.security.dto.PasswordResetRequestDto;
+import com.alabenhajsaad.api.core.security.dto.UpdatePasswordRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -70,13 +70,10 @@ public class SecurityController {
         return ResponseEntity.ok(ApiResponse.success(tokens));
     }
 
-
-
-
     @PostMapping("/logout")
     public void logout(Authentication authentication) {
-
     }
+
     @PostMapping("/forgetPassword")
     public ResponseEntity<ApiResponse<Void>> forgetPassword(@RequestBody @Valid EmailDto emailDto) {
         securityService.forgetPassword(emailDto.email());
@@ -92,7 +89,6 @@ public class SecurityController {
                 ApiResponse.success(null, "Votre mot de passe a été changé avec succès. Veuillez vous connecter.")
         );
     }
-
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<Map<String, String>>> refreshToken(HttpServletRequest request) {
@@ -136,6 +132,13 @@ public class SecurityController {
         }
     }
 
+    @PostMapping("/updatePassword")
+    public ResponseEntity<ApiResponse<Void>> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
+        securityService.updatePassword(updatePasswordRequest);
+        return ResponseEntity.ok(
+                ApiResponse.success(null, "Votre mot de passe a été mis à jour avec succès.")
+        );
+    }
 
 
 

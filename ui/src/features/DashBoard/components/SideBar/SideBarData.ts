@@ -54,7 +54,7 @@ export const useSidebarData = (): SidebarEntry[] => {
     {
       type: "Child",
       title: "Produits",
-      openLink: "/stockify/products",
+      openLink: Paths.products,
       icon: ShoppingBasket,
       addLink: "/stockify/products/add",
     },

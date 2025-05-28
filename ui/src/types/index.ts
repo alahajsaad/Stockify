@@ -46,6 +46,13 @@ export type PasswordResetRequestDto = {
     confirmPassword:string,
     token:string
 }
+
+export type UpdatePasswordRequest = {
+    email: string,
+    actualPassword:string,
+    password:string,
+    confirmPassword:string,
+}
 export type { CompanyCreationDto } from "./company"
 export type { CompanyResponseDto } from "./company"
 export type { Company } from "./company"

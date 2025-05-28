@@ -1,7 +1,7 @@
 // src/api/auth.ts
 import { useMutation } from "@tanstack/react-query";
 
-import { ApiResponse, LoginRequest, LoginResponse, PasswordResetRequestDto } from "src/types";
+import { ApiResponse, LoginRequest, LoginResponse, PasswordResetRequestDto, UpdatePasswordRequest } from "src/types";
 import request from "../config/request";
 
 
@@ -30,6 +30,15 @@ export const resetPassword = (passwordResetRequestDto : PasswordResetRequestDto)
       data: passwordResetRequestDto
     });
 }
+
+export const updatePassword = (updatePasswordRequest : UpdatePasswordRequest): Promise<ApiResponse<void>> =>{
+    return request<void>({
+      url: "/auth/updatePassword",
+      method: "post",
+      data: updatePasswordRequest
+    });
+}
+
 
 
 // export const generateNewAccessToken = async (): Promise<ApiResponse<LoginResponse>> => {
@@ -86,6 +95,18 @@ export const useResetPassword = () => {
   return useMutation<ApiResponse<void>, Error, PasswordResetRequestDto>({
     mutationFn: (passwordResetRequestDto: PasswordResetRequestDto) =>
       resetPassword(passwordResetRequestDto).then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response;
+      }),
+  });
+};
+
+export const useUpdatePassword = () => {
+  return useMutation<ApiResponse<void>, Error, UpdatePasswordRequest>({
+    mutationFn: (updatePasswordRequest: UpdatePasswordRequest) =>
+      updatePassword(updatePasswordRequest).then(response => {
         if (response.status === 'error') {
           throw new Error(response.message);
         }

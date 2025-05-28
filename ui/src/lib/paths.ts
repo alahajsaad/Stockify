@@ -7,7 +7,7 @@ export const Paths = {
     contact: "/contact",
     dashboard: "dashboard",
     calorieCalculator: "/mifflin-st-jeor-equation-calculator-for-nutrition",
-    profile: "/profile",
+    profile: "profile",
     adminPage: "/admin/admin-panel",
     usersPage: "/admin/users-list",
     reviewsPage: "/admin/reviews-list",
@@ -15,7 +15,7 @@ export const Paths = {
     notAuthorized: "/notAuthorized",
     notFound: "*",
     stockify: "/stockify",
-    products : "/stockify/products",
+    products : "products",
     forgotPassword:"/forgotPassword",
     resetPassword: "/resetPassword",
     vats: "vats",   // relative should not be /vats

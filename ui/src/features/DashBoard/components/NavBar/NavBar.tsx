@@ -2,6 +2,8 @@ import { AlignJustify, UserRound } from "lucide-react";
 import { useIsMobile } from "src/hooks/useMobile";
 import UserMenu from "./UserMenu";
 import useToggle from "src/hooks/useToggle";
+import AvatarGenerator from "src/components/AvatarGenerator";
+import { useAuth } from "src/features/auth/components/AuthProvider";
 
 interface NavBarProps {
   toggleSidebar?: () => void;
@@ -10,7 +12,7 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
   const isMobile = useIsMobile();
   const { isOpen, toggle, ref, parentRef} = useToggle()
-
+  const {user} = useAuth()
   
 
   return (
@@ -31,7 +33,9 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
             onClick={toggle}
             className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white cursor-pointer"
           >
-            <UserRound size={16} />
+            {user &&  <AvatarGenerator name={user?.fullName} size={"small"}/>}
+           
+            
           </div>
 
           {isOpen && <UserMenu ref={ref} />}

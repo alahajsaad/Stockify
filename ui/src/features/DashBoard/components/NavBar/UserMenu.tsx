@@ -2,6 +2,7 @@ import { useAuth } from "src/features/auth/components/AuthProvider";
 import { forwardRef } from "react";
 import { LogOut, Settings, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Paths } from "src/lib/paths";
 
 // UserMenu Component
 const UserMenu = forwardRef<HTMLDivElement>((props, ref) => {
@@ -15,12 +16,12 @@ const UserMenu = forwardRef<HTMLDivElement>((props, ref) => {
     >
       <div className="flex flex-col gap-2">
 
-        <button className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 w-full text-left">
+        <button onClick={() => navigate(Paths.profile)} className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 w-full text-left">
           <User size={16} />
           <span>Profile</span>
         </button>
 
-        <button onClick={() => navigate('company')} className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 w-full text-left">
+        <button onClick={() => navigate(Paths.company)} className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 w-full text-left">
           <Settings size={16} />
           <span>Entreprise</span>
         </button>

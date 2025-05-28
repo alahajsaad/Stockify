@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.core.company;
 
 import com.alabenhajsaad.api.core.company.dto.CompanyCreationDto;
+import com.alabenhajsaad.api.core.company.dto.CompanyMetricsDto;
 import com.alabenhajsaad.api.core.company.dto.CompanyResponseDto;
 import com.alabenhajsaad.api.core.company.mapper.CompanyMapper;
 import com.alabenhajsaad.api.core.company.projection.CompanyFirstViewProjection;
@@ -68,7 +69,6 @@ public class CompanyServiceImpl implements CompanyService {
         return mapper.toCompanyResponseDto(repository.save(company));
     }
 
-
     @Override
     public Company updateCompany(CompanyCreationDto dto) {
         Company existingCompany = getCompanyById(dto.id());
@@ -108,7 +108,6 @@ public class CompanyServiceImpl implements CompanyService {
         return repository.save(existingCompany);
     }
 
-
     @Override
     public List<CompanyFirstViewProjection> getNewCompanies() {
         List<CompanyFirstViewProjection> companies = repository.findNewCompanies();
@@ -120,9 +119,6 @@ public class CompanyServiceImpl implements CompanyService {
         return repository.findCompanyByIdWithEmployeeView(id);
     }
 
-
-
-
     @Override
     public Company getCompanyById(Integer id) {
         Company company = repository.findById(id)
@@ -131,6 +127,12 @@ public class CompanyServiceImpl implements CompanyService {
         checkAndUpdateSubscriptionStatus(company);
 
         return company;
+    }
+
+    @Override
+    public CompanyMetricsDto getMetrics() {
+        LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
+        return repository.getCompanyMetrics(firstDayOfMonth);
     }
 
 

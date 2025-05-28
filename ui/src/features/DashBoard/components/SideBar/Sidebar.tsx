@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
       {!isMobile && (
         <div
           className={`h-full transition-all duration-300 border-r border-gray-200 bg-white ${
-            isExpanded ? "w-64" : "w-20"
+            isExpanded ? "min-w-64" : "w-20"
           }`}
         >
           <div className="flex items-center h-16 justify-between p-4 border-b border-gray-200">

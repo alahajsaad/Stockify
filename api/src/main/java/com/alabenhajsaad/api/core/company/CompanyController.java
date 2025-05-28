@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.core.company;
 
 import com.alabenhajsaad.api.core.company.dto.CompanyCreationDto;
+import com.alabenhajsaad.api.core.company.dto.CompanyMetricsDto;
 import com.alabenhajsaad.api.core.company.dto.CompanyResponseDto;
 import com.alabenhajsaad.api.core.company.projection.CompanyFirstViewProjection;
 import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProjection;
@@ -91,6 +92,10 @@ public class CompanyController {
     @GetMapping("/partial/{id}")
     public ResponseEntity<ApiResponse<CompanyViewForEmployeeProjection>> getCompanyByIdForEmployeeView(@PathVariable Integer id) {
         return ResponseEntity.ok(ApiResponse.success(companyService.getCompanyByIdWithEmployeeView(id),"Entreprise bien trouvée"));
+    }
+    @GetMapping("metrics")
+    public ResponseEntity<ApiResponse<CompanyMetricsDto>> getMetrics() {
+        return ResponseEntity.ok(ApiResponse.success(companyService.getMetrics()));
     }
 
 

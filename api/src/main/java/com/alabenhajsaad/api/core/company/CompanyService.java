@@ -3,6 +3,7 @@ package com.alabenhajsaad.api.core.company;
 
 
 import com.alabenhajsaad.api.core.company.dto.CompanyCreationDto;
+import com.alabenhajsaad.api.core.company.dto.CompanyMetricsDto;
 import com.alabenhajsaad.api.core.company.dto.CompanyResponseDto;
 import com.alabenhajsaad.api.core.company.projection.CompanyFirstViewProjection;
 import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProjection;
@@ -16,4 +17,5 @@ public interface CompanyService {
     CompanyViewForEmployeeProjection getCompanyByIdWithEmployeeView(Integer id);
     //List<Company> getFiltredCompanies();
     Company getCompanyById(Integer id) ;
+    CompanyMetricsDto getMetrics();
 }

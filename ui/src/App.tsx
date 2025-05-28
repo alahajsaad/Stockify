@@ -22,6 +22,7 @@ import ConsultClientPage from "./features/client/pages/ConsultClientPage";
 import AddSupplierOrderPage from "./features/supplier_order/pages/AddSupplierOrderPage";
 import DashBoard from "./features/DashBoard/DashBoard";
 import CompanyPage from "./features/company/pages/CompanyPage";
+import ProfilePage from "./features/auth/pages/ProfilePage";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -65,6 +66,7 @@ const App = () => {
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashBoard />} />
             <Route path={Paths.company} element={<CompanyPage />} />
+            <Route path={Paths.profile} element={<ProfilePage />} />
             <Route path="products/add" element={<ProductForm />} />
             <Route path="products" element={<ConsultProducts />} />
             <Route path="products/:id" element={<ProductDetails />} />

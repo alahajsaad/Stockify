@@ -1,6 +1,10 @@
+import StockSummaryCards from "../components/StockSummaryCards";
+
 const AdminDash : React.FC = () => {
     return (
-        <><p>Admin dash</p></>
+       <div>
+        <StockSummaryCards />
+       </div>
     );
 }
 export default AdminDash ;
