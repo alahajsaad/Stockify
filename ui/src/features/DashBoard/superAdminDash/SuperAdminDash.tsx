@@ -1,6 +1,10 @@
+import CompanyMetrics from "./CompanyMetrics";
+
 const SuperAdminDash : React.FC = () => {
     return (
-        <><p>super admin Dash</p></>
+        <div>
+            <CompanyMetrics />
+        </div>
     );
 }
 export default SuperAdminDash ;

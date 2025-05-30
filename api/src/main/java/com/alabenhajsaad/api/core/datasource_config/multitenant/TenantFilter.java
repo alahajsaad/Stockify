@@ -27,7 +27,9 @@ public class TenantFilter extends OncePerRequestFilter {
             "/api/v1/auth/**",
             "/api/v1/datasource",
             "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/actuator/**"
+
     );
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 

@@ -23,6 +23,8 @@ import AddSupplierOrderPage from "./features/supplier_order/pages/AddSupplierOrd
 import DashBoard from "./features/DashBoard/DashBoard";
 import CompanyPage from "./features/company/pages/CompanyPage";
 import ProfilePage from "./features/auth/pages/ProfilePage";
+import ConsultCompaniesPage from "./features/company/pages/ConsultCompaniesPage";
+import ConsultSubscriptionsPage from "./features/subscription/ConsultSubscriptionsPage";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -75,6 +77,8 @@ const App = () => {
             <Route path={Paths.categories} element={<ConsultCategoriesPage />} />
             <Route path={Paths.addCategory} element={<AddCategoryPage />} />
             <Route path={Paths.addClient} element={<AddClientPage />} />
+            <Route path={Paths.companies} element={<ConsultCompaniesPage />} />
+            <Route path={Paths.subscriptions} element={<ConsultSubscriptionsPage />} />
             {/* <Route path={Paths.clients} element={<ConsultClientsPage />} />
             <Route path={Paths.client} element={<ConsultClientPage />} /> */}
 

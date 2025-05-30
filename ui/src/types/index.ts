@@ -53,6 +53,9 @@ export type UpdatePasswordRequest = {
     password:string,
     confirmPassword:string,
 }
+export type SubscriptionStatus = 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'ALL';
+
+
 export type { CompanyCreationDto } from "./company"
 export type { CompanyResponseDto } from "./company"
 export type { Company } from "./company"

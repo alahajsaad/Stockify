@@ -1,16 +1,21 @@
 package com.alabenhajsaad.api.core.company;
 
+import com.alabenhajsaad.api.business.product.StockStatus;
 import com.alabenhajsaad.api.core.company.dto.CompanyCreationDto;
 import com.alabenhajsaad.api.core.company.dto.CompanyMetricsDto;
 import com.alabenhajsaad.api.core.company.dto.CompanyResponseDto;
+import com.alabenhajsaad.api.core.company.dto.ConsultCompanyDto;
 import com.alabenhajsaad.api.core.company.projection.CompanyFirstViewProjection;
 import com.alabenhajsaad.api.core.company.projection.CompanyViewForEmployeeProjection;
 import com.alabenhajsaad.api.config.ApiResponse;
+import com.alabenhajsaad.api.core.subscription.SubscriptionStatus;
 import com.alabenhajsaad.api.fileManager.FileLoader;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -96,6 +101,18 @@ public class CompanyController {
     @GetMapping("metrics")
     public ResponseEntity<ApiResponse<CompanyMetricsDto>> getMetrics() {
         return ResponseEntity.ok(ApiResponse.success(companyService.getMetrics()));
+    }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<Page<ConsultCompanyDto>>> getCompanies(
+            @RequestParam(required = false) SubscriptionStatus subscriptionStatus,
+            @RequestParam(required = false) Boolean isNew,
+            @RequestParam(required = false) String subscriptionPlanName,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "8") Integer size
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(companyService.getCompanies(PageRequest.of(page, size) , keyword,subscriptionPlanName,subscriptionStatus,isNew)));
     }
 
 

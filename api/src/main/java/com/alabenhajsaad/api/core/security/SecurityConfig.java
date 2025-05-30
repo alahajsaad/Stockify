@@ -58,7 +58,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(ar -> ar
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("api/v1/user/**","api/v1/vat/**","/api/v1/auth/**","/api/v1/company/**","api/v1/accountActivation/**","/v3/api-docs/**","/swagger-ui/**").permitAll()
+                        .requestMatchers("api/v1/user/**","api/v1/vat/**","/api/v1/auth/**","/api/v1/company/**","api/v1/accountActivation/**","/v3/api-docs/**","/swagger-ui/**", "/actuator/**","api/v1/subscriptionPlan/**").permitAll()
                         .anyRequest().authenticated())
 
                 .oauth2ResourceServer(oauth2 -> oauth2

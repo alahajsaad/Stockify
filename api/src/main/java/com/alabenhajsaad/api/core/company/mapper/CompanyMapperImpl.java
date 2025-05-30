@@ -3,7 +3,6 @@ package com.alabenhajsaad.api.core.company.mapper;
 import com.alabenhajsaad.api.core.company.Company;
 import com.alabenhajsaad.api.core.company.dto.CompanyCreationDto;
 import com.alabenhajsaad.api.core.company.dto.CompanyResponseDto;
-import com.alabenhajsaad.api.core.enums.Subscription;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +29,8 @@ public class CompanyMapperImpl implements CompanyMapper {
                 .name(company.getName())
                 .email(company.getEmail())
                 .phone(company.getPhone())
+                .currentSubscription(company.currentSubscriptionName())
+                .currentSubscriptionStatus(company.currentSubscriptionStatus())
                 .build();
     }
 }

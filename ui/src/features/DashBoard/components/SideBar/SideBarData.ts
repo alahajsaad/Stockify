@@ -1,4 +1,4 @@
-import { LucideIcon, ShoppingBasket ,Percent , Shapes , Users , User ,PackageMinus ,PackagePlus ,House  } from "lucide-react";
+import { LucideIcon, ShoppingBasket ,Percent , Shapes , Users , User ,PackageMinus ,PackagePlus ,House, Building2, Shield  } from "lucide-react";
 import { useAuth } from "src/features/auth/components/AuthProvider";
 import { Paths } from "src/lib/paths";
 
@@ -108,17 +108,15 @@ export const useSidebarData = (): SidebarEntry[] => {
   const superAdminItems: SidebarEntry[] = [
     {
       type: "Child",
-      title: "Fournisseurs",
-      openLink: Paths.suppliers,
-      addLink: Paths.addSupplier,
-      icon: User,
+      title: "Entreprises",
+      openLink: Paths.companies,
+      icon: Building2,
     },
     {
       type: "Child",
-      title: "Clients",
-      openLink: Paths.clients,
-      addLink: Paths.addClient,
-      icon: Users,
+      title: "Abonnements",
+      openLink: Paths.subscriptions,
+      icon: Shield,
     },
   ];
 

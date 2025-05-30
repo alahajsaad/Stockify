@@ -22,23 +22,33 @@ public class TokenServiceImpl implements TokenService {
     private final TokenRepository repository;
     private final UserRepository userRepository;
     private final EmailService emailService;
+
     @Transactional(noRollbackFor = TokenHasExpiredException.class)
     public void activateAccount(String token) {
+        // 1. Récupérer le token
         Token savedToken = repository.findByToken(token)
                 .orElseThrow(() -> new NotFoundException("Invalid token"));
 
-        //If the token has expired
+        // 2. Récupérer l'utilisateur depuis le token (pas besoin de chercher par email)
+        AppUser tokenUser = savedToken.getUser();
+
+        // 3. Vérifier si le token a expiré
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             repository.delete(savedToken);
-            sendValidationEmail(savedToken.getUser());
+            sendValidationEmail(tokenUser);
             throw new TokenHasExpiredException("Le jeton d'activation a expiré. Un nouveau jeton a été envoyé à la même adresse e-mail.");
         }
 
+        // 4. Vérifier si le token n'a pas déjà été utilisé
+        if (savedToken.getValidatedAt() != null) {
+            throw new IllegalStateException("Ce token a déjà été utilisé");
+        }
 
-        var user = savedToken.getUser();
-        user.setStatus(EntityStatus.ACTIVE);
-        userRepository.save(user);
+        // 5. Activer l'utilisateur
+        tokenUser.setStatus(EntityStatus.ACTIVE);
+        userRepository.save(tokenUser);
 
+        // 6. Marquer le token comme validé
         savedToken.setValidatedAt(LocalDateTime.now());
         repository.save(savedToken);
     }
