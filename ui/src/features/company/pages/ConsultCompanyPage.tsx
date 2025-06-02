@@ -10,7 +10,7 @@ import CompanyInfo from "../components/CompanyInfo";
 import EmployeeList from "../components/EmployeeList";
 import CreateEmployeeAccountForm from "src/features/auth/forms/CreateEmployeeAccountForm";
 
-const CompanyPage: React.FC = () => {
+const ConsultCompanyPage: React.FC = () => {
     const { user , updateUser } = useAuth();
     // Only call the API if user has a valid companyId (not 0) and the only for the admin 
     const shouldFetchCompany = user?.companyId && user.companyId > 0 && user.scope === "ROLE_ADMIN";
@@ -172,4 +172,4 @@ const CompanyPage: React.FC = () => {
     );
 };
 
-export default CompanyPage;
+export default ConsultCompanyPage;

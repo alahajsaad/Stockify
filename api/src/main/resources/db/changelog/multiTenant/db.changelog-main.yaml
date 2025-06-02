@@ -1,605 +1,469 @@
 databaseChangeLog:
   - changeSet:
-      id: 1747041568656-1
-      author: MSI (generated)
+      id: 2
+      author: system
+      comment: "Création de la table value_added_tax"
       changes:
         - createTable:
+            tableName: value_added_tax
             columns:
               - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
                   name: id
                   type: INT
-              - column:
+                  autoIncrement: true
                   constraints:
+                    primaryKey: true
+              - column:
+                  name: rate
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
                     unique: true
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: 3
+      author: system
+      comment: "Création de la table category"
+      changes:
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
                   name: name
                   type: VARCHAR(255)
-            tableName: category
+                  constraints:
+                    unique: true
+
   - changeSet:
-      id: 1747041568656-2
-      author: MSI (generated)
+      id: 4
+      author: system
+      comment: "Création de la table product"
       changes:
         - createTable:
+            tableName: product
             columns:
               - column:
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                  name: id
-                  type: BIGINT
-            tableName: client
-  - changeSet:
-      id: 1747041568656-3
-      author: MSI (generated)
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
                   name: id
                   type: INT
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: created_at
-                  type: date
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: updated_at
-                  type: date
-              - column:
-                  defaultValue: 'null'
-                  name: delivery_status
-                  type: ENUM('ALL', 'DELIVERED', 'UNDELIVERED')
-              - column:
+                  autoIncrement: true
                   constraints:
-                    nullable: false
-                  name: order_number
+                    primaryKey: true
+              - column:
+                  name: designation
                   type: VARCHAR(255)
-              - column:
-                  defaultValue: 'null'
-                  name: payment_status
-                  type: ENUM('ALL', 'PAID', 'UNPAID')
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: total_excluding_tax
-                  type: DECIMAL(38, 2)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: total_including_tax
-                  type: DECIMAL(38, 2)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: client_id
-                  type: BIGINT
-            tableName: client_order
-  - changeSet:
-      id: 1747041568656-4
-      author: MSI (generated)
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
                   constraints:
-                    nullable: false
-                    primaryKey: true
-                  name: id
-                  type: INT
+                    unique: true
               - column:
-                  defaultValueComputed: 'NULL'
+                  name: reference
+                  type: VARCHAR(255)
+                  constraints:
+                    unique: true
+              - column:
                   name: quantity
                   type: INT
               - column:
-                  defaultValueComputed: 'NULL'
-                  name: unit_price
-                  type: DECIMAL(38, 2)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: value_added_tax
-                  type: DOUBLE
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: client_order_id
+                  name: critical_threshold
                   type: INT
               - column:
-                  defaultValueComputed: 'NULL'
-                  name: product_id
+                  name: last_purchase_price
+                  type: DECIMAL(10,2)
+              - column:
+                  name: last_sale_price
+                  type: DECIMAL(10,2)
+              - column:
+                  name: stock_status
+                  type: VARCHAR(255)
+              - column:
+                  name: category_id
                   type: INT
-            tableName: client_order_line
+              - column:
+                  name: vat_id
+                  type: INT
+              - column:
+                  name: created_at
+                  type: DATE
+              - column:
+                  name: updated_at
+                  type: DATE
+        - sql:
+            sql: "ALTER TABLE product ADD CONSTRAINT chk_product_quantity CHECK (quantity >= 0);"
+        - addForeignKeyConstraint:
+            baseTableName: product
+            baseColumnNames: category_id
+            referencedTableName: category
+            referencedColumnNames: id
+            constraintName: fk_product_category
+        - addForeignKeyConstraint:
+            baseTableName: product
+            baseColumnNames: vat_id
+            referencedTableName: value_added_tax
+            referencedColumnNames: id
+            constraintName: fk_product_vat
+
   - changeSet:
-      id: 1747041568656-5
-      author: MSI (generated)
+      id: 5
+      author: system
+      comment: "Création de la table partner"
       changes:
         - createTable:
+            tableName: partner
             columns:
               - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
                   name: id
                   type: BIGINT
-              - column:
+                  autoIncrement: true
                   constraints:
-                    unique: true
+                    primaryKey: true
+              - column:
+                  name: partner_type
+                  type: VARCHAR(50)
+              - column:
+                  name: entity_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
                   name: email
                   type: VARCHAR(255)
+                  constraints:
+                    unique: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: 6
+      author: system
+      comment: "Ajout de contrainte CHECK pour partner_type"
+      changes:
+        - sql:
+            sql: "ALTER TABLE partner ADD CONSTRAINT chk_partner_type CHECK (partner_type IN ('CLIENT', 'SUPPLIER'));"
+
+  - changeSet:
+      id: 7
+      author: system
+      comment: "Création de la table person"
+      changes:
+        - createTable:
+            tableName: person
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
               - column:
                   name: first_name
                   type: VARCHAR(255)
               - column:
                   name: last_name
                   type: VARCHAR(255)
-            tableName: person
+        - addForeignKeyConstraint:
+            baseTableName: person
+            baseColumnNames: id
+            referencedTableName: partner
+            referencedColumnNames: id
+            constraintName: fk_person_partner
+            onDelete: CASCADE
+
   - changeSet:
-      id: 1747041568656-6
-      author: MSI (generated)
+      id: 8
+      author: system
+      comment: "Création de la table organization"
       changes:
         - createTable:
+            tableName: organization
             columns:
               - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
                   name: id
                   type: BIGINT
-              - column:
                   constraints:
-                    unique: true
+                    primaryKey: true
+              - column:
+                  name: company_name
+                  type: VARCHAR(255)
+              - column:
+                  name: registration_number
+                  type: VARCHAR(255)
+              - column:
+                  name: tax_number
+                  type: VARCHAR(255)
+        - addForeignKeyConstraint:
+            baseTableName: organization
+            baseColumnNames: id
+            referencedTableName: partner
+            referencedColumnNames: id
+            constraintName: fk_organization_partner
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 9
+      author: system
+      comment: "Création de la table phone_number"
+      changes:
+        - createTable:
+            tableName: phone_number
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
                   name: number
                   type: VARCHAR(255)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: person_id
-                  type: BIGINT
-            tableName: phone_number
-  - changeSet:
-      id: 1747041568656-7
-      author: MSI (generated)
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                  name: id
-                  type: INT
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: critical_threshold
-                  type: INT
-              - column:
                   constraints:
                     unique: true
-                  name: designation
-                  type: VARCHAR(255)
               - column:
-                  defaultValueComputed: 'NULL'
-                  name: last_purchase_price
-                  type: DECIMAL(38, 2)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: last_sale_price
-                  type: DECIMAL(38, 2)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: quantity
-                  type: INT
-              - column:
-                  constraints:
-                    unique: true
-                  name: reference
-                  type: VARCHAR(255)
-              - column:
-                  defaultValue: 'null'
-                  name: stock_status
-                  type: ENUM('ALL', 'IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK')
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: category_id
-                  type: INT
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: vat_id
-                  type: INT
-            tableName: product
+                  name: partner_id
+                  type: BIGINT
+        - addForeignKeyConstraint:
+            baseTableName: phone_number
+            baseColumnNames: partner_id
+            referencedTableName: partner
+            referencedColumnNames: id
+            constraintName: fk_phone_partner
+            onDelete: CASCADE
+
   - changeSet:
-      id: 1747041568656-8
-      author: MSI (generated)
+      id: 10
+      author: system
+      comment: "Création de la table address"
       changes:
         - createTable:
+            tableName: address
             columns:
               - column:
-                  constraints:
-                    nullable: false
-                    primaryKey: true
                   name: id
                   type: BIGINT
-            tableName: supplier
-  - changeSet:
-      id: 1747041568656-9
-      author: MSI (generated)
-      changes:
-        - createTable:
-            columns:
-              - column:
                   autoIncrement: true
                   constraints:
-                    nullable: false
                     primaryKey: true
+              - column:
+                  name: street_address
+                  type: VARCHAR(255)
+              - column:
+                  name: city
+                  type: VARCHAR(255)
+              - column:
+                  name: partner_id
+                  type: BIGINT
+        - addForeignKeyConstraint:
+            baseTableName: address
+            baseColumnNames: partner_id
+            referencedTableName: partner
+            referencedColumnNames: id
+            constraintName: fk_address_partner
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 11
+      author: system
+      comment: "Création de la table supplier_order"
+      changes:
+        - createTable:
+            tableName: supplier_order
+            columns:
+              - column:
                   name: id
                   type: INT
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: created_at
-                  type: date
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: updated_at
-                  type: date
-              - column:
+                  autoIncrement: true
                   constraints:
-                    nullable: false
+                    primaryKey: true
+              - column:
                   name: order_number
                   type: VARCHAR(255)
-              - column:
-                  defaultValue: 'null'
-                  name: payment_status
-                  type: ENUM('ALL', 'PAID', 'UNPAID')
-              - column:
-                  defaultValue: 'null'
-                  name: reception_status
-                  type: ENUM('RECEIVED', 'UNRECEIVED')
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: total_excluding_tax
-                  type: DECIMAL(38, 2)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: total_including_tax
-                  type: DECIMAL(38, 2)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: supplier_id
-                  type: BIGINT
-            tableName: supplier_order
-  - changeSet:
-      id: 1747041568656-10
-      author: MSI (generated)
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
                   constraints:
                     nullable: false
-                    primaryKey: true
+              - column:
+                  name: total_excluding_tax
+                  type: DECIMAL(10,2)
+              - column:
+                  name: total_including_tax
+                  type: DECIMAL(10,2)
+              - column:
+                  name: payment_status
+                  type: VARCHAR(50)
+              - column:
+                  name: reception_status
+                  type: VARCHAR(50)
+              - column:
+                  name: partner_id
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: DATE
+              - column:
+                  name: updated_at
+                  type: DATE
+        - sql:
+            sql: "ALTER TABLE supplier_order ADD CONSTRAINT chk_supplier_payment_status CHECK (payment_status IN ('PAID', 'UNPAID'));"
+        - sql:
+            sql: "ALTER TABLE supplier_order ADD CONSTRAINT chk_supplier_reception_status CHECK (reception_status IN ('RECEIVED', 'UNRECEIVED'));"
+        - addForeignKeyConstraint:
+            baseTableName: supplier_order
+            baseColumnNames: partner_id
+            referencedTableName: partner
+            referencedColumnNames: id
+            constraintName: fk_supplier_order_partner
+
+  - changeSet:
+      id: 12
+      author: system
+      comment: "Création de la table client_order"
+      changes:
+        - createTable:
+            tableName: client_order
+            columns:
+              - column:
                   name: id
                   type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
               - column:
-                  defaultValueComputed: 'NULL'
+                  name: order_number
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_excluding_tax
+                  type: DECIMAL(10,2)
+              - column:
+                  name: total_including_tax
+                  type: DECIMAL(10,2)
+              - column:
+                  name: payment_status
+                  type: VARCHAR(50)
+              - column:
+                  name: delivery_status
+                  type: VARCHAR(50)
+              - column:
+                  name: partner_id
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: DATE
+              - column:
+                  name: updated_at
+                  type: DATE
+        - sql:
+            sql: "ALTER TABLE client_order ADD CONSTRAINT chk_client_payment_status CHECK (payment_status IN ('PAID', 'UNPAID'));"
+        - sql:
+            sql: "ALTER TABLE client_order ADD CONSTRAINT chk_client_delivery_status CHECK (delivery_status IN ('DELIVERED', 'UNDELIVERED'));"
+        - addForeignKeyConstraint:
+            baseTableName: client_order
+            baseColumnNames: partner_id
+            referencedTableName: partner
+            referencedColumnNames: id
+            constraintName: fk_client_order_partner
+
+  - changeSet:
+      id: 13
+      author: system
+      comment: "Création de la table supplier_order_line"
+      changes:
+        - createTable:
+            tableName: supplier_order_line
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: product_id
+                  type: INT
+              - column:
+                  name: supplier_order_id
+                  type: INT
+              - column:
                   name: quantity
                   type: INT
               - column:
-                  defaultValueComputed: 'NULL'
                   name: unit_price
-                  type: DECIMAL(38, 2)
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: value_added_tax
-                  type: DOUBLE
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: supplier_order_id
-                  type: INT
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: product_id
-                  type: INT
-            tableName: supplier_order_line
+                  type: DECIMAL(10,2)
+        - addForeignKeyConstraint:
+            baseTableName: supplier_order_line
+            baseColumnNames: product_id
+            referencedTableName: product
+            referencedColumnNames: id
+            constraintName: fk_supplier_line_product
+        - addForeignKeyConstraint:
+            baseTableName: supplier_order_line
+            baseColumnNames: supplier_order_id
+            referencedTableName: supplier_order
+            referencedColumnNames: id
+            constraintName: fk_supplier_line_order
+            onDelete: CASCADE
+
   - changeSet:
-      id: 1747041568656-11
-      author: MSI (generated)
+      id: 14
+      author: system
+      comment: "Création de la table client_order_line"
       changes:
         - createTable:
+            tableName: client_order_line
             columns:
               - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
                   name: id
                   type: INT
-              - column:
-                  name: description
-                  type: VARCHAR(255)
-              - column:
+                  autoIncrement: true
                   constraints:
-                    nullable: false
-                    unique: true
-                  name: rate
-                  type: DOUBLE
-            tableName: value_added_tax
-  - changeSet:
-      id: 1747041568656-12
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
+                    primaryKey: true
               - column:
-                  defaultValueComputed: 'NULL'
-                  name: category_id
-            indexName: FK1mtsbur82frn64de7balymq9s
-            tableName: product
-  - changeSet:
-      id: 1747041568656-13
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: supplier_order_id
-            indexName: FK2xcgxb04vmje238gj47wt0te
-            tableName: supplier_order_line
-  - changeSet:
-      id: 1747041568656-14
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: supplier_id
-            indexName: FK3rpubvv45ovmdbs8e8eedhj3b
-            tableName: supplier_order
-  - changeSet:
-      id: 1747041568656-15
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
-              - column:
-                  defaultValueComputed: 'NULL'
                   name: product_id
-            indexName: FK46rdhakbv1u8sdo0o70vh9s2j
-            tableName: supplier_order_line
-  - changeSet:
-      id: 1747041568656-16
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
+                  type: INT
               - column:
-                  defaultValueComputed: 'NULL'
-                  name: person_id
-            indexName: FK4sjbpst35alcsan1qwbdb2nyu
-            tableName: phone_number
-  - changeSet:
-      id: 1747041568656-17
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
-              - column:
-                  defaultValueComputed: 'NULL'
                   name: client_order_id
-            indexName: FK5n3turfepneq8u6ptkvyrthuk
-            tableName: client_order_line
-  - changeSet:
-      id: 1747041568656-18
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
+                  type: INT
               - column:
-                  defaultValueComputed: 'NULL'
-                  name: client_id
-            indexName: FKcggjtc9f3otuprl7takbttwuk
-            tableName: client_order
-  - changeSet:
-      id: 1747041568656-19
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
+                  name: quantity
+                  type: INT
               - column:
-                  defaultValueComputed: 'NULL'
-                  name: vat_id
-            indexName: FKof30dtd76g3m0233p7w7jcgnp
-            tableName: product
-  - changeSet:
-      id: 1747041568656-20
-      author: MSI (generated)
-      changes:
-        - createIndex:
-            associatedWith: ''
-            columns:
-              - column:
-                  defaultValueComputed: 'NULL'
-                  name: product_id
-            indexName: FKop1519veij0ixob5twkulx5xn
-            tableName: client_order_line
-  - changeSet:
-      id: 1747041568656-21
-      author: MSI (generated)
-      changes:
+                  name: unit_price
+                  type: DECIMAL(10,2)
         - addForeignKeyConstraint:
-            baseColumnNames: category_id
-            baseTableName: product
-            constraintName: FK1mtsbur82frn64de7balymq9s
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
-            referencedTableName: category
-            validate: true
-  - changeSet:
-      id: 1747041568656-22
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: supplier_order_id
-            baseTableName: supplier_order_line
-            constraintName: FK2xcgxb04vmje238gj47wt0te
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
-            referencedTableName: supplier_order
-            validate: true
-  - changeSet:
-      id: 1747041568656-23
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: supplier_id
-            baseTableName: supplier_order
-            constraintName: FK3rpubvv45ovmdbs8e8eedhj3b
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
-            referencedTableName: supplier
-            validate: true
-  - changeSet:
-      id: 1747041568656-24
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
+            baseTableName: client_order_line
             baseColumnNames: product_id
-            baseTableName: supplier_order_line
-            constraintName: FK46rdhakbv1u8sdo0o70vh9s2j
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
             referencedTableName: product
-            validate: true
-  - changeSet:
-      id: 1747041568656-25
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: person_id
-            baseTableName: phone_number
-            constraintName: FK4sjbpst35alcsan1qwbdb2nyu
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
             referencedColumnNames: id
-            referencedTableName: person
-            validate: true
-  - changeSet:
-      id: 1747041568656-26
-      author: MSI (generated)
-      changes:
+            constraintName: fk_client_line_product
         - addForeignKeyConstraint:
+            baseTableName: client_order_line
             baseColumnNames: client_order_id
-            baseTableName: client_order_line
-            constraintName: FK5n3turfepneq8u6ptkvyrthuk
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
             referencedTableName: client_order
-            validate: true
-  - changeSet:
-      id: 1747041568656-27
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: id
-            baseTableName: supplier
-            constraintName: FK8gs3oi1iw8664rdcpqqqkdxxp
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
             referencedColumnNames: id
-            referencedTableName: person
-            validate: true
-  - changeSet:
-      id: 1747041568656-28
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: client_id
-            baseTableName: client_order
-            constraintName: FKcggjtc9f3otuprl7takbttwuk
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
-            referencedTableName: client
-            validate: true
-  - changeSet:
-      id: 1747041568656-29
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: vat_id
-            baseTableName: product
-            constraintName: FKof30dtd76g3m0233p7w7jcgnp
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
-            referencedTableName: value_added_tax
-            validate: true
-  - changeSet:
-      id: 1747041568656-30
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: product_id
-            baseTableName: client_order_line
-            constraintName: FKop1519veij0ixob5twkulx5xn
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
-            referencedTableName: product
-            validate: true
-  - changeSet:
-      id: 1747041568656-31
-      author: MSI (generated)
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: id
-            baseTableName: client
-            constraintName: FKr1e0j10i9v9i52l6tqfa69nj0
-            deferrable: false
-            initiallyDeferred: false
-            onDelete: RESTRICT
-            onUpdate: RESTRICT
-            referencedColumnNames: id
-            referencedTableName: person
-            validate: true
+            constraintName: fk_client_line_order
+            onDelete: CASCADE
 
+  - changeSet:
+      id: 15
+      author: system
+      comment: "Ajout du trigger pour updated_at sur partner"
+      changes:
+        - sql:
+            sql: |
+              CREATE TRIGGER partner_updated_at 
+              BEFORE UPDATE ON partner 
+              FOR EACH ROW 
+              SET NEW.updated_at = CURRENT_TIMESTAMP;
+      rollback:
+        - sql:
+            sql: "DROP TRIGGER IF EXISTS partner_updated_at;"

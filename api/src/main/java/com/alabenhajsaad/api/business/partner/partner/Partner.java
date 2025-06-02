@@ -2,7 +2,7 @@ package com.alabenhajsaad.api.business.partner.partner;
 
 import com.alabenhajsaad.api.business.partner.Address;
 import com.alabenhajsaad.api.business.partner.PhoneNumber;
-import com.alabenhajsaad.api.business.partner.RoleType;
+import com.alabenhajsaad.api.business.partner.PartnerType;
 import com.alabenhajsaad.api.business.utils.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -20,15 +20,15 @@ import java.util.List;
 @AllArgsConstructor
 @Entity(name = "partner")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "entity_type")
+@DiscriminatorColumn(name = "entity_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Partner extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_type")
-    private RoleType roleType;
+    @Column(name = "partner_type")
+    private PartnerType partnerType;
 
     @Column(unique = true)
     @Email(message = "Veuillez saisir une adresse e-mail valide.")

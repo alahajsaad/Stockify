@@ -1,6 +1,6 @@
 package com.alabenhajsaad.api.business.partner.organization;
 
-import com.alabenhajsaad.api.business.partner.RoleType;
+import com.alabenhajsaad.api.business.partner.PartnerType;
 import org.springframework.data.jpa.domain.Specification;
 
 public class OrganizationSpecification {
@@ -17,7 +17,7 @@ public class OrganizationSpecification {
             );
         };
     }
-    public static Specification<Organization> hasRoleType(RoleType roleType) {
+    public static Specification<Organization> hasRoleType(PartnerType roleType) {
         return (root, query, criteriaBuilder) -> {
             if (roleType == null ) {
                 return null;

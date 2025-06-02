@@ -1,11 +1,9 @@
 package com.alabenhajsaad.api.business.partner.organization;
 
 import com.alabenhajsaad.api.business.partner.PhoneNumber;
-import com.alabenhajsaad.api.business.partner.RoleType;
-import com.alabenhajsaad.api.business.partner.person.Person;
+import com.alabenhajsaad.api.business.partner.PartnerType;
 import com.alabenhajsaad.api.business.utils.ErrorMessages;
 import com.alabenhajsaad.api.core.exception.ConflictException;
-import com.alabenhajsaad.api.core.exception.ValidationException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -58,9 +56,9 @@ public class OrganizationServiceImpl implements OrganizationService {
             existing.setTaxNumber(updatedOrganization.getTaxNumber());
         }
 
-        if (updatedOrganization.getRoleType() != null &&
-                !updatedOrganization.getRoleType().equals(existing.getRoleType())) {
-            existing.setRoleType(updatedOrganization.getRoleType());
+        if (updatedOrganization.getPartnerType() != null &&
+                !updatedOrganization.getPartnerType().equals(existing.getPartnerType())) {
+            existing.setPartnerType(updatedOrganization.getPartnerType());
         }
 
         // Email (optional)
@@ -97,7 +95,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public Page<Organization> getOrganizations(Pageable pageable, RoleType roleType, String keyword) {
+    public Page<Organization> getOrganizations(Pageable pageable, PartnerType roleType, String keyword) {
         Specification<Organization> specification = Specification
                 .where(OrganizationSpecification.hasKeyword(keyword))
                 .and(OrganizationSpecification.hasRoleType(roleType)) ;

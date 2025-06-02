@@ -1,6 +1,6 @@
 package com.alabenhajsaad.api.business.partner;
 
-public enum RoleType {
+public enum PartnerType {
     CLIENT,
     SUPPLIER
 }

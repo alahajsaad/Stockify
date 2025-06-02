@@ -1,8 +1,9 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { SquarePen, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 type VariantType = 
+  | "Default"
   | "WithNavigation" 
   | "WithActions"
   | "WithSelect";
@@ -14,7 +15,6 @@ type CellValue = string | number | JSX.Element;
 type TableProps<T extends { id: number; [key: string]: CellValue }> = {
   data: T[];
   head: string[]; // Headers for the table
-  route?: string; // Only required when variant is WithNavigation
   variant: VariantType;
   onEdit?: (id: number) => void; // Only required when variant is WithActions
   onDelete?: (id: number) => void; // Only required when variant is WithActions
@@ -22,10 +22,9 @@ type TableProps<T extends { id: number; [key: string]: CellValue }> = {
   initialSelectedId?: number; // Optional initial selected ID
 };
 
-const Table = <T extends { id?: number; [key: string]: CellValue }>({
+const Table = <T extends { id: number; [key: string]: CellValue }>({
   data,
   head,
-  route,
   variant,
   onEdit,
   onDelete,
@@ -33,13 +32,24 @@ const Table = <T extends { id?: number; [key: string]: CellValue }>({
   initialSelectedId
 }: TableProps<T>) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const isDefaultVariant = variant === "Default";
   const isActionVariant = variant === "WithActions";
   const isNavigationVariant = variant === "WithNavigation";
   const isSelectVariant = variant === "WithSelect";
   
+  console.table({
+    variant,
+    isDefaultVariant,
+    isActionVariant,
+    isNavigationVariant,
+    isSelectVariant
+  });
+  
   // Initialize selected ID state, using initialSelectedId if provided
   const [selectedId, setSelectedId] = useState<number | null>(initialSelectedId || null);
-  
+
   // Update selectedId if initialSelectedId prop changes
   useEffect(() => {
     if (initialSelectedId !== undefined) {
@@ -48,21 +58,23 @@ const Table = <T extends { id?: number; [key: string]: CellValue }>({
   }, [initialSelectedId]);
 
   // Ensure required props are provided based on variant
-  if (isNavigationVariant && !route) {
-    console.warn("Route prop is required when using WithNavigation variant");
-  }
-
   if (isActionVariant && (!onEdit || !onDelete)) {
     console.warn("onEdit and onDelete props are required when using WithActions variant");
   }
 
   const handleRowClick = (id: number) => {
-    if (isNavigationVariant && route) {
-      navigate(route.replace(":id", id.toString()));
+    if (isNavigationVariant) {
+      const route = location.pathname + `/${id}`;
+      navigate(route);
     }
   };
 
   const onItemClick = (id: number) => {
+    // No action for Default variant
+    if (isDefaultVariant) {
+      return;
+    }
+    
     if (isNavigationVariant) {
       handleRowClick(id);
     }
@@ -105,7 +117,7 @@ const Table = <T extends { id?: number; [key: string]: CellValue }>({
             {head.map((h, index) => (
               <th className="px-6 py-4 font-semibold tracking-wider" key={index}>{h}</th>
             ))}
-            {isActionVariant && <th className="px-6 py-4 font-semibold tracking-wider">Actions</th>}
+            {isActionVariant && ( <th className="px-6 py-4 font-semibold tracking-wider">Actions</th>)}
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -118,12 +130,12 @@ const Table = <T extends { id?: number; [key: string]: CellValue }>({
                 <tr
                   className={`
                     ${isSelected ? 'bg-blue-100 dark:bg-blue-900' : 'bg-white dark:bg-gray-800'} 
-                    hover:bg-blue-50 dark:hover:bg-gray-700
-                    ${isNavigationVariant || isSelectVariant ? 'cursor-pointer' : ''}
+                    ${!isDefaultVariant ? 'hover:bg-blue-50 dark:hover:bg-gray-700' : ''}
+                    ${(isNavigationVariant || isSelectVariant) && !isDefaultVariant ? 'cursor-pointer' : ''}
                     transition-colors duration-200
                   `}
                   key={item.id}
-                  onClick={() => onItemClick(item.id!)}
+                  onClick={() => onItemClick(item.id)}
                 >
                   {fieldsToDisplay.map((field, index) => (
                     <td className="px-6 py-4" key={index}>
@@ -133,8 +145,14 @@ const Table = <T extends { id?: number; [key: string]: CellValue }>({
                   {isActionVariant && (
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
-                        <SquarePen className="cursor-pointer text-blue-500 hover:text-blue-700" onClick={(e) => handleEditClick(item.id, e)} />
-                        <Trash2 className="cursor-pointer text-red-500 hover:text-red-700" onClick={(e) => handleDeleteClick(item.id, e)} />
+                        <SquarePen 
+                          className="cursor-pointer text-blue-500 hover:text-blue-700" 
+                          onClick={(e) => handleEditClick(item.id, e)} 
+                        />
+                        <Trash2 
+                          className="cursor-pointer text-red-500 hover:text-red-700" 
+                          onClick={(e) => handleDeleteClick(item.id, e)} 
+                        />
                       </div>
                     </td>
                   )}
@@ -153,12 +171,6 @@ const Table = <T extends { id?: number; [key: string]: CellValue }>({
           )}
         </tbody>
       </table>
-      {/* Debug information - remove in production */}
-      {/* {isSelectVariant && (
-        <div className="text-xs text-gray-500 mt-2 px-4 py-2">
-          ID sélectionné: {selectedId !== null ? selectedId : 'aucun'}
-        </div>
-      )} */}
     </div>
   );
 };

@@ -24,10 +24,6 @@ export type LoginRequest = {
     password: string;
 };
 
-export type Category = {
-    id? : number ,
-    name? : string
-}
 
 export type valueAddedTax = {
     id? : number ,

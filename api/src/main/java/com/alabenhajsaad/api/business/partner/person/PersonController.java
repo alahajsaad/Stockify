@@ -1,6 +1,6 @@
 package com.alabenhajsaad.api.business.partner.person;
 
-import com.alabenhajsaad.api.business.partner.RoleType;
+import com.alabenhajsaad.api.business.partner.PartnerType;
 import com.alabenhajsaad.api.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,7 +42,7 @@ public class PersonController {
     @GetMapping
     public ResponseEntity<ApiResponse<Page<Person>>> getPersons(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) RoleType roleType,
+            @RequestParam(required = false) PartnerType roleType,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "8") Integer size
     ) {

@@ -22,18 +22,24 @@ export const Paths = {
     addVat: "vats/add",
     categories:"categories",
     addCategory:"categories/add",
+
+
     clients:"clients",
     client:":id" ,
     addClient:"client/add",
+    clientOrders:"clientOrders",
+    addClientOrder:"clientOrder/add",
+
     suppliers:"suppliers",
     addSupplier:"supplier/add",
     supplierOrders:"supplierOrders",
     addSupplierOrder:"supplierOrder/add",
-    clientOrders:"clientOrders",
-    addClientOrder:"clientOrder/add",
+
+    
     company:"company", 
     subscriptions:"subscriptions",
     companies:"companies"
+    
 
 
   };

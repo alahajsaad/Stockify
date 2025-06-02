@@ -5,6 +5,8 @@ import com.alabenhajsaad.api.core.company.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService{
@@ -17,5 +19,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         var company  = companyService.getCompanyById(companyId);
         subscription.setCompany(company);
         return repository.save(subscription);
+    }
+
+    public Map<String, Long> getSubscriptionPlanStatistics() {
+        return repository.getSubscriptionPlanStatisticsAsMap();
     }
 }

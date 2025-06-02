@@ -5,6 +5,7 @@ import { ConsultCompanyDto } from "@/services/api/company/types";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { Phone, Mail } from 'lucide-react';
 import { SubscriptionStatus } from '@/types';
+import { Paths } from '@/lib/paths';
 
 type CompaniesTableProps = {
   data: ConsultCompanyDto[];
@@ -92,7 +93,7 @@ const subscriptionDisplay = (planName: string, status: SubscriptionStatus): JSX.
 
 const CompaniesTable: React.FC<CompaniesTableProps> = ({ data }) => {
   // En-têtes corrigés pour correspondre aux données des entreprises
-  const head = ["Nom", "N° Fiscal", "Contact", "Statut", "Abonnement", "Actions"];
+  const head = ["Nom", "N° Fiscal", "Contact", "Statut", "Abonnement"];
 
   // Transformer les données des entreprises
   const tableData: TransformedData[] = data.map(company => ({
@@ -105,7 +106,7 @@ const CompaniesTable: React.FC<CompaniesTableProps> = ({ data }) => {
   }));
 
   return (
-    <Table head={head} data={tableData} variant={"WithNavigation"} />
+    <Table head={head} data={tableData} variant={"WithNavigation"}/>
   );
 };
 

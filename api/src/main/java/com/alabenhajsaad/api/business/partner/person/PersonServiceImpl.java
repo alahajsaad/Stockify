@@ -1,8 +1,7 @@
 package com.alabenhajsaad.api.business.partner.person;
 
 import com.alabenhajsaad.api.business.partner.PhoneNumber;
-import com.alabenhajsaad.api.business.partner.RoleType;
-import com.alabenhajsaad.api.business.partner.organization.Organization;
+import com.alabenhajsaad.api.business.partner.PartnerType;
 import com.alabenhajsaad.api.business.utils.ErrorMessages;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 import jakarta.persistence.EntityNotFoundException;
@@ -56,9 +55,9 @@ public class PersonServiceImpl implements PersonService{
         }
 
 
-        if (updatedPerson.getRoleType() != null &&
-                !updatedPerson.getRoleType().equals(existing.getRoleType())) {
-            existing.setRoleType(updatedPerson.getRoleType());
+        if (updatedPerson.getPartnerType() != null &&
+                !updatedPerson.getPartnerType().equals(existing.getPartnerType())) {
+            existing.setPartnerType(updatedPerson.getPartnerType());
         }
 
         // Email (optional)
@@ -95,7 +94,7 @@ public class PersonServiceImpl implements PersonService{
     }
 
     @Override
-    public Page<Person> getPersons(Pageable pageable, RoleType roleType, String keyword) {
+    public Page<Person> getPersons(Pageable pageable, PartnerType roleType, String keyword) {
         Specification<Person> specification = Specification
                 .where(PersonSpecification.hasKeyword(keyword))
                 .and(PersonSpecification.hasRoleType(roleType)) ;

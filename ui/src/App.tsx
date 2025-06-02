@@ -16,15 +16,18 @@ import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
 
 import { AddCategoryPage, ConsultCategoriesPage } from "./features/category";
 import { AddVatPage, ConsultVatsPage } from "./features/value_added_tax";
-import { AddClientPage } from "./features/client";
+
 import ConsultClientsPage from "./features/client/pages/ConsultClientsPage";
 import ConsultClientPage from "./features/client/pages/ConsultClientPage";
 import AddSupplierOrderPage from "./features/supplier_order/pages/AddSupplierOrderPage";
 import DashBoard from "./features/DashBoard/DashBoard";
-import CompanyPage from "./features/company/pages/CompanyPage";
 import ProfilePage from "./features/auth/pages/ProfilePage";
 import ConsultCompaniesPage from "./features/company/pages/ConsultCompaniesPage";
 import ConsultSubscriptionsPage from "./features/subscription/ConsultSubscriptionsPage";
+import ConsultCompanyPageSuperAdmin from "./features/company/pages/ConsultCompanyPageSuperAdmin";
+import ConsultCompanyPage from "./features/company/pages/ConsultCompanyPage";
+import AddClientPage from "./features/partner/pages/AddClientPage";
+import CategoriesPage from "./features/category/pages/CategoriesPage";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -67,31 +70,52 @@ const App = () => {
           }>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashBoard />} />
-            <Route path={Paths.company} element={<CompanyPage />} />
+            <Route path={Paths.company} element={<ConsultCompanyPage />} />
             <Route path={Paths.profile} element={<ProfilePage />} />
             <Route path="products/add" element={<ProductForm />} />
             <Route path="products" element={<ConsultProducts />} />
             <Route path="products/:id" element={<ProductDetails />} />
             <Route path={Paths.addVat} element={<AddVatPage />} />
             <Route path={Paths.vats} element={<ConsultVatsPage />} />
-            <Route path={Paths.categories} element={<ConsultCategoriesPage />} />
+            <Route path={Paths.categories} element={<CategoriesPage />} />
             <Route path={Paths.addCategory} element={<AddCategoryPage />} />
-            <Route path={Paths.addClient} element={<AddClientPage />} />
-            <Route path={Paths.companies} element={<ConsultCompaniesPage />} />
+           
             <Route path={Paths.subscriptions} element={<ConsultSubscriptionsPage />} />
             {/* <Route path={Paths.clients} element={<ConsultClientsPage />} />
             <Route path={Paths.client} element={<ConsultClientPage />} /> */}
 
-            <Route path="clients">
+            <Route path={Paths.clients}>
               <Route index element={<ConsultClientsPage />} />
               <Route path=":id" element={<ConsultClientPage />} />
             </Route>
+            <Route path={Paths.addClient} element={<AddClientPage />} />
 
-            <Route path={Paths.addSupplierOrder} element={<AddSupplierOrderPage />} />
+            <Route path={Paths.suppliers}>
+              <Route index element={<ConsultClientsPage />} />
+              <Route path=":id" element={<ConsultClientPage />} />
+            </Route>
+            <Route path={Paths.addSupplier} element={<AddClientPage />} />
+
+
+            <Route path={Paths.clientOrders}>
+              <Route index element={<ConsultClientsPage />} />
+              <Route path=":id" element={<ConsultClientPage />} />
+            </Route>
+            <Route path={Paths.addClientOrder} element={<AddSupplierOrderPage />} />
+
+
+
             <Route path={Paths.supplierOrders}>
               <Route index element={<ConsultClientsPage />} />
               <Route path=":id" element={<ConsultClientPage />} />
             </Route>
+            <Route path={Paths.addSupplierOrder} element={<AddSupplierOrderPage />} />
+
+            <Route path={Paths.companies}>
+              <Route index element={<ConsultCompaniesPage />} />
+              <Route path=":id" element={<ConsultCompanyPageSuperAdmin />} />
+            </Route>
+
 
 
 

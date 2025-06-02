@@ -2,6 +2,7 @@ package com.alabenhajsaad.api.business.product;
 
 import com.alabenhajsaad.api.business.category.Category;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
+import com.alabenhajsaad.api.business.utils.Auditable;
 import com.alabenhajsaad.api.business.vat.Vat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "product")
-public class Product {
+public class Product extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

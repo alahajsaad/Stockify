@@ -1,23 +1,10 @@
--- Script de création de base de données pour le système de gestion de commandes
--- MySQL
 
--- Suppression des tables dans le bon ordre pour respecter les contraintes de clés étrangères
-DROP TABLE IF EXISTS client_order_line;
-DROP TABLE IF EXISTS supplier_order_line;
-DROP TABLE IF EXISTS client_order;
-DROP TABLE IF EXISTS supplier_order;
-DROP TABLE IF EXISTS product;
-DROP TABLE IF EXISTS category;
-DROP TABLE IF EXISTS value_added_tax;
-
--- Création de la table value_added_tax (taux de TVA)
 CREATE TABLE IF NOT EXISTS value_added_tax (
        id INT AUTO_INCREMENT PRIMARY KEY,
        rate DOUBLE NOT NULL UNIQUE,
        description VARCHAR(255)
     );
 
--- Création de la table category (catégorie de produit)
 CREATE TABLE IF NOT EXISTS category (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE
@@ -25,13 +12,13 @@ CREATE TABLE IF NOT EXISTS category (
 
 -- Création de la table product (produit)
 CREATE TABLE IF NOT EXISTS product (
-   id INT AUTO_INCREMENT PRIMARY KEY,
-   designation VARCHAR(255) UNIQUE,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    designation VARCHAR(255) UNIQUE,
     reference VARCHAR(255) UNIQUE,
     quantity INT CHECK (quantity >= 0),
+    critical_threshold INT,
     last_purchase_price DECIMAL(10,2),
     last_sale_price DECIMAL(10,2),
-    critical_threshold INT,
     stock_status VARCHAR(255),
     category_id INT,
     vat_id INT,
@@ -41,83 +28,74 @@ CREATE TABLE IF NOT EXISTS product (
     FOREIGN KEY (vat_id) REFERENCES value_added_tax(id)
     );
 
--- Table principale Partner (table parent pour l'héritage)
 CREATE TABLE IF NOT EXISTS partner (
-                                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                       entity_type VARCHAR(50) NOT NULL,
-    role_type VARCHAR(20),
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    partner_type ENUM('CLIENT', 'SUPPLIER'),
+    entity_type VARCHAR(31) NOT NULL,
     email VARCHAR(255) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    created_by VARCHAR(255),
-    updated_by VARCHAR(255)
-    );
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
--- Table Person (hérite de Partner)
 CREATE TABLE IF NOT EXISTS person (
-                                      id BIGINT PRIMARY KEY,
-                                      first_name VARCHAR(255),
+    id BIGINT PRIMARY KEY,
+    first_name VARCHAR(255),
     last_name VARCHAR(255),
     FOREIGN KEY (id) REFERENCES partner(id) ON DELETE CASCADE
-    );
+);
 
--- Table Organization (hérite de Partner)
 CREATE TABLE IF NOT EXISTS organization (
-                                            id BIGINT PRIMARY KEY,
-                                            company_name VARCHAR(255),
+    id BIGINT PRIMARY KEY,
+    company_name VARCHAR(255),
     registration_number VARCHAR(255),
     tax_number VARCHAR(255),
     FOREIGN KEY (id) REFERENCES partner(id) ON DELETE CASCADE
-    );
+);
 
--- Table PhoneNumber
 CREATE TABLE IF NOT EXISTS phone_number (
-                                            id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                            number VARCHAR(255) UNIQUE,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    number VARCHAR(255) UNIQUE,
     partner_id BIGINT,
     FOREIGN KEY (partner_id) REFERENCES partner(id) ON DELETE CASCADE
-    );
+);
 
--- Table Address
+
 CREATE TABLE IF NOT EXISTS address (
-                                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                       street_address VARCHAR(255),
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    street_address VARCHAR(255),
     city VARCHAR(255),
     partner_id BIGINT,
     FOREIGN KEY (partner_id) REFERENCES partner(id) ON DELETE CASCADE
-    );
+);
 
 
 
--- Création de la table supplier_order (commande fournisseur)
 CREATE TABLE supplier_order (
-                                id INT AUTO_INCREMENT PRIMARY KEY,
-                                order_number VARCHAR(255) NOT NULL,
-                                total_excluding_tax DECIMAL(10,2),
-                                total_including_tax DECIMAL(10,2),
-                                payment_status ENUM('ALL', 'PAID', 'UNPAID'),
-                                reception_status ENUM('RECEIVED', 'UNRECEIVED'),
-                                partner_id BIGINT,
-                                created_at DATE,
-                                updated_at DATE,
-                                FOREIGN KEY (partner_id) REFERENCES partner(id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(255) NOT NULL,
+    total_excluding_tax DECIMAL(10,2),
+    total_including_tax DECIMAL(10,2),
+    payment_status ENUM('PAID', 'UNPAID'),
+    reception_status ENUM('RECEIVED', 'UNRECEIVED'),
+    partner_id BIGINT,
+    created_at DATE,
+    updated_at DATE,
+    FOREIGN KEY (partner_id) REFERENCES partner(id)
 );
 
--- Création de la table client_order (commande client)
 CREATE TABLE client_order (
-                              id INT AUTO_INCREMENT PRIMARY KEY,
-                              order_number VARCHAR(255) NOT NULL,
-                              total_excluding_tax DECIMAL(10,2),
-                              total_including_tax DECIMAL(10,2),
-                              payment_status ENUM('ALL', 'PAID', 'UNPAID'),
-                              delivery_status ENUM('ALL', 'DELIVERED', 'UNDELIVERED'),
-                              partner_id BIGINT,
-                              created_at DATE,
-                              updated_at DATE,
-                              FOREIGN KEY (partner_id) REFERENCES partner(id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(255) NOT NULL,
+    total_excluding_tax DECIMAL(10,2),
+    total_including_tax DECIMAL(10,2),
+    payment_status ENUM('PAID', 'UNPAID'),
+    delivery_status ENUM('DELIVERED', 'UNDELIVERED'),
+    partner_id BIGINT,
+    created_at DATE,
+    updated_at DATE,
+    FOREIGN KEY (partner_id) REFERENCES partner(id)
 );
 
--- Création de la table supplier_order_line (ligne de commande fournisseur)
 CREATE TABLE supplier_order_line (
      id INT AUTO_INCREMENT PRIMARY KEY,
      product_id INT,
@@ -128,7 +106,6 @@ CREATE TABLE supplier_order_line (
      FOREIGN KEY (supplier_order_id) REFERENCES supplier_order(id) ON DELETE CASCADE
 );
 
--- Création de la table client_order_line (ligne de commande client)
 CREATE TABLE client_order_line (
        id INT AUTO_INCREMENT PRIMARY KEY,
        product_id INT,
@@ -172,19 +149,3 @@ FROM supplier_order_line sol
          JOIN supplier s ON so.supplier_id = s.id;
 
 
--- Création d'index pour améliorer les performances
-CREATE INDEX idx_supplier_order_supplier ON supplier_order(supplier_id);
-CREATE INDEX idx_client_order_client ON client_order(client_id);
-CREATE INDEX idx_supplier_order_line_order ON supplier_order_line(supplier_order_id);
-CREATE INDEX idx_client_order_line_order ON client_order_line(client_order_id);
-CREATE INDEX idx_supplier_order_line_product ON supplier_order_line(product_id);
-CREATE INDEX idx_client_order_line_product ON client_order_line(product_id);
-CREATE INDEX idx_product_category ON product(category_id);
-CREATE INDEX idx_product_vat ON product(vat_id);
-
-
--- Index pour améliorer les performances
-CREATE INDEX IF NOT EXISTS idx_partner_email ON partner(email);
-CREATE INDEX IF NOT EXISTS idx_partner_entity_type ON partner(entity_type);
-CREATE INDEX IF NOT EXISTS idx_phone_number_partner_id ON phone_number(partner_id);
-CREATE INDEX IF NOT EXISTS idx_address_partner_id ON address(partner_id);
