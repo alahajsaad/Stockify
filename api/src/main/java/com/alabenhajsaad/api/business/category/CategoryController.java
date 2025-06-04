@@ -41,7 +41,7 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<Page<Category>>> getCategories(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "8") Integer size
+            @RequestParam(defaultValue = "12") Integer size
     ) {
         return ResponseEntity.ok(
                 ApiResponse.success(service.getCategories(PageRequest.of(page, size),keyword), "Liste des catégories récupérée avec succès")

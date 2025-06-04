@@ -1,8 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Separator } from "@/components/ui/shadcn/separator";
 import { ClientForm, clientFormSchema, EntityType } from '@/lib/formSchema';
-import { Card, CardBody, CardHeader } from '@/components/ui/Card';
+import { Card, CardBody } from '@/components/ui/Card';
 import { Button } from '@/components/ui';
 import EntityTypeSelection from '../forms/EntityTypeSelection';
 import PersonInfoFields from '../forms/PersonInfoFields';

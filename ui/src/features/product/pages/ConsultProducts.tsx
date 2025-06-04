@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { StockStatus, useGetFiltredProducts } from "src/services/api/product";
 import ProductsFilter from "../components/consultProducts/ProductsFilter";
 import ProductsTable from "../components/consultProducts/ProductsTable";
 import { Package} from "lucide-react";
 import TableNav from "src/components/ui/TableNav";
+import { StockStatus } from "@/services/api/product/types";
+import { useGetProducts } from "@/services/api/product/hooks";
 
 const ConsultProducts: React.FC = () => {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(7);
   const [searchKey, setSearchKey] = useState<string>("");
-  const [stockStatus, setStockStatus] = useState<StockStatus>("ALL");
+  const [stockStatus, setStockStatus] = useState<StockStatus>();
   
-  const { data, isPending, refetch } = useGetFiltredProducts({
+  const { data, isPending, refetch } = useGetProducts({
     status: stockStatus,
     keyword: searchKey,
     page,

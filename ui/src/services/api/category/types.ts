@@ -6,7 +6,7 @@ interface CategoryBase {
   name: string;
 }
 
-export type CreateCategoryDto = CategoryBase;
+export type CategoryCreationDto = CategoryBase;
 export interface Category extends CategoryBase {
   id: number;
 }

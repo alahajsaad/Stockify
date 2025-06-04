@@ -59,7 +59,6 @@ export type { Company } from "./company"
 export type { User } from './user'
 export type { CreateAdminResponse } from './user'
 export type { UserResponseDto } from './user'
-export type { AdminInscriptionStatus } from './user'
 export type { Role } from './TokenPayload'
 export type { TokenPayload } from './TokenPayload'
 

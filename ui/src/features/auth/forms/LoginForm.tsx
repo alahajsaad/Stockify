@@ -25,7 +25,10 @@ const  LoginForm : React.FC = () => {
        resolver: zodResolver(formSchema),
       });
     
-    const {mutate : authenticate , isPending , error} = useAuthenticate()
+    const {mutate : authenticate , isPending , isError , error} = useAuthenticate()
+    if(isError){
+      console.log("isError message" + isError)
+    }
     const handleFormSubmit = async (data: FormValues) => {
 
        const credential : LoginRequest = {
@@ -41,8 +44,8 @@ const  LoginForm : React.FC = () => {
 
         login(response.data.access_token);
       },
-      onError:(response) => {
-        setAuthError(response.message)
+      onError: (err: Error) => {
+        setAuthError(err.message); 
       }
 });
 
@@ -59,13 +62,13 @@ const  LoginForm : React.FC = () => {
             <PasswordInput {...register('password')}/>
             {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
           </div>
+          {authError && <p className="text-red-500 text-sm">{authError}</p>}
+
           <div className='flex flex-col mt-[20px]'>
               <Button type="submit" disabled={isPending}>
                 {isPending ? "Connexion..." : "Se connecter"}
               </Button>
               <div className="flex justify-end mt-2">
-              {authError && <p className="text-red-500">{authError}</p>}
-              {error && <p className="text-red-500">{error.message}</p>}
                 <Link className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors" to={Paths.forgotPassword}>mot de passe oublié</Link>
               </div>
           </div> 

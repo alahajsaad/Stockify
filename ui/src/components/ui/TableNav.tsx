@@ -12,7 +12,7 @@ const TableNav = <T,>({ data, page, setPage }: TableNavProps<T>) => {
     <div className="flex items-center justify-between px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-700 rounded-b-lg">
       <div className="text-sm text-gray-600 dark:text-gray-300">
         <p className="font-medium">
-          Total: <span className="font-bold">{data.totalElements}</span> produits
+          Total: <span className="font-bold">{data.totalElements}</span>
         </p>
         <p>
           Page <span className="font-semibold">{data.number + 1}</span> sur{" "}

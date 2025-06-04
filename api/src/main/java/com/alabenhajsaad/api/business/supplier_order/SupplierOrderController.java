@@ -62,8 +62,7 @@ public class SupplierOrderController {
     @GetMapping("/generate-number")
     public ResponseEntity<ApiResponse<String>> getNewOrderNumber() {
         return ResponseEntity.ok(ApiResponse.success(
-                service.getNewSupplierOrderNumber(),
-                "Numéro de commande généré avec succès."
+                service.getNewSupplierOrderNumber()
         ));
     }
 }

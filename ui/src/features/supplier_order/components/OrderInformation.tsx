@@ -1,12 +1,14 @@
 import { Card, CardBody, CardHeader } from "src/components/ui/Card";
-import { Hash, Calendar } from "lucide-react";
+import { Hash, Calendar, LoaderCircle } from "lucide-react";
 
 type OrderInformationProps = {
-  orderNumber: string;
   dateCreated?: Date;
+  orderNumber?:string
+  isPending:boolean
 };
 
-const OrderInformation: React.FC<OrderInformationProps> = ({ orderNumber, dateCreated }) => {
+const OrderInformation: React.FC<OrderInformationProps> = ({ dateCreated ,orderNumber,isPending}) => {
+ 
   return (
     <Card>
       <CardHeader>
@@ -18,7 +20,7 @@ const OrderInformation: React.FC<OrderInformationProps> = ({ orderNumber, dateCr
             <Hash className="text-indigo-600" />
             <div>
               <p className="text-muted-foreground text-sm">Numéro de commande</p>
-              <p className="font-medium">{orderNumber}</p>
+              <p className="font-medium">{isPending ? <LoaderCircle className="animate-spin" /> : orderNumber}</p>
             </div>
           </div>
           <div className="flex items-center space-x-3">

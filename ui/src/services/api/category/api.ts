@@ -1,8 +1,8 @@
 import request from "@/services/config/request";
 import { ApiResponse, Page } from "@/types";
-import { Category, CreateCategoryDto } from "./types";
+import { Category, CategoryCreationDto } from "./types";
 
-export const addCategory = (category: CreateCategoryDto): Promise<ApiResponse<Category>> => {
+export const addCategory = (category: CategoryCreationDto): Promise<ApiResponse<Category>> => {
     return request<Category>({
       url: "/category",
       method: "post",
@@ -13,6 +13,7 @@ export const addCategory = (category: CreateCategoryDto): Promise<ApiResponse<Ca
 export const getCategories = (params: {
     keyword?: string;
     page?: number;
+    size?:number;
   }): Promise<ApiResponse<Page<Category>>> => {
     return request<Page<Category>>({
       url: "/category",

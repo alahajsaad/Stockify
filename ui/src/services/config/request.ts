@@ -24,15 +24,13 @@ const request = async <T = unknown>( options: AxiosRequestConfig ): Promise<ApiR
     const response = await client.request<ApiResponse<T>>(options);
     return response.data;
   } catch (error) {
-    const axiosError = error as AxiosError<ApiResponse<any>>;
+   const axiosError = error as AxiosError<ApiResponse<any>>;
 
-  
-    // Fallback in case there's no response (e.g., network error)
-    return {
-      status: 'error',
-      data: null,
-      message: axiosError.message || 'Unexpected error',
-    };
+    // Extract the backend message if it exists
+    const message = axiosError.response?.data?.message || axiosError.message || "Unexpected error";
+
+    // Throw an error so React Query can catch it
+    throw new Error(message);
   }
 };
 

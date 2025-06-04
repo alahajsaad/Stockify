@@ -1,69 +1,18 @@
-import { ApiResponse, Page, valueAddedTax } from "src/types"
-import request from "../config/request";
-import { useMutation, useQuery, useQueryClient ,QueryKey} from "@tanstack/react-query";
-import { toast } from "react-toastify";
+import { QueryKey, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Product, ProductCreationDto, StockStatus } from "./types";
+import { addProduct, getProductById, getProducts } from "./api";
+import { ApiResponse, Page } from "@/types";
 
-export type StockStatus =  
-| 'ALL' 
-| 'IN_STOCK'
-| 'OUT_OF_STOCK' 
-| 'LOW_STOCK' ;
-
-export type Product = {
-    id : number,
-    designation :string ,
-    reference : string,
-    quantity : number ,
-    criticalThreshold : number,
-    lastPurchasePrice : number ,
-    lastSalePrice:number,
-    stockStatus : StockStatus
-    category : {id : number ,name : string} ,
-    vat : valueAddedTax
-}
-
-
-export const addProduct = (product: Product): Promise<ApiResponse<Product>> => {
-    return request<Product>({
-      url: "/product",
-      method: "post",
-      data: product,
-    });
-}
-
-export const getProductById = (id:number) : Promise<ApiResponse<Product>> =>  {
-  return request<Product>({
-    url: `/product?id=${(id)}`,
-    method: "get",
-  });
-}
-
-export const getFiltredProduct = (
-  params: {
-    status?: StockStatus ; // Adaptez selon vos enums
-    keyword?: string;
-    page?: number;
-    size?: number;
-  }
-): Promise<ApiResponse<Page<Product>>> => {
-  return request<Page<Product>>({
-    url: "/product",
-    method: "get",
-    params,
-  });
-}
-  
 export const useAddProduct = () => {
     const queryClient = useQueryClient();
      
-    return useMutation<Product, Error, Product>({
-      mutationFn: (product: Product) => 
+    return useMutation<ApiResponse<Product>, Error, ProductCreationDto>({
+      mutationFn: (product: ProductCreationDto) => 
         addProduct(product).then(response => {
           if (response.status === 'error') {
             throw new Error(response.message);
           }
-          toast.success(response.message);
-          return response.data as Product;
+          return response;
         }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -73,16 +22,7 @@ export const useAddProduct = () => {
 
 
 
-/**
- * Generates a consistent cache key for product queries
- * 
- * @param params - Filter and pagination parameters
- * @param params.status - Optional filter for product stock status
- * @param params.keyword - Optional search keyword
- * @param params.page - Page number (defaults to 0)
- * @param params.size - Page size (defaults to 10)
- * @returns A structured query key array for React Query
- */
+
 const generateProductCacheKey = (params: {
   status?: StockStatus;
   keyword?: string;
@@ -94,22 +34,8 @@ const generateProductCacheKey = (params: {
   return ['Products', 'filteredProducts', status || 'all', keyword || '', page, size];
 };
 
-/**
- * Custom hook for fetching filtered products with pagination
- * 
- * This hook efficiently manages product data by:
- * 1. Using a structured cache key for consistent caching
- * 2. Checking the cache before making API requests
- * 3. Avoiding duplicate API calls when revisiting previously loaded pages
- * 
- * @param params - Filter and pagination parameters
- * @param params.status - Optional filter for product stock status
- * @param params.keyword - Optional search keyword
- * @param params.page - Page number (defaults to 0)
- * @param params.size - Page size (defaults to 10)
- * @returns React Query result with paginated product data
- */
-export const useGetFiltredProducts = (
+
+export const useGetProducts = (
   params: {
     status?: StockStatus;
     keyword?: string;
@@ -130,7 +56,7 @@ export const useGetFiltredProducts = (
       }
       
       // If not in cache, fetch from API
-      return getFiltredProduct(params).then(response => {
+      return getProducts(params).then(response => {
         if (response.status === 'error') {
           throw new Error(response.message);
         }

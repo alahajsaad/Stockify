@@ -1,7 +1,7 @@
-import { useGetProductById } from "src/services/api/product";
 import ProductDetailsCard from "../components/productDetails/ProductDetailsCard";
 import { useParams } from 'react-router';
 import { useEffect } from 'react';
+import { useGetProductById } from "@/services/api/product/hooks";
 
 const ProductDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();

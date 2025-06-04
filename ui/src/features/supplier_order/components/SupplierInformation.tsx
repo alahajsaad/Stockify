@@ -1,31 +1,31 @@
+import { Paths } from "@/lib/paths";
+import { useGetPartners } from "@/services/api/partner/hooks";
+import {  PartnerResponseDto, ShowPartnerDto } from "@/services/api/partner/types";
+import { getShowPartnerDtos } from "@/services/api/partner/utils";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, SearchInput } from "src/components/ui";
 import { Card, CardBody, CardHeader } from "src/components/ui/Card";
 import List from "src/components/ui/List";
-import Modal from "src/components/ui/Modal";
-import SupplierForm from "src/features/supplier/forms/SupplierForm";
-import { useGetSuppliers } from "src/services/api/supplier";
-import { Supplier } from "src/types/supplier";
+
 
 type SupplierInformationProps = {
-  supplier?: Supplier;
-  setSupplier: (supplier: Supplier) => void;
+  supplier?: PartnerResponseDto;
+  setSupplier: (partner : PartnerResponseDto | undefined) => void;
 }
 
-const SupplierInformation: React.FC<SupplierInformationProps> = ({ 
-  supplier, 
-  setSupplier 
-}) => {
+const SupplierInformation: React.FC<SupplierInformationProps> = ({ supplier, setSupplier }) => {
+  const navigate = useNavigate()
   const [searchKey, setSearchKey] = useState<string>('');    
-  const { data: suppliers, isPending, refetch } = useGetSuppliers({ 
-    keyWord: searchKey,
+  const { data: suppliers, isPending, refetch } = useGetPartners({
+    keyword: searchKey,
+    partnerType: "SUPPLIER",
     page: 0,
-    size: 10 
+    size: 10
   });
-  const [isOpenSupplierForm, setIsOpenSupplierForm] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  // Handle search input change
+  const ShowPartnerDtos : ShowPartnerDto[] = getShowPartnerDtos(suppliers?.content || [])
+  const currentSupplier = ShowPartnerDtos?.find((supp)=>supp.id === supplier?.id)
   const handleSearchChange = (value: string) => {
     setSearchKey(value);
     // Only open the dropdown if there's search text
@@ -37,9 +37,9 @@ const SupplierInformation: React.FC<SupplierInformationProps> = ({
   };
 
   // Handle supplier selection
-  const handleSupplierSelect = (selectedSupplier: Supplier | null) => {
+  const handleSupplierSelect = (selectedSupplier: ShowPartnerDto | null) => {
     if (selectedSupplier) {
-      setSupplier(selectedSupplier);
+      setSupplier(suppliers?.content.find((supp)=> supp.id === selectedSupplier.id));
       setIsOpen(false);
       setSearchKey(''); // Clear search after selection
     }
@@ -47,12 +47,12 @@ const SupplierInformation: React.FC<SupplierInformationProps> = ({
 
   // Handle change button click
   const handleChangeSupplier = () => {
-    setSupplier(undefined as any); // Reset supplier selection
+    setSupplier(undefined); 
     setSearchKey('');
     setIsOpen(false);
   };
 
-  // Auto-refetch when searchKey changes
+  
   useEffect(() => {
     if (searchKey) {
       refetch();
@@ -69,17 +69,12 @@ const SupplierInformation: React.FC<SupplierInformationProps> = ({
         <div>
           <div className="flex flex-wrap items-center justify-between">
             <p className="text-lg font-bold">
-              {supplier.firstName + " " + supplier.lastName}
+              {currentSupplier?.partnerName}
             </p>
             <Button onClick={handleChangeSupplier}>Changer</Button>
           </div>
-          <p>Email: {supplier.email}</p>
-          <p>
-            Téléphone: {supplier.phoneNumbers?.map((phone, index) => 
-              (index > 0 ? " / " : "") + phone.number
-            ).join("")}
-          </p>
-          <p>Adresse: {supplier.address}</p>
+          <p>Email: {currentSupplier?.email}</p>
+          <p>Type: {currentSupplier?.entityType}</p>
         </div>
       ) : (
         <div className="relative">
@@ -90,21 +85,18 @@ const SupplierInformation: React.FC<SupplierInformationProps> = ({
           />
           
           <List 
-            data={suppliers?.data?.content} 
+            data={ShowPartnerDtos} 
             setSelectedItem={handleSupplierSelect} 
             isOpen={isOpen} 
             setIsOpen={setIsOpen} 
-            showedAttribute={["firstName", "email"]}
+            showedAttribute={["partnerName"]}
           />
           
           <p className="text-muted-foreground text-sm text-center">ou</p>
-          <Button onClick={() => setIsOpenSupplierForm(true)}>
+          <Button className="w-full" onClick={() => navigate("/stockify/"+Paths.addSupplier)}>
             Ajouter un nouveau fournisseur
           </Button>
-           
-          <Modal title="Ajouter un nouveau fournisseur" isOpen={isOpenSupplierForm} onClose={() => setIsOpenSupplierForm(false)} size="md">
-            <SupplierForm onUpdateSuccess={setIsOpenSupplierForm}/>
-          </Modal>
+          
         </div>
       )}
         </CardBody>

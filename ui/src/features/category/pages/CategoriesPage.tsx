@@ -1,10 +1,10 @@
 // CategoriesPage.tsx
 import { useState } from 'react';
-import { Search, Shapes, Tag } from 'lucide-react';
+import { Search, Shapes } from 'lucide-react';
 import { SearchInput } from '@/components/ui';
 import { useGetCategories } from '@/services/api/category/hooks';
 import CategoryCard from '../components/CategoryCard';
-import { Button } from '@/components/ui/shadcn/button';
+import TableNav from '@/components/ui/TableNav';
 
 const CategoriesPage = () => {
     const [page, setPage] = useState<number>(0);
@@ -61,6 +61,7 @@ const CategoriesPage = () => {
                 
                 {/* Categories Grid */}
                 {!isPending && categories && categories.content.length > 0 && (
+                    <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {categories.content.map((category, index) => (
                             <CategoryCard
@@ -71,6 +72,8 @@ const CategoriesPage = () => {
                             />
                         ))}
                     </div>
+                    <TableNav data={categories} page={page} setPage={setPage} />
+                    </>
                 )}
                 
                 {/* Empty State */}

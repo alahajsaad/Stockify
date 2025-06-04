@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "src/components/ui";
 import { z } from "zod";
 import { useAddCategory, useUpdateCategory } from "src/services/api/category";
-import { Category, CreateCategoryDto } from "@/services/api/category/types";
+import { Category, CategoryCreationDto } from "@/services/api/category/types";
 
 const formSchema = z.object({
   name: z.string().min(1, "Veuillez ajouter un nom de catégorie"),
@@ -54,7 +54,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ toggleForm, initialCategory
       });
     } else {
       // Mode ajout: créer une nouvelle catégorie
-      const newCategory: CreateCategoryDto = {
+      const newCategory: CategoryCreationDto = {
         name: data.name,
         // Ajoutez d'autres propriétés requises si nécessaire
       };

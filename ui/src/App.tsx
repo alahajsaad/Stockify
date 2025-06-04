@@ -28,6 +28,10 @@ import ConsultCompanyPageSuperAdmin from "./features/company/pages/ConsultCompan
 import ConsultCompanyPage from "./features/company/pages/ConsultCompanyPage";
 import AddClientPage from "./features/partner/pages/AddClientPage";
 import CategoriesPage from "./features/category/pages/CategoriesPage";
+import VatsPage from "./features/value_added_tax/pages/VatsPage";
+import ConsultPartnersPage from "./features/partner/pages/ConsultPartnersPage";
+import AddProduct from "./features/product/forms/AddProduct";
+import AddSupplierPage from "./features/partner/pages/AddSupplierPage";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -72,11 +76,11 @@ const App = () => {
             <Route path="dashboard" element={<DashBoard />} />
             <Route path={Paths.company} element={<ConsultCompanyPage />} />
             <Route path={Paths.profile} element={<ProfilePage />} />
-            <Route path="products/add" element={<ProductForm />} />
+            <Route path="products/add" element={<AddProduct />} />
             <Route path="products" element={<ConsultProducts />} />
             <Route path="products/:id" element={<ProductDetails />} />
             <Route path={Paths.addVat} element={<AddVatPage />} />
-            <Route path={Paths.vats} element={<ConsultVatsPage />} />
+            <Route path={Paths.vats} element={<VatsPage />} />
             <Route path={Paths.categories} element={<CategoriesPage />} />
             <Route path={Paths.addCategory} element={<AddCategoryPage />} />
            
@@ -85,16 +89,16 @@ const App = () => {
             <Route path={Paths.client} element={<ConsultClientPage />} /> */}
 
             <Route path={Paths.clients}>
-              <Route index element={<ConsultClientsPage />} />
+              <Route index element={<ConsultPartnersPage />} />
               <Route path=":id" element={<ConsultClientPage />} />
             </Route>
             <Route path={Paths.addClient} element={<AddClientPage />} />
 
             <Route path={Paths.suppliers}>
-              <Route index element={<ConsultClientsPage />} />
+              <Route index element={<ConsultPartnersPage />} />
               <Route path=":id" element={<ConsultClientPage />} />
             </Route>
-            <Route path={Paths.addSupplier} element={<AddClientPage />} />
+            <Route path={Paths.addSupplier} element={<AddSupplierPage />} />
 
 
             <Route path={Paths.clientOrders}>

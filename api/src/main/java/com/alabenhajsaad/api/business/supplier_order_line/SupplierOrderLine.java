@@ -5,6 +5,7 @@ import com.alabenhajsaad.api.business.supplier_order.SupplierOrder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,6 +17,7 @@ import java.math.RoundingMode;
 @Entity
 @Table(name = "supplier_order_line")
 @Builder
+@Slf4j
 public class SupplierOrderLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

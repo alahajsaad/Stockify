@@ -18,7 +18,7 @@ const HeroSection : React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight animate-fade-in">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-500">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">
               Stockify
             </span>
           </h1>

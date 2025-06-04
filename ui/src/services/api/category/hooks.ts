@@ -67,6 +67,7 @@ export const useUpdateCategory = () => {
 export const useGetCategories = (params: {
     keyword?: string;
     page?: number;
+    size?:number
   }) => {
   return useQuery<Page<Category>, Error>({
     queryKey: ['Categories', params],

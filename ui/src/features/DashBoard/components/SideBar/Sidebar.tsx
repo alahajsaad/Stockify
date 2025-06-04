@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SidebarItem from "./SidebarItem";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Package } from "lucide-react";
 import {  SidebarItemData, SidebarParentItemData, useSidebarData } from "./SideBarData";
 import { useIsMobile } from "src/hooks/useMobile";
 import SideBarParentItem from "./SideBarParentItem";
@@ -67,7 +67,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
         >
           <div className="flex items-center h-16 justify-between p-4 border-b border-gray-200">
             {isExpanded ? (
-              <div className="flex items-center">
+              <div className="flex items-center justify-center gap-1">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                        <Package className="w-4 h-4 text-white" />
+                </div>
                 <span className="ml-3 font-bold text-lg">Stockify</span>
               </div>
             ) : (
