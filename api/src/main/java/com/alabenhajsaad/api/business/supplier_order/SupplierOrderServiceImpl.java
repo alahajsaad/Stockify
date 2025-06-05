@@ -5,6 +5,7 @@ import com.alabenhajsaad.api.business.client_order.ClientOrderResponseDto;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLineResponseDto;
 import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderDto;
+import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderResponseDto;
 import com.alabenhajsaad.api.business.supplier_order.mapper.SupplierOrderMapper;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLineDto;
@@ -13,7 +14,10 @@ import com.alabenhajsaad.api.business.product.external.ProductExternalService;
 import com.alabenhajsaad.api.business.utils.LineAction;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.business.utils.ReceptionStatus;
+import com.alabenhajsaad.api.core.company.Company;
+import com.alabenhajsaad.api.core.company.dto.ConsultCompanyDto;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
+import com.alabenhajsaad.api.core.subscription.Subscription;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -149,7 +153,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     }
 
     @Override
-    public Page<SupplierOrder> getSupplierOrders(Pageable pageable, LocalDate fromDate, LocalDate toDate, ReceptionStatus receptionStatus, PaymentStatus paymentStatus, String keyword , Integer supplierId) {
+    public Page<SupplierOrderResponseDto> getSupplierOrders(Pageable pageable, LocalDate fromDate, LocalDate toDate, ReceptionStatus receptionStatus, PaymentStatus paymentStatus, String keyword , Integer supplierId) {
         Specification<SupplierOrder> specification = Specification
                 .where(SupplierOrderSpecification.hasDate(fromDate,toDate))
                 .and(SupplierOrderSpecification.hasKeyWord(keyword))
@@ -161,8 +165,23 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
         }
 
-        return repository.findAll(specification, pageable);
+        return transformToSupplierOrderResponseDto(repository.findAll(specification, pageable)) ;
     }
+
+    private Page<SupplierOrderResponseDto> transformToSupplierOrderResponseDto(Page<SupplierOrder> orders) {
+        return orders.map(order -> new SupplierOrderResponseDto(
+                order.getId(),
+                order.getOrderNumber(),
+                order.getTotalExcludingTax(),
+                order.getTotalIncludingTax(),
+                order.getPaymentStatus(),
+                order.getReceptionStatus(),
+                order.getCreatedAt(),
+                order.getUpdatedAt(),
+                order.getPartner()
+        ));
+    }
+
 
 
     @Override

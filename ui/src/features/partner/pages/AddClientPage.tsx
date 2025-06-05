@@ -83,6 +83,7 @@ const AddClientPage = () => {
     if (data.entityType === "PERSON") {
       querry  = {
         partnerType: "CLIENT",
+        entityType:"PERSON",
         email: data.email,
         phoneNumbers: data.phoneNumbers,
         addresses: data.addresses,
@@ -101,6 +102,7 @@ const AddClientPage = () => {
     } else {
       querry = {
         partnerType: "CLIENT",
+        entityType:"ORGANIZATION",
         email: data.email,
         phoneNumbers: data.phoneNumbers,
         addresses: data.addresses,

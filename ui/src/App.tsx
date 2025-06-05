@@ -32,6 +32,7 @@ import VatsPage from "./features/value_added_tax/pages/VatsPage";
 import ConsultPartnersPage from "./features/partner/pages/ConsultPartnersPage";
 import AddProduct from "./features/product/forms/AddProduct";
 import AddSupplierPage from "./features/partner/pages/AddSupplierPage";
+import ConsultSupplierOrders from "./features/supplier_order/pages/ConsultSupplierOrders";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -110,7 +111,7 @@ const App = () => {
 
 
             <Route path={Paths.supplierOrders}>
-              <Route index element={<ConsultClientsPage />} />
+              <Route index element={<ConsultSupplierOrders />} />
               <Route path=":id" element={<ConsultClientPage />} />
             </Route>
             <Route path={Paths.addSupplierOrder} element={<AddSupplierOrderPage />} />

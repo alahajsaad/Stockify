@@ -1,5 +1,5 @@
 // company api.tsx
-import request from "@/services/config/request";
+import { request } from "@/services/config/request";
 import { ApiResponse, Page } from "@/types";
 import { Company, CompanyMetrics, ConsultCompanyDto, GetCompaniesParams } from "./types";
 

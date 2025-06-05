@@ -1,6 +1,6 @@
-import { ApiResponse } from "@/types";
-import { SupplierOrder, SupplierOrderCreationDto } from "./types";
-import request from "@/services/config/request";
+import { ApiResponse, Page } from "@/types";
+import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderResponseDto } from "./types";
+import { rawRequest, request } from "@/services/config/request";
 
 
 export const addSupplierOrder = (order: SupplierOrderCreationDto): Promise<ApiResponse<SupplierOrder>> => {
@@ -8,6 +8,16 @@ export const addSupplierOrder = (order: SupplierOrderCreationDto): Promise<ApiRe
     url: "/supplierOrder",
     method: "post",
     data: order,
+  });
+};
+
+export const getSupplierOrders = (
+   params: GetSupplierOrdersParams
+): Promise<Page<SupplierOrderResponseDto>> => {
+  return rawRequest<Page<SupplierOrderResponseDto>>({
+    url: "/supplierOrder",
+    method: "get",
+    params,
   });
 };
 

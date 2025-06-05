@@ -75,3 +75,32 @@ export type ShowPartnerDto = {
 }
 
 
+
+interface BasePartner {
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+  partnerType: "SUPPLIER" | "CUSTOMER"; // Add other types as needed
+  email: string;
+  phoneNumbers: PhoneNumber[];
+  addresses: Address[];
+}
+
+
+// Discriminated union types for different entity types
+interface PersonPartner extends BasePartner {
+  entityType: "PERSON";
+  firstName: string;
+  lastName: string;
+  fullName: string;
+}
+
+interface OrganizationPartner extends BasePartner {
+  entityType: "ORGANIZATION";
+  companyName: string;
+  registrationNumber: string;
+  taxNumber: string;
+}
+
+// Union type that combines both possibilities
+export type DynamicPartner = PersonPartner | OrganizationPartner;

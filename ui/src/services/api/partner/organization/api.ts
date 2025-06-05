@@ -1,6 +1,6 @@
 // organization api.ts
 
-import request from "@/services/config/request";
+import { request } from "@/services/config/request";
 import { ApiResponse } from "@/types";
 import { Organization } from "../types";
 

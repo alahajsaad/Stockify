@@ -1,8 +1,8 @@
-import request from "@/services/config/request";
 import { ApiResponse } from "@/types";
-import { CreateVat, ValueAddedTax } from "./types";
+import { ValueAddedTax, VatCreationDto } from "./types";
+import { request } from "@/services/config/request";
 
-export const addValueAddedTax = (tax: CreateVat): Promise<ApiResponse<ValueAddedTax>> => {
+export const addValueAddedTax = (tax: VatCreationDto): Promise<ApiResponse<ValueAddedTax>> => {
     return request<ValueAddedTax>({
       url: "/vat",
       method: "post",

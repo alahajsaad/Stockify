@@ -40,7 +40,7 @@ public class SupplierOrder extends Auditable {
     @Enumerated(EnumType.STRING)
     private ReceptionStatus receptionStatus;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
     private List<SupplierOrderLine> orderLines = new ArrayList<>();
 
     @ManyToOne

@@ -1,7 +1,7 @@
 import { ApiResponse, Page } from "src/types";
 import { Supplier } from "src/types/supplier";
 import { QueryKey, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import request from "../config/request";
+import { request } from "../config/request";
 
 
 export const addSupplier = (supplier : Supplier): Promise<ApiResponse<Supplier>> => {

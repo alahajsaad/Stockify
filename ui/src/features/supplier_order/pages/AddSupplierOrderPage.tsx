@@ -16,21 +16,22 @@ const AddSupplierOrderPage : React.FC = () => {
     const [orderLines, setOrderLines] = useState<OrderLine[]>([]);
     const {mutate : addSupplierOrder , isPending} = useAddSupplierOrder()
     const [supplier,setSupplier] = useState<PartnerResponseDto |undefined>(undefined)
-    const {data:orderNumber , isPending:isNewOrderNumberPending} = useGetNewOrderNumber()
-    // Memoized validation
+    
+    const {data:orderNumber , isPending:isNewOrderNumberPending , refetch : refetchNewOrderNumber} = useGetNewOrderNumber()
+    console.log("order_number:"+orderNumber)
     const isFormValid = useMemo(() => 
-        supplier != undefined  && orderLines.length > 0 ,
-        [supplier, orderLines.length]
+        supplier != undefined  && orderLines.length > 0 && orderNumber != undefined,
+        [supplier, orderLines.length,orderNumber]
     );
 
+   
     const updateOrderLines = (orderLine:OrderLine) => {
         setOrderLines((prev)=>[...prev , orderLine])
     }
     const handleSupplierOrderCreation = () => {
-            if( supplier){
-          
+            if(orderNumber&&supplier){
             const supplierOrder : SupplierOrderCreationDto = {
-                orderNumber:"CMF_25A005",
+                orderNumber:orderNumber,
                 orderLines:orderLines,
                 partner:{id:supplier.id , entityType:supplier.entityType}
 
@@ -42,6 +43,7 @@ const AddSupplierOrderPage : React.FC = () => {
                         toast.success(response.message)
                         setSupplier(undefined); 
                         setOrderLines([])
+                        refetchNewOrderNumber()
 
 
                     },

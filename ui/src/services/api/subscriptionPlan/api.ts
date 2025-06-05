@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types";
 import { SubscriptionPlan } from "./types";
-import request from "@/services/config/request";
+import { request } from "@/services/config/request";
 
 
 export const createSubscriptionPlan = (plan: SubscriptionPlan): Promise<ApiResponse<SubscriptionPlan>> => {

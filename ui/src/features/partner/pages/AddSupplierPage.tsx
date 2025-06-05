@@ -79,6 +79,7 @@ const AddSupplierPage = () => {
     if (data.entityType === "PERSON") {
       query = {
         partnerType: "SUPPLIER",
+        entityType:"PERSON",
         email: data.email,
         phoneNumbers: data.phoneNumbers,
         addresses: data.addresses,
@@ -98,6 +99,7 @@ const AddSupplierPage = () => {
     } else {
       query = {
         partnerType: "SUPPLIER",
+        entityType:"ORGANIZATION",
         email: data.email,
         phoneNumbers: data.phoneNumbers,
         addresses: data.addresses,

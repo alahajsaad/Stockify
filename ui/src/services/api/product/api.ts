@@ -1,7 +1,6 @@
 import { ApiResponse, Page } from "@/types";
-import { ProductCreationDto, StockStatus } from "./types";
-import { Product } from "../product";
-import request from "@/services/config/request";
+import { Product, ProductCreationDto, StockStatus } from "./types";
+import { request } from "@/services/config/request";
 
 
 export const addProduct = (product: ProductCreationDto): Promise<ApiResponse<Product>> => {

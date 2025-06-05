@@ -1,4 +1,4 @@
-import request from "@/services/config/request";
+import { request } from "@/services/config/request";
 import { ApiResponse, Page } from "@/types";
 import { Category, CategoryCreationDto } from "./types";
 

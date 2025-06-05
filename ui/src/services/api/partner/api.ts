@@ -1,6 +1,6 @@
 import { ApiResponse, Page } from "@/types";
 import { PartnerResponseDto, PartnerType } from "./types";
-import request from "@/services/config/request";
+import { request } from "@/services/config/request";
 
 export const getPartners = (params: {
     keyword?: string

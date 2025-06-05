@@ -1,7 +1,7 @@
-import { ApiResponse } from "@/types";
+import { ApiResponse, Page } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { SupplierOrder, SupplierOrderCreationDto } from "./types";
-import { addSupplierOrder, getNewOrderNumber } from "./api";
+import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderResponseDto } from "./types";
+import { addSupplierOrder, getNewOrderNumber, getSupplierOrders } from "./api";
 
 export const useAddSupplierOrder = () => {
     const queryClient = useQueryClient();
@@ -21,6 +21,21 @@ export const useAddSupplierOrder = () => {
 }
 
 
+export const useGetSupplierOrders = (params: GetSupplierOrdersParams) => {
+  return useQuery<Page<SupplierOrderResponseDto>, Error>({
+    queryKey: ['supplierOrders', params],
+    queryFn: () => {
+        return getSupplierOrders(params).then(response => {
+            return response;
+        });
+    },
+    gcTime: Infinity,
+    staleTime: 1000 * 60 * 15,
+    refetchOnMount: false
+  });
+};
+
+
 export const useGetNewOrderNumber = () => {
   return useQuery<string, Error>({
     queryKey: ['newOrderNumber'],
@@ -35,5 +50,11 @@ export const useGetNewOrderNumber = () => {
         return response.data;
       });
     },
+    enabled: true,
+    staleTime: 0, // Always consider data stale
+    gcTime: 0, // Don't cache the result (gcTime replaces cacheTime in newer versions)
+    refetchOnMount: 'always', // Always refetch when component mounts
+    refetchOnWindowFocus: false // Prevent refetch on window focus
   });
 };
+

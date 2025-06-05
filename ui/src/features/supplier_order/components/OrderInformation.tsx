@@ -4,7 +4,7 @@ import { Hash, Calendar, LoaderCircle } from "lucide-react";
 type OrderInformationProps = {
   dateCreated?: Date;
   orderNumber?:string
-  isPending:boolean
+  isPending?:boolean
 };
 
 const OrderInformation: React.FC<OrderInformationProps> = ({ dateCreated ,orderNumber,isPending}) => {

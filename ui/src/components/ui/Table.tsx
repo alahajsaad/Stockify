@@ -39,14 +39,7 @@ const Table = <T extends { id: number; [key: string]: CellValue }>({
   const isNavigationVariant = variant === "WithNavigation";
   const isSelectVariant = variant === "WithSelect";
   
-  console.table({
-    variant,
-    isDefaultVariant,
-    isActionVariant,
-    isNavigationVariant,
-    isSelectVariant
-  });
-  
+ 
   // Initialize selected ID state, using initialSelectedId if provided
   const [selectedId, setSelectedId] = useState<number | null>(initialSelectedId || null);
 

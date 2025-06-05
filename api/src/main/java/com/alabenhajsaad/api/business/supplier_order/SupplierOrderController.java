@@ -1,6 +1,7 @@
 package com.alabenhajsaad.api.business.supplier_order;
 
 import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderDto;
+import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderResponseDto;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.business.utils.ReceptionStatus;
 import com.alabenhajsaad.api.config.ApiResponse;
@@ -36,7 +37,7 @@ public class SupplierOrderController {
 
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<Page<SupplierOrder>>> getSupplierOrderById(
+    public ResponseEntity<Page<SupplierOrderResponseDto>> getSupplierOrderById(
             @RequestParam(required = false) LocalDate fromDate,
             @RequestParam(required = false) LocalDate toDate,
             @RequestParam(required = false) ReceptionStatus receptionStatus,
@@ -46,10 +47,9 @@ public class SupplierOrderController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "8") Integer size
     ) {
-        return ResponseEntity.ok(ApiResponse.success(
-                service.getSupplierOrders(PageRequest.of(page, size) ,fromDate, toDate, receptionStatus,paymentStatus,keyword ,clientId),
-                "Commande fournisseur récupérée avec succès."
-        ));
+        return ResponseEntity.ok(
+                service.getSupplierOrders(PageRequest.of(page, size) ,fromDate, toDate, receptionStatus,paymentStatus,keyword ,clientId)
+        );
     }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<SupplierOrderDto>> getSupplierOrderById(@PathVariable Integer id) {
@@ -61,8 +61,7 @@ public class SupplierOrderController {
 
     @GetMapping("/generate-number")
     public ResponseEntity<ApiResponse<String>> getNewOrderNumber() {
-        return ResponseEntity.ok(ApiResponse.success(
-                service.getNewSupplierOrderNumber()
+        return ResponseEntity.ok(ApiResponse.success(service.getNewSupplierOrderNumber(),"new order number"
         ));
     }
 }

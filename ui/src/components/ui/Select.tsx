@@ -2,7 +2,7 @@ import React from 'react';
 import { ChevronDown } from 'lucide-react';
 
 type SelectProps<T extends string> = {
-  mapOptions?: Map<string, string>;
+  mapOptions?: Map<any, string>;
   listOptions?: string[];
   setOption: (option: T) => void;
   selectedOption?: T;

@@ -1,6 +1,6 @@
-import { EntityType, Partner } from "../partner/types"
+import { DynamicPartner, EntityType, Partner } from "../partner/types"
 
-export type PaymentStatus = "ALL"|"PAID"|"UNPAID"
+export type PaymentStatus = "PAID"|"UNPAID"
 export type ReceptionStatus = "RECEIVED"| "UNRECEIVED"
 export type OrderLine = {
     quantity : number,
@@ -28,4 +28,34 @@ export type SupplierOrder = {
     receptionStatus : ReceptionStatus,
     orderLines : OrderLine[]
     partner : Partner
+}
+
+
+export type SupplierOrderResponseDto = {
+    id:number
+    orderNumber:string
+    totalExcludingTax:number
+    totalIncludingTax:number
+    paymentStatus:PaymentStatus
+    receptionStatus:ReceptionStatus
+    createdAt:string
+    updatedAt:string
+    partner:DynamicPartner
+}
+
+export type consultSupplierOrder = {
+    id:number
+    orderNumber:string
+
+}
+
+export type GetSupplierOrdersParams = {
+    fromDate?:string
+    toDate?:string
+    receptionStatus?:ReceptionStatus
+    paymentStatus?:PaymentStatus
+    keyword?:string
+    partnerId?:number
+    page?:number
+    size?:number
 }

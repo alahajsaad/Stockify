@@ -1,5 +1,5 @@
 import { Company, CompanyCreationDto } from "src/types/company";
-import request from "../config/request";
+import { request } from "../config/request";
 import { ApiResponse } from "src/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fileRequest } from "../config/fileRequest";

@@ -1,5 +1,5 @@
 import { ApiResponse, Category } from "src/types";
-import request from "../config/request";
+import { request } from "../config/request";
 import { toastHandler } from "./toastHandler";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 

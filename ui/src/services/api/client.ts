@@ -1,6 +1,6 @@
 import { Client } from "src/features/client";
 import { ApiResponse, Page } from "src/types";
-import request from "../config/request";
+import { request } from "../config/request";
 import { QueryKey, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // API functions

@@ -1,5 +1,5 @@
 import { ApiResponse, User, UserResponseDto } from "src/types";
-import request from "../config/request";
+import { request } from "../config/request";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { EmployeeCreationDto } from "src/types/user";

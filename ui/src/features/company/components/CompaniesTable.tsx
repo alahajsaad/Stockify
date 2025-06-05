@@ -5,7 +5,6 @@ import { ConsultCompanyDto } from "@/services/api/company/types";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { Phone, Mail } from 'lucide-react';
 import { SubscriptionStatus } from '@/types';
-import { Paths } from '@/lib/paths';
 
 type CompaniesTableProps = {
   data: ConsultCompanyDto[];
