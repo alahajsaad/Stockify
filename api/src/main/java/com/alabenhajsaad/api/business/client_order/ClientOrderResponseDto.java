@@ -3,11 +3,13 @@ package com.alabenhajsaad.api.business.client_order;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLineResponseDto;
 import com.alabenhajsaad.api.business.utils.DeliveryStatus;
+import com.alabenhajsaad.api.business.utils.LineAction;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Builder
 public record ClientOrderResponseDto(
@@ -17,6 +19,6 @@ public record ClientOrderResponseDto(
         BigDecimal totalIncludingTax,
         PaymentStatus paymentStatus,
         DeliveryStatus deliveryStatus,
-        List<ClientOrderLineResponseDto> orderLines
+        Map<LineAction,List<ClientOrderLine>> clientOrderLine
 ) {
 }

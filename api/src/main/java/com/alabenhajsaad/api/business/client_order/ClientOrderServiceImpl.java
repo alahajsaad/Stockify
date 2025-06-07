@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -86,49 +87,58 @@ public class ClientOrderServiceImpl implements ClientOrderService{
     }
 
     private void updateOrderLines(ClientOrderResponseDto updatedOrder, ClientOrder oldOrder) {
-        for (ClientOrderLineResponseDto orderLineDto : updatedOrder.orderLines()) {
-            for (Map.Entry<LineAction, ClientOrderLine> entry : orderLineDto.clientOrderLine().entrySet()) {
+
+            for (Map.Entry<LineAction, List<ClientOrderLine>> entry : updatedOrder.clientOrderLine().entrySet()) {
                 LineAction action = entry.getKey();
-                ClientOrderLine line = entry.getValue();
+                List<ClientOrderLine> lines = entry.getValue();
 
                 switch (action) {
                     case DO_NOTHING -> {
                         // Nothing to do
                     }
                     case DO_REMOVE -> {
-                        productExternalService.undoUpdateProductQuantityAndLastSalePrice(
-                                line.getProduct().getId(), line.getQuantity());
-                        oldOrder.getOrderLines().removeIf(l -> Objects.equals(l.getId(), line.getId()));
+                        for(ClientOrderLine line : lines) {
+                            productExternalService.undoUpdateProductQuantityAndLastSalePrice(
+                                    line.getProduct().getId(), line.getQuantity());
+                            oldOrder.getOrderLines().removeIf(l -> Objects.equals(l.getId(), line.getId()));
+                        }
+
                     }
                     case DO_SAVE -> {
-                        line.setOrder(oldOrder);
-                        oldOrder.getOrderLines().add(line);
-                        productExternalService.updateProductQuantityAndLastPurchasePrice(
-                                line.getProduct().getId(), line.getQuantity(), line.getUnitPrice());
+                        for(ClientOrderLine line : lines) {
+                            line.setOrder(oldOrder);
+                            oldOrder.getOrderLines().add(line);
+                            productExternalService.updateProductQuantityAndLastPurchasePrice(
+                                    line.getProduct().getId(), line.getQuantity(), line.getUnitPrice());
+                        }
+
                     }
                     case DO_UPDATE -> {
-                        ClientOrderLine oldLine = oldOrder.getOrderLines().stream()
-                                .filter(l -> Objects.equals(l.getId(), line.getId()))
-                                .findFirst()
-                                .orElse(null);
-                        if (oldLine == null) continue; // or log an error
+                        for(ClientOrderLine line : lines) {
+                            ClientOrderLine oldLine = oldOrder.getOrderLines().stream()
+                                    .filter(l -> Objects.equals(l.getId(), line.getId()))
+                                    .findFirst()
+                                    .orElse(null);
+                            if (oldLine == null) continue; // or log an error
 
-                        if (!oldLine.getProduct().equals(line.getProduct())) {
-                            oldLine.setProduct(line.getProduct());
+                            if (!oldLine.getProduct().equals(line.getProduct())) {
+                                oldLine.setProduct(line.getProduct());
+                            }
+
+                            if (!oldLine.getQuantity().equals(line.getQuantity()) || !oldLine.getUnitPrice().equals(line.getUnitPrice())) {
+                                int delta = line.getQuantity() - oldLine.getQuantity();
+                                oldLine.setQuantity(line.getQuantity());
+                                oldLine.setUnitPrice(line.getUnitPrice());
+                                productExternalService.updateProductQuantityAndLastSalePrice(delta,line.getQuantity(), line.getUnitPrice());
+                            }
                         }
 
-                        if (!oldLine.getQuantity().equals(line.getQuantity()) || !oldLine.getUnitPrice().equals(line.getUnitPrice())) {
-                            int delta = line.getQuantity() - oldLine.getQuantity();
-                            oldLine.setQuantity(line.getQuantity());
-                            oldLine.setUnitPrice(line.getUnitPrice());
-                            productExternalService.updateProductQuantityAndLastSalePrice(delta,line.getQuantity(), line.getUnitPrice());
-                        }
 
 
                     }
                 }
             }
-        }
+
     }
 
     private void recalculateTotals(ClientOrder order) {

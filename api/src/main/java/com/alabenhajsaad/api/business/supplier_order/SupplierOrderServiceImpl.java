@@ -71,54 +71,61 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
         updateOrderLines(supplierOrder, oldSupplierOrder);
         updateOrderStatus(supplierOrder,oldSupplierOrder) ;
         recalculateTotals(oldSupplierOrder);
-
-        return null;
+        return repository.save(oldSupplierOrder) ;
     }
 
 
 
 
     private void updateOrderLines(SupplierOrderDto updatedOrder, SupplierOrder oldOrder) {
-        for (SupplierOrderLineDto orderLineDto : updatedOrder.orderLines()) {
-            for (Map.Entry<LineAction, SupplierOrderLine> entry : orderLineDto.supplierOrderLine().entrySet()) {
+            for (Map.Entry<LineAction, List<SupplierOrderLine>> entry : updatedOrder.supplierOrderLine().entrySet()) {
                 LineAction action = entry.getKey();
-                SupplierOrderLine line = entry.getValue();
+                List<SupplierOrderLine> lines = entry.getValue();
 
                 switch (action) {
                     case DO_NOTHING -> {
                         // Nothing to do
                     }
                     case DO_REMOVE -> {
-                        oldOrder.getOrderLines().removeIf(l -> Objects.equals(l.getId(), line.getId()));
+                        for(SupplierOrderLine line : lines) {
+                            oldOrder.getOrderLines().removeIf(l -> Objects.equals(l.getId(), line.getId()));
+
+                        }
                     }
                     case DO_SAVE -> {
-                        line.setOrder(oldOrder);
-                        oldOrder.getOrderLines().add(line);
+                        for(SupplierOrderLine line : lines) {
+                            line.setOrder(oldOrder);
+                            oldOrder.getOrderLines().add(line);
+                        }
+
                     }
                     case DO_UPDATE -> {
-                        SupplierOrderLine oldLine = oldOrder.getOrderLines().stream()
-                                .filter(l -> Objects.equals(l.getId(), line.getId()))
-                                .findFirst()
-                                .orElse(null);
-                        if (oldLine == null) {
-                            log.warn("Cannot update line with ID: {} - line not found", line.getId());
-                            continue;
+                        for(SupplierOrderLine line : lines) {
+                            SupplierOrderLine oldLine = oldOrder.getOrderLines().stream()
+                                    .filter(l -> Objects.equals(l.getId(), line.getId()))
+                                    .findFirst()
+                                    .orElse(null);
+                            if (oldLine == null) {
+                                log.warn("Cannot update line with ID: {} - line not found", line.getId());
+                                continue;
+                            }
+
+                            if (!oldLine.getProduct().equals(line.getProduct())) {
+                                oldLine.setProduct(line.getProduct());
+                            }
+
+                            if (!oldLine.getQuantity().equals(line.getQuantity()) || !oldLine.getUnitPrice().equals(line.getUnitPrice())) {
+                                oldLine.setQuantity(line.getQuantity());
+                                oldLine.setUnitPrice(line.getUnitPrice());
+                            }
                         }
 
-                        if (!oldLine.getProduct().equals(line.getProduct())) {
-                            oldLine.setProduct(line.getProduct());
-                        }
-
-                        if (!oldLine.getQuantity().equals(line.getQuantity()) || !oldLine.getUnitPrice().equals(line.getUnitPrice())) {
-                            oldLine.setQuantity(line.getQuantity());
-                            oldLine.setUnitPrice(line.getUnitPrice());
-                        }
 
 
                     }
                 }
             }
-        }
+
     }
 
     // when dealing with supplier order , we only save the ordred quantity when rciving the order

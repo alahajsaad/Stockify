@@ -33,6 +33,7 @@ import ConsultPartnersPage from "./features/partner/pages/ConsultPartnersPage";
 import AddProduct from "./features/product/forms/AddProduct";
 import AddSupplierPage from "./features/partner/pages/AddSupplierPage";
 import ConsultSupplierOrders from "./features/supplier_order/pages/ConsultSupplierOrders";
+import ConsultSupplierOrder from "./features/supplier_order/pages/ConsultSupplierOrder";
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -112,7 +113,7 @@ const App = () => {
 
             <Route path={Paths.supplierOrders}>
               <Route index element={<ConsultSupplierOrders />} />
-              <Route path=":id" element={<ConsultClientPage />} />
+              <Route path=":id" element={<ConsultSupplierOrder />} />
             </Route>
             <Route path={Paths.addSupplierOrder} element={<AddSupplierOrderPage />} />
 

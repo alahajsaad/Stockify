@@ -31,7 +31,8 @@ public class Product extends Auditable {
     private String reference;
 
     @Min(value = 0, message = "La quantité de ce produit ne peut pas être négative. Veuillez contacter votre fournisseur pour un réapprovisionnement.")
-    private Integer quantity;
+    @Column(nullable = false)
+    private Integer quantity = 0;
 
     @Column(name = "critical_threshold")
     private Integer criticalThreshold;

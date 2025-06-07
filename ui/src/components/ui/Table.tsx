@@ -16,7 +16,7 @@ type TableProps<T extends { id: number; [key: string]: CellValue }> = {
   data: T[];
   head: string[]; // Headers for the table
   variant: VariantType;
-  onEdit?: (id: number) => void; // Only required when variant is WithActions
+  onEdit?: (object: T) => void; // Only required when variant is WithActions
   onDelete?: (id: number) => void; // Only required when variant is WithActions
   onSelect?: (id: number) => void; // Only required when variant is WithSelect
   initialSelectedId?: number; // Optional initial selected ID
@@ -87,9 +87,9 @@ const Table = <T extends { id: number; [key: string]: CellValue }>({
   };
 
   // Handle action clicks with stopPropagation to prevent row navigation
-  const handleEditClick = (id: number, e: React.MouseEvent) => {
+  const handleEditClick = (object: T, e: React.MouseEvent) => {
     e.stopPropagation();
-    onEdit?.(id); 
+    onEdit?.(object); 
   };
 
   const handleDeleteClick = (id: number, e: React.MouseEvent) => {
@@ -140,7 +140,7 @@ const Table = <T extends { id: number; [key: string]: CellValue }>({
                       <div className="flex items-center gap-3">
                         <SquarePen 
                           className="cursor-pointer text-blue-500 hover:text-blue-700" 
-                          onClick={(e) => handleEditClick(item.id, e)} 
+                          onClick={(e) => handleEditClick(item, e)} 
                         />
                         <Trash2 
                           className="cursor-pointer text-red-500 hover:text-red-700" 

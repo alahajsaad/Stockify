@@ -1,7 +1,7 @@
 import { ApiResponse, Page } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderResponseDto } from "./types";
-import { addSupplierOrder, getNewOrderNumber, getSupplierOrders } from "./api";
+import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderFullDto, SupplierOrderResponseDto } from "./types";
+import { addSupplierOrder, getNewOrderNumber, getSupplierOrderById, getSupplierOrders } from "./api";
 
 export const useAddSupplierOrder = () => {
     const queryClient = useQueryClient();
@@ -34,6 +34,20 @@ export const useGetSupplierOrders = (params: GetSupplierOrdersParams) => {
     refetchOnMount: false
   });
 };
+
+
+ export const useGetSupplierOderById = (id: number) => {
+    return useQuery<SupplierOrderFullDto, Error>({
+      queryKey: ['supplierOrder', id], 
+      queryFn: () => getSupplierOrderById(id).then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response.data as SupplierOrderFullDto;
+      }),
+    });
+  };
+
 
 
 export const useGetNewOrderNumber = () => {

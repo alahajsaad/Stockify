@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("api/v1/supplierOrder")
 public class SupplierOrderController {
 
     private final SupplierOrderService service;
+    public SupplierOrderController(SupplierOrderService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<SupplierOrder>> addSupplierOrder(@RequestBody SupplierOrder order) {
@@ -31,7 +33,7 @@ public class SupplierOrderController {
     public ResponseEntity<ApiResponse<SupplierOrder>> updateSupplierOrder(@RequestBody SupplierOrderDto supplierOrderDto) {
         return ResponseEntity.ok(ApiResponse.success(
                 service.updateSupplierOrder(supplierOrderDto),
-                "Commande fournisseur ajoutée avec succès."
+                "Commande fournisseur mise à jour avec succès."
         ));
     }
 

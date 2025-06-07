@@ -33,12 +33,15 @@ public class ProductExternalServiceImpl implements ProductExternalService {
 
     @Override
     @Transactional
-    public void updateProductQuantityAndLastPurchasePrice(Integer productId, Integer quantity , BigDecimal unitPrice) {
-        var product = findById(productId) ;
-        product.setQuantity(product.getQuantity() + quantity);
-        product.setLastPurchasePrice(unitPrice) ;
+    public void updateProductQuantityAndLastPurchasePrice(Integer productId, Integer quantity, BigDecimal unitPrice) {
+        var product = findById(productId);
+        //int currentQuantity = product.getQuantity() != null ? product.getQuantity() : 0;
+
+        product.setQuantity( product.getQuantity() + quantity);
+        product.setLastPurchasePrice(unitPrice);
         repository.save(product);
     }
+
 
     @Override
     public void updateProductQuantityAndLastSalePrice(Integer productId, Integer quantity, BigDecimal unitPrice) {

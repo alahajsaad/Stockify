@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/shadcn/badge";
 import Table from "@/components/ui/Table";
 import { DynamicPartner } from "@/services/api/partner/types";
 import { PaymentStatus, ReceptionStatus, SupplierOrderResponseDto } from "@/services/api/supplier_order/types";
+import { getStatusStyle, getStatusText } from "../utils";
 
 type OrdersTableProps = {
   data: SupplierOrderResponseDto[];
@@ -30,37 +31,13 @@ const OrdersTable : React.FC<OrdersTableProps> = ({data}) => {
   }
 
   const getStatus = (paymentStatus:PaymentStatus , receptionStatus:ReceptionStatus) =>{
-     const getStatusColor = (status: PaymentStatus | ReceptionStatus) => {
-            switch (status) {
-            case 'PAID':
-                return 'bg-green-100 text-green-800';
-            case 'RECEIVED':
-                return 'bg-green-100 text-green-800';
-            case 'UNPAID':
-                return 'bg-red-100 text-red-800';
-            case 'UNRECEIVED':
-                return 'bg-red-100 text-red-800';
-            }
-      };
-       const getStatusText = (status: PaymentStatus | ReceptionStatus) => {
-            switch (status) {
-            case 'PAID':
-                return 'payer';
-            case 'RECEIVED':
-                return 'recu';
-            case 'UNPAID':
-                return 'ne pas payer';
-            case 'UNRECEIVED':
-                return 'ne pas recu';
-            }
-      };
 
         return (
             <div className="flex flec-col items-center justify-center gap-0.5">
-            <Badge className={getStatusColor(paymentStatus)}>
+            <Badge className={getStatusStyle(paymentStatus)}>
                 {getStatusText(paymentStatus)}
             </Badge>
-            <Badge className={getStatusColor(receptionStatus)}>
+            <Badge className={getStatusStyle(receptionStatus)}>
                 {getStatusText(receptionStatus)}
             </Badge>
             </div>

@@ -1,4 +1,5 @@
 import { DynamicPartner, EntityType, Partner } from "../partner/types"
+import { Product } from "../product/types"
 
 export type PaymentStatus = "PAID"|"UNPAID"
 export type ReceptionStatus = "RECEIVED"| "UNRECEIVED"
@@ -43,11 +44,7 @@ export type SupplierOrderResponseDto = {
     partner:DynamicPartner
 }
 
-export type consultSupplierOrder = {
-    id:number
-    orderNumber:string
 
-}
 
 export type GetSupplierOrdersParams = {
     fromDate?:string
@@ -59,3 +56,26 @@ export type GetSupplierOrdersParams = {
     page?:number
     size?:number
 }
+
+export type SupplierOrderFullDto = {
+    id:number
+    orderNumber:string
+    totalExcludingTax:number
+    totalIncludingTax:number
+    paymentStatus:PaymentStatus
+    receptionStatus:ReceptionStatus
+    createdAt:string
+    updatedAt:string
+    supplierOrderLine : OrderLineRecord
+    partner:DynamicPartner
+}
+
+export type OrderLineDto = {
+    id:number
+    quantity : number,
+    unitPrice : number,
+    product:Product
+}
+export type OrderLineAction = "DO_UPDATE" | "DO_SAVE" | "DO_REMOVE" | "DO_NOTHING"
+
+export type OrderLineRecord = Record<OrderLineAction, OrderLineDto[]>

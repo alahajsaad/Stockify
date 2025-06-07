@@ -2,6 +2,7 @@ package com.alabenhajsaad.api.business.client_order.mapper;
 
 import com.alabenhajsaad.api.business.client_order.ClientOrder;
 import com.alabenhajsaad.api.business.client_order.ClientOrderResponseDto;
+import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLineResponseDto;
 import com.alabenhajsaad.api.business.utils.LineAction;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,10 @@ import java.util.stream.Collectors;
 public class ClientOrderMapperImpl implements ClientOrderMapper{
     @Override
     public ClientOrderResponseDto toClientOrderResponseDto(ClientOrder clientOrder) {
-        List<ClientOrderLineResponseDto> lineDtos = clientOrder.getOrderLines()
+        Map<LineAction, List<ClientOrderLine>> lineDtos = clientOrder.getOrderLines()
                 .stream()
-                .map(line -> ClientOrderLineResponseDto.builder()
-                        .clientOrderLine(Map.of(LineAction.DO_NOTHING, line))
-                        .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(line -> LineAction.DO_NOTHING));
+
 
         return ClientOrderResponseDto.builder()
                 .id(clientOrder.getId())
@@ -28,7 +27,7 @@ public class ClientOrderMapperImpl implements ClientOrderMapper{
                 .totalIncludingTax(clientOrder.getTotalIncludingTax())
                 .paymentStatus(clientOrder.getPaymentStatus())
                 .deliveryStatus(clientOrder.getDeliveryStatus())
-                .orderLines(lineDtos)
+                .clientOrderLine(lineDtos)
                 .build();
     }
 }

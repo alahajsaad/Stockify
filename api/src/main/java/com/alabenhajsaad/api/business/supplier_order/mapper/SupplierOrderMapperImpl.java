@@ -2,9 +2,11 @@ package com.alabenhajsaad.api.business.supplier_order.mapper;
 
 import com.alabenhajsaad.api.business.client_order.ClientOrder;
 import com.alabenhajsaad.api.business.client_order.ClientOrderResponseDto;
+import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLineResponseDto;
 import com.alabenhajsaad.api.business.supplier_order.SupplierOrder;
 import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderDto;
+import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLineDto;
 import com.alabenhajsaad.api.business.utils.LineAction;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,10 @@ public class SupplierOrderMapperImpl implements SupplierOrderMapper {
 
     @Override
     public SupplierOrderDto toSupplierOrderDto(SupplierOrder supplierOrder) {
-        List<SupplierOrderLineDto> lineDtos = supplierOrder.getOrderLines()
+
+        Map<LineAction, List<SupplierOrderLine>> lineDtos = supplierOrder.getOrderLines()
                 .stream()
-                .map(line -> SupplierOrderLineDto.builder()
-                        .supplierOrderLine(Map.of(LineAction.DO_NOTHING, line))
-                        .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(line -> LineAction.DO_NOTHING));
 
         return SupplierOrderDto.builder()
                 .id(supplierOrder.getId())
@@ -32,7 +32,8 @@ public class SupplierOrderMapperImpl implements SupplierOrderMapper {
                 .totalIncludingTax(supplierOrder.getTotalIncludingTax())
                 .paymentStatus(supplierOrder.getPaymentStatus())
                 .receptionStatus(supplierOrder.getReceptionStatus())
-                .orderLines(lineDtos)
+                .supplierOrderLine(lineDtos)
+                .partner(supplierOrder.getPartner())
                 .build();
     }
 }

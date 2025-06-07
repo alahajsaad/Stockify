@@ -1,8 +1,6 @@
 package com.alabenhajsaad.api.business.client_order;
 
-import com.alabenhajsaad.api.business.product.Product;
-import com.alabenhajsaad.api.business.product.StockStatus;
-import com.alabenhajsaad.api.business.supplier_order.SupplierOrder;
+
 import com.alabenhajsaad.api.business.utils.DeliveryStatus;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.config.ApiResponse;
