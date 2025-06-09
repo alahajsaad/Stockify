@@ -24,7 +24,7 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
             className="cursor-pointer h-10 w-10 p-2 rounded-full hover:bg-gray-200"
           />
         )}
-        <p>navBar</p>
+        {/* <p>navBar</p> */}
       </div>
 
       <div className="flex items-center lg:mr-20 relative">

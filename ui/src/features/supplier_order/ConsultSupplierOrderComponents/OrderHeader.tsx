@@ -1,15 +1,21 @@
 import { Badge } from '@/components/ui/shadcn/badge';
 import { Card , CardBody} from '@/components/ui/Card';
-import { SupplierOrderFullDto } from '@/services/api/supplier_order/types';
+import { PaymentStatus, ReceptionStatus, SupplierOrderFullDto } from '@/services/api/supplier_order/types';
 import { Currency } from '@/lib/currency';
 import { getStatusStyle, getStatusText } from '../utils';
 import { DynamicPartner } from '@/services/api/partner/types';
+import Select from '@/components/ui/Select';
+import { Button } from '@/components/ui';
 
 interface OrderHeaderProps {
   orderData: SupplierOrderFullDto
+  updatePaymentStatus:(paymentStatus:PaymentStatus) =>void
+  updateReceptionStatus:(receptionStatus:ReceptionStatus) =>void
+  updateSupplierOrder:()=>void
+  isPending:boolean
 }
 
-const OrderHeader = ({ orderData }: OrderHeaderProps) => {
+const OrderHeader = ({ orderData , updatePaymentStatus ,updateReceptionStatus , updateSupplierOrder ,isPending }: OrderHeaderProps) => {
   const taxAmount = orderData.totalIncludingTax - orderData.totalExcludingTax;
 
   const getPartnaireName = (partnaire : DynamicPartner) =>{
@@ -20,6 +26,17 @@ const OrderHeader = ({ orderData }: OrderHeaderProps) => {
       }
 
   }
+
+ const PaymentStatusMap = new Map<PaymentStatus, string>([
+  ["PAID", "payé"],
+  ["UNPAID", "non payé"],
+]);
+
+const ReceptionStatusMap = new Map<ReceptionStatus, string>([
+  ["RECEIVED", "reçu"],
+  ["UNRECEIVED", "non reçu"],
+]);
+
  
   return (
     <Card className="shadow-lg border-0 bg-white">
@@ -31,9 +48,23 @@ const OrderHeader = ({ orderData }: OrderHeaderProps) => {
     <h1 className="text-3xl font-bold text-gray-900">
       Commande {orderData.orderNumber}
     </h1>
+
     <div className="flex flex-wrap gap-2 mt-2">
+       <Select
+          mapOptions={PaymentStatusMap}
+          setOption={updatePaymentStatus}
+          selectedOption={orderData.paymentStatus}
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent dark:bg-gray-700"
+        />
+         <Select
+          mapOptions={ReceptionStatusMap}
+          setOption={updateReceptionStatus}
+          selectedOption={orderData.receptionStatus}
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent dark:bg-gray-700"
+        />
       <Badge className={getStatusStyle(orderData.paymentStatus)}>
         {getStatusText(orderData.paymentStatus)}
+
       </Badge>
       <Badge className={getStatusStyle(orderData.receptionStatus)}>
         {getStatusText(orderData.receptionStatus)}
@@ -55,26 +86,9 @@ const OrderHeader = ({ orderData }: OrderHeaderProps) => {
   </div>
 </div>
 
-                   
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-100">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Résumé Financier</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Total Hors Taxes :</span>
-                <span className="font-semibold text-gray-900">{orderData.totalExcludingTax.toFixed(2)+" "+Currency}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Montant des Taxes :</span>
-                <span className="font-semibold text-gray-700">{taxAmount.toFixed(2)+" "+Currency}</span>
-              </div>
-              <div className="border-t pt-2 mt-2">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-gray-900">Total Toutes Taxes Comprises :</span>
-                  <span className="font-bold text-lg text-blue-600">{orderData.totalIncludingTax.toFixed(2) +" "+Currency}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      <Button onClick={updateSupplierOrder} disabled={isPending}>
+        {isPending ? "en cour ..." : "Enregistrer les modifications"}
+      </Button>
         </div>
       </CardBody>
     </Card>

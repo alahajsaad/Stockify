@@ -2,6 +2,7 @@ package com.alabenhajsaad.api.business.product.external;
 
 import com.alabenhajsaad.api.business.product.Product;
 import com.alabenhajsaad.api.business.product.ProductRepository;
+import com.alabenhajsaad.api.business.product.StockStatus;
 import com.alabenhajsaad.api.core.exception.InsufficientStockException;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
@@ -38,6 +39,7 @@ public class ProductExternalServiceImpl implements ProductExternalService {
         //int currentQuantity = product.getQuantity() != null ? product.getQuantity() : 0;
 
         product.setQuantity( product.getQuantity() + quantity);
+        updateStockStatus(product);
         product.setLastPurchasePrice(unitPrice);
         repository.save(product);
     }
@@ -63,6 +65,7 @@ public class ProductExternalServiceImpl implements ProductExternalService {
             product.setLastSalePrice(unitPrice);
         }
 
+        updateStockStatus(product);
         repository.save(product);
     }
 
@@ -71,6 +74,18 @@ public class ProductExternalServiceImpl implements ProductExternalService {
     public void undoUpdateProductQuantityAndLastSalePrice(Integer productId, Integer quantity) {
         var product = findById(productId) ;
         product.setQuantity(product.getQuantity() + quantity);
+        updateStockStatus(product);
         repository.save(product);
+    }
+
+
+    private void updateStockStatus(Product product) {
+        if (product.getQuantity() == 0) {
+            product.setStockStatus(StockStatus.OUT_OF_STOCK);
+        } else if (product.getQuantity() <= product.getCriticalThreshold()) {
+            product.setStockStatus(StockStatus.LOW_STOCK);
+        } else {
+            product.setStockStatus(StockStatus.IN_STOCK);
+        }
     }
 }

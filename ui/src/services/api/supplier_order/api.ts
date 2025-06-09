@@ -11,6 +11,14 @@ export const addSupplierOrder = (order: SupplierOrderCreationDto): Promise<ApiRe
   });
 };
 
+export const updateSupplierOrder = (order: SupplierOrderFullDto): Promise<ApiResponse<SupplierOrderFullDto>> => {
+  return request<SupplierOrderFullDto>({
+    url: "/supplierOrder",
+    method: "put",
+    data: order,
+  });
+}
+
 export const getSupplierOrders = (
    params: GetSupplierOrdersParams
 ): Promise<Page<SupplierOrderResponseDto>> => {

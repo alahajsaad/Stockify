@@ -1,7 +1,7 @@
 import { ApiResponse, Page } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderFullDto, SupplierOrderResponseDto } from "./types";
-import { addSupplierOrder, getNewOrderNumber, getSupplierOrderById, getSupplierOrders } from "./api";
+import { addSupplierOrder, getNewOrderNumber, getSupplierOrderById, getSupplierOrders, updateSupplierOrder } from "./api";
 
 export const useAddSupplierOrder = () => {
     const queryClient = useQueryClient();
@@ -20,6 +20,20 @@ export const useAddSupplierOrder = () => {
     });
 }
 
+export const useUpdateSupplierOrder = () => {
+    //const queryClient = useQueryClient();
+     
+    return useMutation<ApiResponse<SupplierOrderFullDto>, Error, SupplierOrderFullDto>({
+      mutationFn: (order: SupplierOrderFullDto) => 
+        updateSupplierOrder(order).then(response => {
+          if (response.status === 'error') {
+            throw new Error(response.message);
+          }
+          return response;
+        }),
+     
+    });
+}
 
 export const useGetSupplierOrders = (params: GetSupplierOrdersParams) => {
   return useQuery<Page<SupplierOrderResponseDto>, Error>({

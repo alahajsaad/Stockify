@@ -94,6 +94,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
                     }
                     case DO_SAVE -> {
                         for(SupplierOrderLine line : lines) {
+                            line.setId(null);
                             line.setOrder(oldOrder);
                             oldOrder.getOrderLines().add(line);
                         }

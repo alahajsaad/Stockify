@@ -1,9 +1,12 @@
 // OrderLines.tsx
 import Modal from "@/components/ui/Modal";
 import Table from "@/components/ui/Table";
-import { OrderLineRecord } from "@/services/api/supplier_order/types";
+import { OrderLine, OrderLineDto, OrderLineRecord } from "@/services/api/supplier_order/types";
 import { useState } from "react";
 import EditOrderLine from "./EditOrderLine";
+import { Button } from "@/components/ui";
+import AddOrderLine from "../components/orderLines/AddOrderLine";
+import FinancialSummary from "./FinancialSummary";
 
 export type TransformedOrderLineData = {
     id: number;
@@ -24,7 +27,9 @@ type OrderLinesProps = {
 const OrderLines = ({ orderLinesRecord, setOrderLines }: OrderLinesProps) => {
     const [isOpenPopupEdit, setIsOpenPopupEdit] = useState<boolean>(false)
     const [toEditOrderLine, setToEditOrderLine] = useState<TransformedOrderLineData>()
+    const [isOpenPopupAdd, setIsOpenPopupAdd] = useState<boolean>(false)
     
+   
     const head = ["Référence", "Nom du produit", "Quantité", "Prix unitaire", "Total", "Total TTC", "TVA"];
     
     const onEdit = (orderLine: TransformedOrderLineData) => {
@@ -117,6 +122,32 @@ const OrderLines = ({ orderLinesRecord, setOrderLines }: OrderLinesProps) => {
         return Object.entries(orderLinesRecord);
     };
 
+    const onAddingNewOrderLine = (orderLine: OrderLine) => {
+        if (!orderLinesRecord) return;
+        
+        const newOrderLines = { ...orderLinesRecord };
+        
+        // Create the new OrderLineDto object
+        const newOrderLineDto: OrderLineDto = {
+            id: Date.now(), // Generate temporary ID for new items
+            quantity: orderLine.quantity,
+            unitPrice: orderLine.unitPrice,
+            product: orderLine.product
+        };
+        
+        // Get existing DO_SAVE items or create empty array
+        const existingSaveItems = newOrderLines.DO_SAVE || [];
+        
+        // Add the new order line to DO_SAVE action
+        newOrderLines.DO_SAVE = [...existingSaveItems, newOrderLineDto];
+        
+        // Update the order lines
+        setOrderLines(newOrderLines);
+        
+        // Close the modal
+        setIsOpenPopupAdd(false);
+    }
+    
     const tableData: TransformedOrderLineData[] = getOrderLinesEntries()
         .flatMap(([action, orderLineDtos]) => {
             // Skip DO_REMOVE entries for display
@@ -128,8 +159,9 @@ const OrderLines = ({ orderLinesRecord, setOrderLines }: OrderLinesProps) => {
             return orderLines.map(orderLine => {
                 const { product, quantity, unitPrice } = orderLine;
                 const total = quantity * unitPrice;
-                const totalTTC = total * (1 + product.vat.rate / 100);
-                console.log("product.vat.rate:"+product.vat.rate)
+                const totalTTC = parseFloat((total * (1 + product.vat.rate / 100)).toFixed(2));
+
+                console.log("product.vat.rate:" + product.vat.rate)
                 return {
                     id: orderLine.id,
                     reference: product.reference,
@@ -143,15 +175,34 @@ const OrderLines = ({ orderLinesRecord, setOrderLines }: OrderLinesProps) => {
             });
         });
 
+        const financialSummary = tableData.reduce(
+    (acc, row) => ({
+        THT: acc.THT + row.total,
+        TTC: acc.TTC + row.totalTTC
+    }),
+    { THT: 0, TTC: 0 }
+);
     return (
         <>
+            <div className="flex items-center justify-between mt-2 mb-2">
+                <h2 className="text-2xl font-bold">lignes de Commande</h2>
+                <Button 
+                    type="button" 
+                    onClick={() => setIsOpenPopupAdd(true)}
+                >
+                    Ajouter
+                </Button>
+            </div>
             <Table 
                 head={head} 
                 data={tableData} 
-                variant={"WithActions"} 
+                variant="WithActions" 
                 onEdit={onEdit}
                 onDelete={onDelete}
             />
+
+           <FinancialSummary financialSummary={financialSummary} />
+                    
             <Modal
                 title="Modifier ligne de commande"
                 isOpen={isOpenPopupEdit}
@@ -165,6 +216,15 @@ const OrderLines = ({ orderLinesRecord, setOrderLines }: OrderLinesProps) => {
                         onCancel={onCancelEdit}
                     />
                 )}
+            </Modal>
+
+            <Modal 
+                title="Ajouter ligne de commande" 
+                isOpen={isOpenPopupAdd} 
+                onClose={() => setIsOpenPopupAdd(false)} 
+                size="lg"
+            >
+                <AddOrderLine onAddingNewOrderLine={onAddingNewOrderLine} />
             </Modal>
         </>
     );
