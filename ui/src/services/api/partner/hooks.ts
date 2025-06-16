@@ -1,6 +1,6 @@
 import { Page } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { PartnerResponseDto, PartnerType } from "./types";
+import { DynamicPartner, PartnerType } from "./types";
 import { getPartners } from "./api";
 
 export const useGetPartners = (
@@ -14,7 +14,7 @@ export const useGetPartners = (
     enabled?: boolean
   }
 ) => {
-  return useQuery<Page<PartnerResponseDto>, Error>({
+  return useQuery<Page<DynamicPartner>, Error>({
     queryKey: ['partners', params],
     queryFn: () => {
       return getPartners(params).then(response => {

@@ -33,6 +33,17 @@ const SelectCategory: React.FC<SelectCategoryType> = ({ onCategorySelect, select
         setIsOpen((prev) => !prev);
     }, []);
 
+    const handleAddCategoryClick = (e: React.MouseEvent) => {
+        e.preventDefault(); // Prevent form submission
+        e.stopPropagation(); // Prevent event bubbling
+        setIsOpenCategoryForm(true);
+    };
+    const onSuccess = () => {
+        setIsOpenCategoryForm(false)
+    }
+
+   
+
     return (
         <div className="relative">
             <label className="block mb-1 text-sm font-medium">Catégorie *</label>
@@ -49,7 +60,7 @@ const SelectCategory: React.FC<SelectCategoryType> = ({ onCategorySelect, select
                  />
                 </div>
                 <div className="flex-shrink-0">
-                    <Button onClick={() => setIsOpenCategoryForm(true)} variant="add" />
+                    <Button type={"button"} onClick={handleAddCategoryClick} variant="add" />
                 </div>
             </div>
 
@@ -61,7 +72,7 @@ const SelectCategory: React.FC<SelectCategoryType> = ({ onCategorySelect, select
                 onClose={() => setIsOpenCategoryForm(false)} 
                 size="md"
             >
-                <CategoryForm />
+                <CategoryForm onAddSuccess={onSuccess}/>
             </Modal>
         </div>
     );

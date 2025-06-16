@@ -1,13 +1,13 @@
 import { SearchInput } from "@/components/ui";
 import List from "@/components/ui/List";
 import { useGetPartners } from "@/services/api/partner/hooks";
-import { PartnerResponseDto, PartnerType, ShowPartnerDto } from "@/services/api/partner/types";
+import { DynamicPartner, PartnerType, ShowPartnerDto } from "@/services/api/partner/types";
 import { getShowPartnerDtos } from "@/services/api/partner/utils";
 import { useState } from "react";
 
 type SearchPartnerProps = {
     partnerType: PartnerType;
-    setPartner: (partner: PartnerResponseDto | undefined) => void;
+    setPartner: (partner: DynamicPartner | undefined) => void;
 }
 
 const SearchPartner: React.FC<SearchPartnerProps> = ({ partnerType, setPartner }) => {

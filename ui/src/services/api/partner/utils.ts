@@ -1,25 +1,8 @@
-import { PartnerResponseDto, ShowPartnerDto } from "./types";
+import { DynamicPartner, ShowPartnerDto } from "./types";
 
-//  const getPartnerName = (partner : PartnerResponseDto) => {
-//         if(partner.entityType === 'PERSON'){
-//             return partner.firstName + " " + partner.lastName
-//         } else {
-//             return partner.companyName
-//         }
-//     }
 
-// export const getShowPartnerDtos = (partnerResponseDto : PartnerResponseDto[]) =>{
-//     const formattedData: ShowPartnerDto[] = partnerResponseDto.map((partner) => ({
-//         id: partner.id,
-//         partnerName: getPartnerName(partner),
-//         entityType:partner.entityType,
-//         email: partner.email,
-//     }));
-//     return formattedData 
 
-// }
-
-const getPartnerName = (partner: PartnerResponseDto): string => {
+const getPartnerName = (partner: DynamicPartner): string => {
   if (partner.entityType === 'PERSON') {
     const firstName = partner.firstName ?? '';
     const lastName = partner.lastName ?? '';
@@ -30,8 +13,8 @@ const getPartnerName = (partner: PartnerResponseDto): string => {
 };
 
 
-export const getShowPartnerDtos = (partnerResponseDto: PartnerResponseDto[]): ShowPartnerDto[] => {
-  return partnerResponseDto.map((partner) => ({
+export const getShowPartnerDtos = (dynamicPartner: DynamicPartner[]): ShowPartnerDto[] => {
+  return dynamicPartner.map((partner) => ({
     id: partner.id,
     partnerName: getPartnerName(partner),
     entityType:partner.entityType, 

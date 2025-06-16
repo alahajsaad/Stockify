@@ -1,9 +1,10 @@
 package com.alabenhajsaad.api.business.client_order;
 
 
+import com.alabenhajsaad.api.business.client_order.dto.ClientOrderDto;
+import com.alabenhajsaad.api.business.client_order.dto.ClientOrderResponseDto;
 import com.alabenhajsaad.api.business.client_order.mapper.ClientOrderMapper;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
-import com.alabenhajsaad.api.business.client_order_line.ClientOrderLineResponseDto;
 import com.alabenhajsaad.api.business.utils.LineAction;
 import com.alabenhajsaad.api.business.product.external.ProductExternalService;
 import com.alabenhajsaad.api.business.utils.CodeGeneratorService;
@@ -65,7 +66,7 @@ public class ClientOrderServiceImpl implements ClientOrderService{
 
     @Override
     @Transactional
-    public ClientOrder updateClientOrder(ClientOrderResponseDto clientOrder) {
+    public ClientOrder updateClientOrder(ClientOrderDto clientOrder) {
         ClientOrder oldClientOrder = repository.findById(clientOrder.id()).orElseThrow(
                 () -> new ResourceNotFoundException("commande client n'est pas trouvee !")
         );
@@ -77,7 +78,7 @@ public class ClientOrderServiceImpl implements ClientOrderService{
         return repository.save(oldClientOrder);
     }
 
-    private void updateOrderStatus(ClientOrderResponseDto newOrder, ClientOrder oldOrder) {
+    private void updateOrderStatus(ClientOrderDto newOrder, ClientOrder oldOrder) {
         if (newOrder.paymentStatus() != oldOrder.getPaymentStatus()) {
             oldOrder.setPaymentStatus(newOrder.paymentStatus());
         }
@@ -86,7 +87,7 @@ public class ClientOrderServiceImpl implements ClientOrderService{
         }
     }
 
-    private void updateOrderLines(ClientOrderResponseDto updatedOrder, ClientOrder oldOrder) {
+    private void updateOrderLines(ClientOrderDto updatedOrder, ClientOrder oldOrder) {
 
             for (Map.Entry<LineAction, List<ClientOrderLine>> entry : updatedOrder.clientOrderLine().entrySet()) {
                 LineAction action = entry.getKey();
@@ -156,7 +157,7 @@ public class ClientOrderServiceImpl implements ClientOrderService{
 
 
     @Override
-    public Page<ClientOrder> getClientOrders(Pageable pageable, LocalDate fromDate ,LocalDate toDate ,DeliveryStatus deliveryStatus , PaymentStatus paymentStatus,String keyWord,Integer clientId) {
+    public Page<ClientOrderResponseDto> getClientOrders(Pageable pageable, LocalDate fromDate , LocalDate toDate , DeliveryStatus deliveryStatus , PaymentStatus paymentStatus, String keyWord, Integer clientId) {
         Specification<ClientOrder> specification = Specification
                 .where(ClientOrderSpecification.hasDate(fromDate,toDate))
                 .and(ClientOrderSpecification.hasKeyWord(keyWord))
@@ -168,11 +169,25 @@ public class ClientOrderServiceImpl implements ClientOrderService{
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
         }
 
-        return repository.findAll(specification, pageable);
+        return transformToClientOrderResponseDto(repository.findAll(specification, pageable));
+    }
+
+    private Page<ClientOrderResponseDto> transformToClientOrderResponseDto(Page<ClientOrder> orders) {
+        return orders.map(order -> new ClientOrderResponseDto(
+                order.getId(),
+                order.getOrderNumber(),
+                order.getTotalExcludingTax(),
+                order.getTotalIncludingTax(),
+                order.getPaymentStatus(),
+                order.getDeliveryStatus(),
+                order.getCreatedAt(),
+                order.getUpdatedAt(),
+                order.getPartner()
+        ));
     }
 
     @Override
-    public ClientOrderResponseDto getClientOrderById(Integer supplierOrderId) {
+    public ClientOrderDto getClientOrderById(Integer supplierOrderId) {
         ClientOrder clientOrder = repository.findById(supplierOrderId).orElseThrow(
                 () -> new ResourceNotFoundException("commande client n'est pas trouvee !")
         );

@@ -3,23 +3,46 @@ import SelectProduct from "./SelectProduct";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { OrderLine } from "src/types/supplierOrder";
 import { Product } from "@/services/api/product/types";
 import { useState } from "react";
+import { OrderLineDto, OrderLineType } from "@/types";
+import { generateUniqueId } from "@/lib/utils";
 
-export const formSchema = z.object({
-  productId: z.number().min(1, "Sélectionner un produit"),
-  quantity: z.number().min(1, "La quantité minimale est 1"),
-  price: z.number().min(0.01, "Ajouter un prix unitaire valide"),
-});
+const createFormSchema = (isClientOrder: boolean, availableQuantity?: number) => 
+  z.object({
+    productId: z.number().min(1, "Sélectionner un produit"),
+    quantity: z.number()
+      .min(1, "La quantité minimale est 1")
+      .refine((val) => {
+        if (isClientOrder && availableQuantity !== undefined) {
+          return val <= availableQuantity;
+        }
+        return true;
+      }, {
+        message: `Quantité disponible insuffisante. Stock disponible: ${availableQuantity || 0}`
+      }),
+    price: z.number().min(0.01, "Ajouter un prix unitaire valide"),
+  });
 
-export type OrderLineSchemaType = z.infer<typeof formSchema>;
+export type OrderLineSchemaType = z.infer<ReturnType<typeof createFormSchema>>;
 
 type AddOrderLineType = {
-  onAddingNewOrderLine: (orderLine: OrderLine) => void;
+  onAddingNewOrderLine: (orderLine: OrderLineDto) => void;
+  orderLineType : OrderLineType
 };
 
-const AddOrderLine: React.FC<AddOrderLineType> = ({ onAddingNewOrderLine }) => {
+
+
+const AddOrderLine: React.FC<AddOrderLineType> = ({ onAddingNewOrderLine , orderLineType}) => {
+
+ const isClientOrder = (orderLineType === "client_order")
+ const [product, setProduct] = useState<Product | undefined>();
+  
+
+  const availableQuantity = product ? product.quantity : undefined;
+  const formSchema = createFormSchema(isClientOrder, availableQuantity);
+
+
   const {
     register,
     handleSubmit,
@@ -35,7 +58,7 @@ const AddOrderLine: React.FC<AddOrderLineType> = ({ onAddingNewOrderLine }) => {
     }
   });
 
-  const [product, setProduct] = useState<Product | undefined>();
+ 
 
   const handleProductSelect = (selectedProduct: Product) => {
     setProduct(selectedProduct);
@@ -52,7 +75,8 @@ const AddOrderLine: React.FC<AddOrderLineType> = ({ onAddingNewOrderLine }) => {
       return;
     }
 
-    const orderline: OrderLine = {
+    const orderline: OrderLineDto = {
+      id: generateUniqueId() ,
       quantity: data.quantity,
       unitPrice: data.price,
       product: product

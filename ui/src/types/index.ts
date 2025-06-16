@@ -62,5 +62,15 @@ export type { UserResponseDto } from './user'
 export type { Role } from './TokenPayload'
 export type { TokenPayload } from './TokenPayload'
 
+export type { PaymentStatus } from './orderLine'
+export type { DeliveryStatus } from './orderLine'
+export type { ReceptionStatus } from './orderLine'
+export type { OrderLineType } from './orderLine'
+export type { OrderLineDto } from './orderLine'
+export type { OrderLineAction } from './orderLine'
+export type { OrderLineRecord } from './orderLine'
+
+
+
 
 

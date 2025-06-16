@@ -4,7 +4,6 @@ import { useAuth } from "./features/auth/components/AuthProvider";
 import { LandingPage } from "./features/landing-page";
 import CreateCompanyPage from "./features/auth/pages/CreateCompanyPage";
 import LoadingScreen from "./features/DashBoard/components/LoadingScreen";
-import ProductForm from "./features/product/forms/productForm";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
@@ -13,12 +12,10 @@ import ConsultProducts from "./features/product/pages/ConsultProducts";
 import ProductDetails from "./features/product/pages/ProductDetails";
 import ForgotPasswordPage from "./features/auth/pages/ForgotPasswordPage";
 import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
-
-import { AddCategoryPage, ConsultCategoriesPage } from "./features/category";
-import { AddVatPage, ConsultVatsPage } from "./features/value_added_tax";
-
-import ConsultClientsPage from "./features/client/pages/ConsultClientsPage";
-import ConsultClientPage from "./features/client/pages/ConsultClientPage";
+import { AddCategoryPage } from "./features/category";
+import { AddVatPage } from "./features/value_added_tax";
+// import ConsultClientsPage from "./features/client/pages/ConsultClientsPage";
+// import ConsultClientPage from "./features/client/pages/ConsultClientPage";
 import AddSupplierOrderPage from "./features/supplier_order/pages/AddSupplierOrderPage";
 import DashBoard from "./features/DashBoard/DashBoard";
 import ProfilePage from "./features/auth/pages/ProfilePage";
@@ -33,7 +30,14 @@ import ConsultPartnersPage from "./features/partner/pages/ConsultPartnersPage";
 import AddProduct from "./features/product/forms/AddProduct";
 import AddSupplierPage from "./features/partner/pages/AddSupplierPage";
 import ConsultSupplierOrders from "./features/supplier_order/pages/ConsultSupplierOrders";
-import ConsultSupplierOrder from "./features/supplier_order/pages/ConsultSupplierOrder";
+import { useNavigationType } from 'react-router-dom';
+import AddClientOrder from "./features/client_order/pages/AddClientOrder";
+import ConsultClientOrders from "./features/client_order/pages/ConsultClientOrders";
+import ClientOrderDetails from "./features/client_order/pages/ClientOrderDetails";
+import SupplierOrderDetails from "./features/supplier_order/pages/SupplierOrderDetails";
+
+
+
 
 const DashboardLayout = lazy(() => import("./features/DashBoard/DashBoardLayout"));
 
@@ -41,18 +45,18 @@ const App = () => {
   const { isAuthenticated, isAuthLoading ,setIsAuthenticated} = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const navigationType = useNavigationType();
+  console.log("Navigation Type: ", navigationType);
+ 
   useEffect(() => {
-    
-    if (!isAuthLoading) {
-      if (isAuthenticated && (location.pathname === "/" || location.pathname === "/SignUp")) {
-        navigate("/stockify/dashboard");
-      }
+  if (!isAuthLoading) {
+    if (isAuthenticated && (location.pathname === "/" || location.pathname === "/SignUp")) {
+      // Use replace here to prevent back navigation to auth forms
+      navigate("/stockify/dashboard", { replace: true });
     }
-    if(isAuthenticated && location.pathname != "/" && location.pathname != "/SignUp"){
-      navigate(location.pathname)
-    }
-  }, [isAuthenticated, isAuthLoading, location.pathname, navigate]);
+  }
+}, [isAuthenticated, isAuthLoading, location.pathname, navigate]);
+
   
 
 
@@ -78,42 +82,50 @@ const App = () => {
             <Route path="dashboard" element={<DashBoard />} />
             <Route path={Paths.company} element={<ConsultCompanyPage />} />
             <Route path={Paths.profile} element={<ProfilePage />} />
-            <Route path="products/add" element={<AddProduct />} />
-            <Route path="products" element={<ConsultProducts />} />
-            <Route path="products/:id" element={<ProductDetails />} />
-            <Route path={Paths.addVat} element={<AddVatPage />} />
-            <Route path={Paths.vats} element={<VatsPage />} />
-            <Route path={Paths.categories} element={<CategoriesPage />} />
-            <Route path={Paths.addCategory} element={<AddCategoryPage />} />
+            
+            
+         
+            <Route path={Paths.addProduct} element={<AddProduct />} />
+            <Route path={Paths.products}>
+              <Route index element={<ConsultProducts />} />
+              <Route path=":id" element={<ProductDetails />} />
+            </Route>
+            
+            
            
             <Route path={Paths.subscriptions} element={<ConsultSubscriptionsPage />} />
-            {/* <Route path={Paths.clients} element={<ConsultClientsPage />} />
-            <Route path={Paths.client} element={<ConsultClientPage />} /> */}
+           
+
+            <Route path={Paths.addCategory} element={<AddCategoryPage />} />
+            <Route path={Paths.categories} element={<CategoriesPage />} />
+
+            <Route path={Paths.addVat} element={<AddVatPage />} />
+            <Route path={Paths.vats} element={<VatsPage />} />
 
             <Route path={Paths.clients}>
               <Route index element={<ConsultPartnersPage />} />
-              <Route path=":id" element={<ConsultClientPage />} />
+              {/* <Route path=":id" element={<ConsultClientPage />} /> */}
             </Route>
             <Route path={Paths.addClient} element={<AddClientPage />} />
 
             <Route path={Paths.suppliers}>
               <Route index element={<ConsultPartnersPage />} />
-              <Route path=":id" element={<ConsultClientPage />} />
+              {/* <Route path=":id" element={<ConsultClientPage />} /> */}
             </Route>
             <Route path={Paths.addSupplier} element={<AddSupplierPage />} />
 
 
             <Route path={Paths.clientOrders}>
-              <Route index element={<ConsultClientsPage />} />
-              <Route path=":id" element={<ConsultClientPage />} />
+              <Route index element={<ConsultClientOrders />} />
+              <Route path=":id" element={<ClientOrderDetails />} />
             </Route>
-            <Route path={Paths.addClientOrder} element={<AddSupplierOrderPage />} />
+            <Route path={Paths.addClientOrder} element={<AddClientOrder />} />
 
 
 
             <Route path={Paths.supplierOrders}>
               <Route index element={<ConsultSupplierOrders />} />
-              <Route path=":id" element={<ConsultSupplierOrder />} />
+              <Route path=":id" element={<SupplierOrderDetails />} />
             </Route>
             <Route path={Paths.addSupplierOrder} element={<AddSupplierOrderPage />} />
 

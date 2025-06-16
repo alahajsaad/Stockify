@@ -51,9 +51,10 @@ const Table = <T extends { id: number; [key: string]: CellValue }>({
   }, [initialSelectedId]);
 
   // Ensure required props are provided based on variant
-  if (isActionVariant && (!onEdit || !onDelete)) {
-    console.warn("onEdit and onDelete props are required when using WithActions variant");
-  }
+ if (isActionVariant && (!onEdit && !onDelete)) {
+  console.warn("At least one of onEdit or onDelete must be provided when using WithActions variant");
+}
+
 
   const handleRowClick = (id: number) => {
     if (isNavigationVariant) {
@@ -105,10 +106,10 @@ const Table = <T extends { id: number; [key: string]: CellValue }>({
   return (
     <div className="relative overflow-x-auto rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
       <table className="w-full text-sm text-left text-gray-700 dark:text-gray-300">
-        <thead className="text-xs uppercase bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 text-gray-800 dark:text-gray-200">
+        <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
             {head.map((h, index) => (
-              <th className="px-6 py-4 font-semibold tracking-wider" key={index}>{h}</th>
+              <th className="px-6 py-3 font-semibold tracking-wider uppercase border-b border-gray-200" key={index}>{h}</th>
             ))}
             {isActionVariant && ( <th className="px-6 py-4 font-semibold tracking-wider">Actions</th>)}
           </tr>
@@ -135,20 +136,25 @@ const Table = <T extends { id: number; [key: string]: CellValue }>({
                       {item[field]}
                     </td>
                   ))}
-                  {isActionVariant && (
+                  {isActionVariant && (onEdit || onDelete) && (
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
-                        <SquarePen 
-                          className="cursor-pointer text-blue-500 hover:text-blue-700" 
-                          onClick={(e) => handleEditClick(item, e)} 
-                        />
-                        <Trash2 
-                          className="cursor-pointer text-red-500 hover:text-red-700" 
-                          onClick={(e) => handleDeleteClick(item.id, e)} 
-                        />
+                        {onEdit && (
+                          <SquarePen
+                            className="cursor-pointer text-blue-500 hover:text-blue-700"
+                            onClick={(e) => handleEditClick(item, e)}
+                          />
+                        )}
+                        {onDelete && (
+                          <Trash2
+                            className="cursor-pointer text-red-500 hover:text-red-700"
+                            onClick={(e) => handleDeleteClick(item.id, e)}
+                          />
+                        )}
                       </div>
                     </td>
                   )}
+
                 </tr>
               );
             })

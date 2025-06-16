@@ -20,7 +20,7 @@ public class SupplierOrderSpecification {
     }
     public static Specification<SupplierOrder> hasPaymentStatus(PaymentStatus status) {
         return (root, query, criteriaBuilder) -> {
-            if (status == null ) {
+            if (status == null) {
                 return null;
             }
             return criteriaBuilder.equal(root.get("paymentStatus"), status);

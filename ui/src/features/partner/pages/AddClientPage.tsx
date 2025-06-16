@@ -157,7 +157,7 @@ const AddClientPage = () => {
                 <input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
+                  //placeholder="john@example.com"
                   className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   {...form.register("email")}
                 />

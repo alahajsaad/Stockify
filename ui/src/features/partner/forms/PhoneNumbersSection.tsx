@@ -16,7 +16,7 @@ const PhoneNumbersSection = ({ form }: PhoneNumbersSectionProps) => {
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium">Phone Numbers</h3>
+        <h3 className="text-lg font-medium">Numéros de téléphone</h3>
         <Button
           type="button"
           onClick={() =>
@@ -26,7 +26,7 @@ const PhoneNumbersSection = ({ form }: PhoneNumbersSectionProps) => {
           }
           className="flex items-center gap-1"
         >
-          <Plus className="h-4 w-4" /> Add Phone
+          <Plus className="h-4 w-4" /> Ajouter un numéro
         </Button>
       </div>
 
@@ -34,7 +34,7 @@ const PhoneNumbersSection = ({ form }: PhoneNumbersSectionProps) => {
         <div className="flex items-center justify-center p-6 border border-dashed rounded-md">
           <div className="flex flex-col items-center text-muted-foreground">
             <Phone className="h-8 w-8 mb-2" />
-            <p>No phone numbers added yet</p>
+            <p>Aucun numéro de téléphone ajouté pour le moment</p>
             <Button
               onClick={() =>
                 append({
@@ -43,7 +43,7 @@ const PhoneNumbersSection = ({ form }: PhoneNumbersSectionProps) => {
               }
               className="mt-2"
             >
-              Add a phone number
+              Ajouter un numéro de téléphone
             </Button>
           </div>
         </div>
@@ -53,12 +53,12 @@ const PhoneNumbersSection = ({ form }: PhoneNumbersSectionProps) => {
             <div key={field.id} className="flex flex-col md:flex-row gap-4 p-4 border rounded-md bg-card">
               <div className="flex-1">
                 <label htmlFor={`phoneNumbers.${index}.number`} className="block text-sm font-medium mb-2">
-                  Phone Number
+                  Numéro de téléphone
                 </label>
                 <input
                   id={`phoneNumbers.${index}.number`}
                   type="tel"
-                  placeholder="99666333"
+                  //placeholder="99666333"
                   className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   {...form.register(`phoneNumbers.${index}.number`)}
                 />

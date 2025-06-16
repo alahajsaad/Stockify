@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "src/components/ui";
 import { z } from "zod";
-import { useAddCategory, useUpdateCategory } from "src/services/api/category";
 import { Category, CategoryCreationDto } from "@/services/api/category/types";
+import { useAddCategory , useUpdateCategory } from "@/services/api/category/hooks";
 
 const formSchema = z.object({
   name: z.string().min(1, "Veuillez ajouter un nom de catégorie"),
@@ -14,9 +14,12 @@ type FormValues = z.infer<typeof formSchema>;
 type CategoryFormProps = {
   initialCategory?: Category;
   toggleForm?: (isEditing: boolean) => void;
+  onUpdateSuccess? : (bool : boolean) => void;
+  onAddSuccess?:()=>void;
+  
 };
 
-const CategoryForm: React.FC<CategoryFormProps> = ({ toggleForm, initialCategory }) => {
+const CategoryForm: React.FC<CategoryFormProps> = ({ toggleForm, initialCategory,onUpdateSuccess,onAddSuccess}) => {
   // Utiliser les hooks conditionnellement selon le mode (ajout ou modification)
   const { mutate: addCategory, isPending: isAddLoading } = useAddCategory();
   const { mutate: updateCategory, isPending: isUpdateLoading } = useUpdateCategory();
@@ -38,7 +41,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ toggleForm, initialCategory
     resolver: zodResolver(formSchema),
   });
   
-  const handleFormSubmit = (data: FormValues) => {
+  const handleFormSubmit = (data: FormValues ) => {
+   
     if (isEditMode && initialCategory) {
       // Mode édition: mettre à jour la catégorie existante
       const updatedCategory: Category = {
@@ -50,6 +54,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ toggleForm, initialCategory
         onSuccess: () => {
           reset();
           toggleForm?.(false);
+          onUpdateSuccess?.(true);
         }
       });
     } else {
@@ -63,6 +68,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ toggleForm, initialCategory
         onSuccess: () => {
           reset();
           toggleForm?.(false);
+          onAddSuccess?.()
         }
       });
     }

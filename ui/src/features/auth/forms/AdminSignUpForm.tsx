@@ -160,10 +160,10 @@ const AdminSignUpForm: React.FC<FormProps> = ({ setStep, setAdmin }) => {
         )}
       </div>
 
-      <div>
+      {/* <div>
         <Input placeholder="Votre ID Telegram" label="Telegram ID (optionnel)" {...register("telegramId")} />
         {errors.telegramId && <p className="text-red-500 text-sm mt-1">{errors.telegramId.message}</p>}
-      </div>
+      </div> */}
 
       <div className="flex justify-end mt-6">
         <Button type="submit" disabled={isCreatePending}>

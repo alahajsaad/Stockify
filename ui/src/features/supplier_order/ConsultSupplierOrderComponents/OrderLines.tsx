@@ -1,12 +1,13 @@
 // OrderLines.tsx
 import Modal from "@/components/ui/Modal";
 import Table from "@/components/ui/Table";
-import { OrderLine, OrderLineDto, OrderLineRecord } from "@/services/api/supplier_order/types";
+import { OrderLine} from "@/services/api/supplier_order/types";
 import { useState } from "react";
 import EditOrderLine from "./EditOrderLine";
 import { Button } from "@/components/ui";
-import AddOrderLine from "../components/orderLines/AddOrderLine";
 import FinancialSummary from "./FinancialSummary";
+import { OrderLineDto, OrderLineRecord } from "@/types";
+import AddOrderLine from "@/components/order/orderLines/AddOrderLine";
 
 export type TransformedOrderLineData = {
     id: number;
@@ -224,7 +225,7 @@ const OrderLines = ({ orderLinesRecord, setOrderLines }: OrderLinesProps) => {
                 onClose={() => setIsOpenPopupAdd(false)} 
                 size="lg"
             >
-                <AddOrderLine onAddingNewOrderLine={onAddingNewOrderLine} />
+                <AddOrderLine onAddingNewOrderLine={onAddingNewOrderLine} orderLineType={"supplier_order"}/>
             </Modal>
         </>
     );

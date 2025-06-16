@@ -2,25 +2,49 @@
 import { useState } from 'react';
 import { Search, Shapes } from 'lucide-react';
 import { SearchInput } from '@/components/ui';
-import { useGetCategories } from '@/services/api/category/hooks';
+import { useDeleteCategory, useGetCategories } from '@/services/api/category/hooks';
 import CategoryCard from '../components/CategoryCard';
 import TableNav from '@/components/ui/TableNav';
+import Modal from '@/components/ui/Modal';
+import CategoryForm from '../forms/CategoryForm';
+import { Category } from '@/services/api/category/types';
+import { toast } from 'react-toastify';
 
 const CategoriesPage = () => {
     const [page, setPage] = useState<number>(0);
     const [searchKey, setSearchKey] = useState<string>('');
-    
-    const { data: categories, isPending, refetch } = useGetCategories({
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
+    const [category, setCategory] = useState<Category | undefined>(undefined);
+    const { data: categories, isPending } = useGetCategories({
         keyword: searchKey || undefined,
         page: page
     });
+    const {mutate : deleteCategory} = useDeleteCategory()
 
     const handleEdit = (id: number) => {
-        console.log('Edit category:', id);
+        const foundCategory = categories?.content?.find((item) => item.id === id);
+        if (foundCategory) {
+        setCategory(foundCategory);
+        setIsUpdating(true);
+        }
     };
 
+    const onUpdateSuccess = (success: boolean) => {
+    if (success) {
+      setIsUpdating(false);
+      setCategory(undefined);
+    }
+  };
+
     const handleDelete = (id: number) => {
-        console.log('Delete category:', id);
+        deleteCategory(id,{
+            onSuccess:(response)=>{
+                toast.success(response.message)
+            },
+            onError:(response)=>{
+                 toast.error(response.message)
+            }
+        });
     };
 
    
@@ -93,6 +117,15 @@ const CategoriesPage = () => {
                         </p>
                     </div>
                 )}
+
+                <Modal
+                    title="Modifier une category"
+                    isOpen={isUpdating}
+                    onClose={() => setIsUpdating(false)}
+                    size="md"
+                    >
+                    <CategoryForm onUpdateSuccess={onUpdateSuccess} initialCategory={category} />
+                </Modal>
            
         </div>
     );

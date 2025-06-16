@@ -1,11 +1,12 @@
 import { Badge } from '@/components/ui/shadcn/badge';
 import { Card , CardBody} from '@/components/ui/Card';
-import { PaymentStatus, ReceptionStatus, SupplierOrderFullDto } from '@/services/api/supplier_order/types';
+import { SupplierOrderFullDto } from '@/services/api/supplier_order/types';
 import { Currency } from '@/lib/currency';
 import { getStatusStyle, getStatusText } from '../utils';
 import { DynamicPartner } from '@/services/api/partner/types';
 import Select from '@/components/ui/Select';
 import { Button } from '@/components/ui';
+import { PaymentStatus, ReceptionStatus } from '@/types';
 
 interface OrderHeaderProps {
   orderData: SupplierOrderFullDto

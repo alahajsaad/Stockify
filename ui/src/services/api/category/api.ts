@@ -40,7 +40,7 @@ export const updateCategory = (category : Category): Promise<ApiResponse<Categor
 
 export const deleteCategory = (id : number): Promise<ApiResponse<void>> => {
     return request<void>({
-      url:  `/category?id=${(id)}`,
+      url: `/category/${id}`,
       method: "delete",
   });
   

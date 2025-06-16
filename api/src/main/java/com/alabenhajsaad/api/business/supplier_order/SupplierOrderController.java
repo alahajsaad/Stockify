@@ -45,12 +45,12 @@ public class SupplierOrderController {
             @RequestParam(required = false) ReceptionStatus receptionStatus,
             @RequestParam(required = false) PaymentStatus paymentStatus,
             @RequestParam(required = false) String keyword ,
-            @RequestParam(required = false) Integer clientId,
+            @RequestParam(required = false) Integer partnerId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "8") Integer size
     ) {
         return ResponseEntity.ok(
-                service.getSupplierOrders(PageRequest.of(page, size) ,fromDate, toDate, receptionStatus,paymentStatus,keyword ,clientId)
+                service.getSupplierOrders(PageRequest.of(page, size) ,fromDate, toDate, receptionStatus,paymentStatus,keyword ,partnerId)
         );
     }
     @GetMapping("/{id}")

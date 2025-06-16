@@ -1,5 +1,5 @@
+import { Product, StockStatus } from "@/services/api/product/types";
 import { Button } from "src/components/ui";
-import { Product, StockStatus } from "src/services/api/product";
 
 type ProductDetailsCardProps = {
   product: Product;
@@ -21,7 +21,6 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ product }) => {
     IN_STOCK: "bg-green-600 text-white",
     LOW_STOCK: "bg-yellow-500 text-white",
     OUT_OF_STOCK: "bg-red-600 text-white",
-    ALL: "bg-grey-600 text-white",
   };
 
   return (

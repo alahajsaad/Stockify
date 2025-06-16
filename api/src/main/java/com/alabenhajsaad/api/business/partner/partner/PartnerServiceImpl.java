@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class PartnerServiceImpl implements PartnerService {
     private final PartnerRepository repository;
 
-    public Page<PartnerResponseDto> getPartners(Pageable pageable, String keyword, PartnerType type) {
+    public Page<Partner> getPartners(Pageable pageable, String keyword, PartnerType type) {
        return repository.findPartners(type,keyword,pageable) ;
     }
 

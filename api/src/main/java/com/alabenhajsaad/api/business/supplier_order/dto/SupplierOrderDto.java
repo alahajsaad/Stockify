@@ -1,11 +1,7 @@
 package com.alabenhajsaad.api.business.supplier_order.dto;
 
-import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
-import com.alabenhajsaad.api.business.client_order_line.ClientOrderLineResponseDto;
 import com.alabenhajsaad.api.business.partner.partner.Partner;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
-import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLineDto;
-import com.alabenhajsaad.api.business.utils.DeliveryStatus;
 import com.alabenhajsaad.api.business.utils.LineAction;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.business.utils.ReceptionStatus;

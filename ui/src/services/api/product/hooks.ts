@@ -24,20 +24,20 @@ export const useAddProduct = () => {
 
 
 const generateProductCacheKey = (params: {
-  status?: StockStatus;
+  status: StockStatus | "ALL";
   keyword?: string;
   page?: number;
   size?: number;
 }): QueryKey => {
   // Create a stable cache key that doesn't depend on object reference
   const { status, keyword, page = 0, size = 10 } = params;
-  return ['Products', 'filteredProducts', status || 'all', keyword || '', page, size];
+  return ['Products', 'filteredProducts', status , keyword || '', page, size];
 };
 
 
 export const useGetProducts = (
   params: {
-    status?: StockStatus;
+    status?: StockStatus | "ALL";
     keyword?: string;
     page?: number;
     size?: number;
@@ -73,70 +73,70 @@ export const useGetProducts = (
   });
 };
 
-/**
- * Custom hook for fetching a single product by ID
- * 
- * This hook optimizes data fetching by:
- * 1. First checking if the product exists in any already-loaded product lists
- * 2. Using the cache for previously accessed products
- * 3. Only making API requests when necessary
- * 4. Safely handling invalid IDs to prevent unnecessary API calls
- * 
- * @param id - The numeric ID of the product to fetch
- * @returns React Query result with the requested product data
- */
-export const useGetProductById = (id: number) => {
-  const queryClient = useQueryClient();
-  
-  // We'll move the useQuery hook before any conditionals
-  const result = useQuery<Product, Error>({
-    queryKey: ['Products', 'byId', id],
-    queryFn: () => {
-      // First, check if we have this product in any existing filtered product queries
-      const queriesData = queryClient.getQueriesData<Page<Product>>({
-        queryKey: ['Products', 'filteredProducts'],
-      });
-      
-      // Look through all filtered product queries
-      for (const [, pageData] of queriesData) {
-        if (pageData?.content) {
-          const foundProduct = pageData.content.find(product => product.id === id);
-          if (foundProduct) {
-            // Store in dedicated cache entry for future direct access
-            queryClient.setQueryData(['Products', 'byId', id], foundProduct);
-            return Promise.resolve(foundProduct);
-          }
-        }
-      }
-      
-      // If not found in cache, make the API request
-      return getProductById(id).then(response => {
+
+ export const useGetProductById = (id: number) => {
+    return useQuery<ApiResponse<Product>, Error>({
+      queryKey: ['product', id], 
+      queryFn: () => getProductById(id).then(response => {
         if (response.status === 'error') {
           throw new Error(response.message);
         }
-        if (!response.data) {
-          throw new Error('No data returned from server');
-        }
-        return response.data;
-      });
-    },
-    gcTime: Infinity, // Keep data in cache until app is closed
-    staleTime: 1000 * 60 * 15, // Consider data fresh for 15 minutes
-    refetchOnMount: false, // Don't refetch when component mounts
-    enabled: id > 0 && !isNaN(id) // Only enable the query for valid IDs
-  });
+        return response as ApiResponse<Product>;
+      }),
+    });
+  };
 
-  // For invalid IDs, return a custom error object
-  if (id <= 0 || isNaN(id)) {
-    return {
-      isLoading: false,
-      isPending: false,
-      isError: true,
-      data: undefined,
-      error: new Error("Invalid product ID"),
-      refetch: () => Promise.reject(new Error("Invalid product ID"))
-    } as const;
-  }
+// export const useGetProductById = (id: number) => {
+//   const queryClient = useQueryClient();
+  
+//   // We'll move the useQuery hook before any conditionals
+//   const result = useQuery<Product, Error>({
+//     queryKey: ['Products', 'byId', id],
+//     queryFn: () => {
+//       // First, check if we have this product in any existing filtered product queries
+//       const queriesData = queryClient.getQueriesData<Page<Product>>({
+//         queryKey: ['Products', 'filteredProducts'],
+//       });
+      
+//       // Look through all filtered product queries
+//       for (const [, pageData] of queriesData) {
+//         if (pageData?.content) {
+//           const foundProduct = pageData.content.find(product => product.id === id);
+//           if (foundProduct) {
+//             // Store in dedicated cache entry for future direct access
+//             queryClient.setQueryData(['Products', 'byId', id], foundProduct);
+//             return Promise.resolve(foundProduct);
+//           }
+//         }
+//       }
+      
+//       // If not found in cache, make the API request
+//       return getProductById(id).then(response => {
+//         if (response.status === 'error') {
+//           throw new Error(response.message);
+//         }
+//         if (!response.data) {
+//           throw new Error('No data returned from server');
+//         }
+//         return response.data;
+//       });
+//     },
+//     gcTime: Infinity, // Keep data in cache until app is closed
+//     staleTime: 1000 * 60 * 15, // Consider data fresh for 15 minutes
+//     enabled: id > 0 && !isNaN(id) // Only enable the query for valid IDs
+//   });
 
-  return result;
-};
+//   // For invalid IDs, return a custom error object
+//   if (id <= 0 || isNaN(id)) {
+//     return {
+//       isLoading: false,
+//       isPending: false,
+//       isError: true,
+//       data: undefined,
+//       error: new Error("Invalid product ID"),
+//       refetch: () => Promise.reject(new Error("Invalid product ID"))
+//     } as const;
+//   }
+
+//   return result;
+// };

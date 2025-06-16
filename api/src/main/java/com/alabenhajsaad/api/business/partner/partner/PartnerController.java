@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PartnerController {
     private final PartnerService partnerService;
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<PartnerResponseDto>>> getPartners(
+    public ResponseEntity<ApiResponse<Page<Partner>>> getPartners(
             @RequestParam(required = false) String keyword,
             @RequestParam PartnerType partnerType,
             @RequestParam(defaultValue = "0") Integer page,

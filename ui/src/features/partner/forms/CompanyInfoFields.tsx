@@ -19,12 +19,12 @@ const CompanyInfoFields = ({ form }: CompanyInfoFieldsProps) => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label htmlFor="basicInfo.companyName" className="block text-sm font-medium mb-2">
-          Company Name <span className="text-destructive">*</span>
+          Nom de l'entreprise <span className="text-destructive">*</span>
         </label>
         <input
           id="basicInfo.companyName"
           type="text"
-          placeholder="Acme Corporation"
+         // placeholder="Acme Corporation"
           className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           {...form.register("basicInfo.companyName")}
         />
@@ -37,12 +37,12 @@ const CompanyInfoFields = ({ form }: CompanyInfoFieldsProps) => {
 
       <div>
         <label htmlFor="basicInfo.registrationNumber" className="block text-sm font-medium mb-2">
-          Registration Number <span className="text-destructive">*</span>
+          Numéro d'enregistrement <span className="text-destructive">*</span>
         </label>
         <input
           id="basicInfo.registrationNumber"
           type="text"
-          placeholder="123456789"
+         // placeholder="123456789"
           className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           {...form.register("basicInfo.registrationNumber")}
         />
@@ -55,12 +55,12 @@ const CompanyInfoFields = ({ form }: CompanyInfoFieldsProps) => {
 
       <div>
         <label htmlFor="basicInfo.taxNumber" className="block text-sm font-medium mb-2">
-          Tax Number
+          Numéro fiscal
         </label>
         <input
           id="basicInfo.taxNumber"
           type="text"
-          placeholder="Tax ID Number"
+         // placeholder="Tax ID Number"
           className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           {...form.register("basicInfo.taxNumber")}
         />

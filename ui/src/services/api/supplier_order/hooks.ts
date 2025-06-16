@@ -50,6 +50,11 @@ export const useGetSupplierOrders = (params: GetSupplierOrdersParams) => {
 };
 
 
+
+
+
+
+
  export const useGetSupplierOderById = (id: number) => {
     return useQuery<SupplierOrderFullDto, Error>({
       queryKey: ['supplierOrder', id], 
@@ -66,7 +71,7 @@ export const useGetSupplierOrders = (params: GetSupplierOrdersParams) => {
 
 export const useGetNewOrderNumber = () => {
   return useQuery<string, Error>({
-    queryKey: ['newOrderNumber'],
+    queryKey: ['SupplierOrderNumber'],
     queryFn: () => {
       return getNewOrderNumber().then(response => {
         if (response.status === 'error') {

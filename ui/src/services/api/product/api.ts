@@ -13,7 +13,7 @@ export const addProduct = (product: ProductCreationDto): Promise<ApiResponse<Pro
 
 export const getProductById = (id:number) : Promise<ApiResponse<Product>> =>  {
   return request<Product>({
-    url: `/product?id=${(id)}`,
+    url: `/product/${(id)}`,
     method: "get",
   });
 }

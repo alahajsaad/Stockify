@@ -15,7 +15,7 @@ export const Paths = {
     notAuthorized: "/notAuthorized",
     notFound: "*",
     stockify: "/stockify",
-    products : "products",
+   
     forgotPassword:"/forgotPassword",
     resetPassword: "/resetPassword",
     vats: "vats",   // relative should not be /vats
@@ -23,6 +23,9 @@ export const Paths = {
     categories:"categories",
     addCategory:"categories/add",
 
+
+    products : "products",
+    addProduct:"products/add",
 
     clients:"clients",
     client:":id" ,

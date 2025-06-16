@@ -5,5 +5,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PartnerService {
-    Page<PartnerResponseDto> getPartners(Pageable pageable , String keyword , PartnerType type);
+    Page<Partner> getPartners(Pageable pageable , String keyword , PartnerType type);
 }

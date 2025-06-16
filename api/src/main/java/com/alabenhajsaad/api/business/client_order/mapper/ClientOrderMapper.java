@@ -1,8 +1,8 @@
 package com.alabenhajsaad.api.business.client_order.mapper;
 
 import com.alabenhajsaad.api.business.client_order.ClientOrder;
-import com.alabenhajsaad.api.business.client_order.ClientOrderResponseDto;
+import com.alabenhajsaad.api.business.client_order.dto.ClientOrderDto;
 
 public interface ClientOrderMapper {
-    ClientOrderResponseDto toClientOrderResponseDto(ClientOrder clientOrder);
+    ClientOrderDto toClientOrderResponseDto(ClientOrder clientOrder);
 }

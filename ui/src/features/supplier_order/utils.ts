@@ -5,9 +5,13 @@ export const getStatusStyle = (status: string) => {
       return 'min-w-[70px] bg-rose-500  text-white  ';
     case 'UNRECEIVED':
       return 'min-w-[70px] bg-rose-500 text-white';
+    case 'UNDELIVERED':
+      return 'min-w-[70px] bg-rose-500 text-white';
     case 'PAID':
       return 'min-w-[70px] bg-green-500 text-white ';
     case 'RECEIVED':
+      return 'min-w-[70px] bg-green-500 text-white ';
+    case 'DELIVERED':
       return 'min-w-[70px] bg-green-500 text-white ';
     default:
       return 'min-w-[70px] bg-gradient-to-r from-gray-400 to-gray-500 text-white  ';
@@ -20,11 +24,16 @@ export const getStatusText = (status: string) => {
         return 'Non payé';
       case 'UNRECEIVED':
         return 'Non reçu';
+      case 'UNDELIVERED':
+        return 'Non livrée';
       case 'PAID':
         return 'Payé';
       case 'RECEIVED':
         return 'Reçu';
+      case 'DELIVERED':
+        return 'Livrée';
       default:
         return status;
     }
 }
+

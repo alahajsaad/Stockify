@@ -1,6 +1,6 @@
 import { valueAddedTax } from "@/types";
-import { Category, CategoryCreationDto } from "../category/types";
-import { ValueAddedTax, VatCreationDto } from "../value_added_tax/types";
+import { Category } from "../category/types";
+import { ValueAddedTax } from "../value_added_tax/types";
 
 export type StockStatus = "IN_STOCK" | "OUT_OF_STOCK" | "LOW_STOCK"
 

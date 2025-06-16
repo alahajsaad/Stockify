@@ -42,7 +42,7 @@ public class ClientOrder extends Auditable {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
     private List<ClientOrderLine> orderLines = new ArrayList<>();
 
     @ManyToOne

@@ -1,17 +1,48 @@
 import { Percent } from 'lucide-react';
-import { useGetVats } from '@/services/api/value_added_tax/hooks';
+import { useDeleteValueAddedTax, useGetVats } from '@/services/api/value_added_tax/hooks';
 import VatCard from '../components/VatCard';
+import { useState } from 'react';
+import Modal from '@/components/ui/Modal';
+import VatForm from '../forms/VatForm';
+import { valueAddedTaxFullDto } from '@/types';
+import { toast } from 'react-toastify';
 
 const VatsPage = () => {
-    const { data: vats, isPending, refetch } = useGetVats();
+    const { data: vats, isPending } = useGetVats();
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
+    const [vat, setVat] = useState<valueAddedTaxFullDto | undefined>(undefined);
+    const { mutate: deleteTaxValue } = useDeleteValueAddedTax();
 
-    const handleEdit = (id: number) => {
-        console.log('Modifier la TVA :', id);
-    };
 
-    const handleDelete = (id: number) => {
-        console.log('Supprimer la TVA :', id);
-    };
+const handleEdit = (id: number) => {
+    const foundVat = vats?.find((item) => item.id === id);
+    if (foundVat) {
+      setVat(foundVat);
+      setIsUpdating(true);
+    }
+  };
+
+  const handleDelete = (id: number) => {
+    console.log("delete:"+id)
+    deleteTaxValue(id , {
+        onSuccess: (response) => {
+          toast.success(response.message)
+        },
+        onError: (response) =>{
+          toast.error(response.message)
+        }
+      });
+  };
+
+  const onUpdateSuccess = (success: boolean) => {
+    if (success) {
+      setIsUpdating(false);
+      setVat(undefined);
+    }
+  };
+
+
+    
 
     return (
         <div className="min-h-screen container mx-auto px-4 py-24">
@@ -51,6 +82,17 @@ const VatsPage = () => {
                     Aucune valeur de TVA disponible.
                 </div>
             )}
+
+            {isUpdating && (
+        <Modal
+          title="Modifier une valeur de TVA"
+          isOpen={isUpdating}
+          onClose={() => setIsUpdating(false)}
+          size="md"
+        >
+          <VatForm onUpdateSuccess={onUpdateSuccess} initialVat={vat} />
+        </Modal>
+      )}
         </div>
     );
 };

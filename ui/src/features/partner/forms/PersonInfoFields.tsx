@@ -19,12 +19,12 @@ const PersonInfoFields = ({ form }: PersonInfoFieldsProps) => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label htmlFor="basicInfo.firstName" className="block text-sm font-medium mb-2">
-          First Name <span className="text-destructive">*</span>
+          Prénom <span className="text-destructive">*</span>
         </label>
         <input
           id="basicInfo.firstName"
           type="text"
-          placeholder="John"
+          //placeholder="John"
           className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           {...form.register("basicInfo.firstName")}
         />
@@ -36,12 +36,12 @@ const PersonInfoFields = ({ form }: PersonInfoFieldsProps) => {
       </div>
       <div>
         <label htmlFor="basicInfo.lastName" className="block text-sm font-medium mb-2">
-          Last Name <span className="text-destructive">*</span>
+          Nom <span className="text-destructive">*</span>
         </label>
         <input
           id="basicInfo.lastName"
           type="text"
-          placeholder="Doe"
+          //placeholder="Doe"
           className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           {...form.register("basicInfo.lastName")}
         />

@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "src/components/ui";
 import { z } from "zod";
 import { valueAddedTax } from "src/types";
-import { useAddValueAddedTax, useUpdateValueAddedTax } from "src/services/api/value_added_tax";
+import { useAddValueAddedTax , useUpdateValueAddedTax } from "@/services/api/value_added_tax/hooks";
 
 const formSchema = z.object({
   rate: z.coerce.number().min(1, "Veuillez ajouter un taux valide"),
@@ -16,9 +16,10 @@ type VatFormProps = {
   initialVat?: valueAddedTax;
   onUpdateSuccess? : (bool : boolean) => void
   toggleForm?: (isEditing: boolean) => void;
+  onAddSuccess? : ()=>void ;
 };
 
-const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat ,onUpdateSuccess }) => {
+const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat ,onUpdateSuccess,onAddSuccess }) => {
   // Utiliser les hooks conditionnellement selon le mode (ajout ou modification)
   const { mutate: addValueAddedTax, isPending: isAddLoading } = useAddValueAddedTax();
   const { mutate: updateValueAddedTax, isPending: isUpdateLoading } = useUpdateValueAddedTax();
@@ -72,6 +73,7 @@ const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat ,onUpdateSucce
         onSuccess: () => {
           reset();
           toggleForm?.(false);
+          onAddSuccess?.()
         }
       });
     }

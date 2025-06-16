@@ -32,6 +32,9 @@ const SelectVat: React.FC<SelectVatType> = ({ onVatSelect, selectedVatId }) => {
         setIsOpen((prev) => !prev);
     }, []);
 
+     const onSuccess = () => {
+        setIsOpenVatForm(false)
+    }
     return (
         <div className="relative">
             <label className="block mb-1 text-sm font-medium">TVA *</label>
@@ -58,7 +61,7 @@ const SelectVat: React.FC<SelectVatType> = ({ onVatSelect, selectedVatId }) => {
                 onClose={() => setIsOpenVatForm(false)} 
                 size="md"
             >
-                <VatForm />
+                <VatForm onAddSuccess={onSuccess}/>
             </Modal>
         </div>
     );

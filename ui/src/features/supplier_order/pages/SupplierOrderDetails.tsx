@@ -1,13 +1,14 @@
-// ConsultSupplierOrder.tsx
+// SupplierOrderDetails.tsx
 import { useGetSupplierOderById, useUpdateSupplierOrder } from "@/services/api/supplier_order/hooks";
 import { useParams } from "react-router-dom";
 import OrderHeader from "../ConsultSupplierOrderComponents/OrderHeader";
-import { SupplierOrderFullDto, OrderLineRecord, PaymentStatus, ReceptionStatus, OrderLineDto } from "@/services/api/supplier_order/types";
+import { SupplierOrderFullDto } from "@/services/api/supplier_order/types";
 import { useState, useEffect, useCallback } from "react";
 import OrderLines from "../ConsultSupplierOrderComponents/OrderLines";
 import { toast } from "react-toastify";
+import { OrderLineRecord, PaymentStatus, ReceptionStatus } from "@/types";
 
-const ConsultSupplierOrder: React.FC = () => {
+const SupplierOrderDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const numericId = id ? parseInt(id, 10) : -1;
     const { data: supplierOrder, isPending, isError } = useGetSupplierOderById(numericId);
@@ -140,4 +141,4 @@ const ConsultSupplierOrder: React.FC = () => {
     );
 };
 
-export default ConsultSupplierOrder;
+export default SupplierOrderDetails;

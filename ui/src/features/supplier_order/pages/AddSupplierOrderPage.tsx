@@ -1,21 +1,21 @@
 import { useMemo, useState } from "react";
-import SupplierInformation from "../components/SupplierInformation";
-import OrderInformation from "../components/OrderInformation";
 import { useAddSupplierOrder } from "@/services/api/supplier_order/hooks";
 import { Button } from "@/components/ui";
-import { OrderLine } from "@/types/supplierOrder";
 import { SupplierOrderCreationDto } from "@/services/api/supplier_order/types";
 import { useGetNewOrderNumber } from "@/services/api/supplier_order/hooks";
 import { toast } from "react-toastify";
-import DisplayOrderLines from "../components/orderLines/DisplayOrderLines";
-import {  PartnerResponseDto } from "@/services/api/partner/types";
+import {  DynamicPartner } from "@/services/api/partner/types";
+import OrderInformation from "@/components/order/OrderInformation";
+import PartnerInformation from "@/components/order/PartnerInformation";
+import DisplayOrderLines from "@/components/order/orderLines/DisplayOrderLines";
+import { OrderLineDto } from "@/types";
 
 
 
 const AddSupplierOrderPage : React.FC = () => {
-    const [orderLines, setOrderLines] = useState<OrderLine[]>([]);
+    const [orderLines, setOrderLines] = useState<OrderLineDto[]>([]);
     const {mutate : addSupplierOrder , isPending} = useAddSupplierOrder()
-    const [supplier,setSupplier] = useState<PartnerResponseDto |undefined>(undefined)
+    const [supplier,setSupplier] = useState<DynamicPartner |undefined>(undefined)
     
     const {data:orderNumber , isPending:isNewOrderNumberPending , refetch : refetchNewOrderNumber} = useGetNewOrderNumber()
     console.log("order_number:"+orderNumber)
@@ -25,14 +25,12 @@ const AddSupplierOrderPage : React.FC = () => {
     );
 
    
-    const updateOrderLines = (orderLine:OrderLine) => {
-        setOrderLines((prev)=>[...prev , orderLine])
-    }
+   
     const handleSupplierOrderCreation = () => {
             if(orderNumber&&supplier){
             const supplierOrder : SupplierOrderCreationDto = {
                 orderNumber:orderNumber,
-                orderLines:orderLines,
+                orderLines:orderLines.map(({ id, ...rest }) => rest),
                 partner:{id:supplier.id , entityType:supplier.entityType}
 
             }
@@ -60,10 +58,10 @@ const AddSupplierOrderPage : React.FC = () => {
             <OrderInformation orderNumber={orderNumber} isPending={isNewOrderNumberPending} />
             <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
                 <div className="lg:col-span-1 h-full">
-                    <SupplierInformation supplier={supplier} setSupplier={setSupplier} />
+                    <PartnerInformation partner={supplier} setPartner={setSupplier} partnerType={"SUPPLIER"} />
                 </div>
                 <div className="lg:col-span-2 h-full">
-                    <DisplayOrderLines orderLines={orderLines} setOrderLines={updateOrderLines}/>
+                    <DisplayOrderLines orderLines={orderLines} setOrderLines={setOrderLines} orderLineType={"supplier_order"}/>
                 </div>
             </div>
             <div className="flex justify-end mt-4">

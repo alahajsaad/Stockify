@@ -1,14 +1,13 @@
 import { SearchInput } from 'src/components/ui';
 import Select from 'src/components/ui/Select';
-import { StockStatus } from 'src/services/api/product';
-import { Funnel, X } from "lucide-react";
+import { X } from "lucide-react";
+import { StockStatus } from '@/services/api/product/types';
 
 type ProductsFilterProps = {
-  setStockStatus: (status: StockStatus) => void;
+  setStockStatus: (status: StockStatus | "ALL") => void;
   setSearchKey: (key: string) => void;
   isPending: boolean;
-  selectedStockStatus: StockStatus;
-  defaultOption?: StockStatus;
+  selectedStockStatus: StockStatus | "ALL";
 };
 
 const ProductsFilter: React.FC<ProductsFilterProps> = ({
@@ -16,7 +15,6 @@ const ProductsFilter: React.FC<ProductsFilterProps> = ({
   setSearchKey,
   isPending,
   selectedStockStatus,
-  defaultOption
 }) => {
   const optionsMap = new Map<string, string>([
     ["ALL", "Tous les produits"],
@@ -48,7 +46,7 @@ const ProductsFilter: React.FC<ProductsFilterProps> = ({
               État du stock
             </label>
             <Select
-              options={optionsMap}
+              mapOptions={optionsMap}
               setOption={setStockStatus}
               selectedOption={selectedStockStatus}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent dark:bg-gray-700"
@@ -60,20 +58,14 @@ const ProductsFilter: React.FC<ProductsFilterProps> = ({
               className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg transition-all text-sm font-medium flex items-center gap-1"
               onClick={() => {
                 setSearchKey("");
-                setStockStatus(defaultOption || "ALL");
+                setStockStatus("ALL");
               }}
             >
               <X />
               Réinitialiser
             </button>
             
-            <button 
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-1"
-              onClick={() => {}}
-            >
-              <Funnel />
-              Filtrer
-            </button>
+            
           </div>
         </div>
       </div>
