@@ -1,5 +1,5 @@
 import { ApiResponse, Page } from "@/types";
-import { Product, ProductCreationDto, StockStatus } from "./types";
+import { Product, ProductCreationDto, ProductStatistics, StockStatus } from "./types";
 import { request } from "@/services/config/request";
 
 
@@ -30,6 +30,14 @@ export const getProducts = (
     url: "/product",
     method: "get",
     params,
+  });
+}
+
+
+export const getProductStatistics = () : Promise<ApiResponse<ProductStatistics>> =>  {
+  return request<ProductStatistics>({
+    url: `/product/statistics`,
+    method: "get",
   });
 }
   

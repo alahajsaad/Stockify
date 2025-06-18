@@ -3,6 +3,7 @@ package com.alabenhajsaad.api.business.vat;
 import com.alabenhajsaad.api.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/vat")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
+
 public class VatController {
     private final VatService service;
 

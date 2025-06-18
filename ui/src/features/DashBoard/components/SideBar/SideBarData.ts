@@ -96,6 +96,13 @@ export const useSidebarData = (): SidebarEntry[] => {
       icon: PackageMinus,
       addLink: Paths.addClientOrder,
     },
+     {
+      type: "Child",
+      title: "Commandes fournisseur",
+      openLink: Paths.supplierOrders,
+      icon: PackagePlus,
+      addLink: Paths.addSupplierOrder,
+    },
     {
       type: "Child",
       title: "Produits",

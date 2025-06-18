@@ -3,6 +3,7 @@ package com.alabenhajsaad.api.business.supplier_order;
 
 import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderDto;
 import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderResponseDto;
+import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderStatistics;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.business.utils.ReceptionStatus;
 import org.springframework.data.domain.Page;
@@ -17,4 +18,5 @@ public interface SupplierOrderService {
 
     SupplierOrderDto getSupplierOrderById(Integer supplierOrderId);
     String getNewSupplierOrderNumber();
+    SupplierOrderStatistics getSupplierOrderStatistics();
 }

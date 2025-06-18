@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/shadcn/badge";
 import Table from "@/components/ui/Table";
-import { getStatusStyle, getStatusText } from "@/features/supplier_order/utils";
+import { getStatusStyle, getStatusText } from "@/components/order/utils";
 import { DynamicPartner } from "@/services/api/partner/types";
 import {  SupplierOrderResponseDto } from "@/services/api/supplier_order/types";
 import { PaymentStatus, ReceptionStatus } from "@/types";

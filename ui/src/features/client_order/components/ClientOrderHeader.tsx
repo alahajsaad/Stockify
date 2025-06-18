@@ -1,21 +1,21 @@
 import { Badge } from '@/components/ui/shadcn/badge';
 import { Card , CardBody} from '@/components/ui/Card';
-import { SupplierOrderFullDto } from '@/services/api/supplier_order/types';
-import { getStatusStyle, getStatusText } from '@/components/order/utils';
 import { DynamicPartner } from '@/services/api/partner/types';
 import Select from '@/components/ui/Select';
 import { Button } from '@/components/ui';
-import { PaymentStatus, ReceptionStatus } from '@/types';
+import { DeliveryStatus, PaymentStatus } from '@/types';
+import { ClientOrderFullDto } from '@/services/api/ClientOrder/types';
+import { getStatusStyle, getStatusText } from '@/components/order/utils';
 
 interface OrderHeaderProps {
-  orderData: SupplierOrderFullDto
+  orderData: ClientOrderFullDto
   updatePaymentStatus:(paymentStatus:PaymentStatus) =>void
-  updateReceptionStatus:(receptionStatus:ReceptionStatus) =>void
-  updateSupplierOrder:()=>void
+  updateDeliveryStatus:(deliveryStatus : DeliveryStatus) => void
+  updateClientOrder:()=>void
   isPending:boolean
 }
 
-const OrderHeader = ({ orderData , updatePaymentStatus ,updateReceptionStatus , updateSupplierOrder ,isPending }: OrderHeaderProps) => {
+const ClientOrderHeader = ({ orderData , updatePaymentStatus ,updateDeliveryStatus , updateClientOrder ,isPending }: OrderHeaderProps) => {
 
   const getPartnaireName = (partnaire : DynamicPartner) =>{
       if(partnaire.entityType === 'PERSON'){
@@ -31,9 +31,9 @@ const OrderHeader = ({ orderData , updatePaymentStatus ,updateReceptionStatus , 
   ["UNPAID", "non payé"],
 ]);
 
-const ReceptionStatusMap = new Map<ReceptionStatus, string>([
-  ["RECEIVED", "reçu"],
-  ["UNRECEIVED", "non reçu"],
+const DeliveryStatusMap = new Map<DeliveryStatus, string>([
+  ["DELIVERED", "livrée"],
+  ["UNDELIVERED", "non livrée"],
 ]);
 
  
@@ -56,17 +56,17 @@ const ReceptionStatusMap = new Map<ReceptionStatus, string>([
           className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent dark:bg-gray-700"
         />
          <Select
-          mapOptions={ReceptionStatusMap}
-          setOption={updateReceptionStatus}
-          selectedOption={orderData.receptionStatus}
+          mapOptions={DeliveryStatusMap}
+          setOption={updateDeliveryStatus}
+          selectedOption={orderData.deliveryStatus}
           className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent dark:bg-gray-700"
         />
       <Badge className={getStatusStyle(orderData.paymentStatus)}>
         {getStatusText(orderData.paymentStatus)}
 
       </Badge>
-      <Badge className={getStatusStyle(orderData.receptionStatus)}>
-        {getStatusText(orderData.receptionStatus)}
+      <Badge className={getStatusStyle(orderData.deliveryStatus)}>
+        {getStatusText(orderData.deliveryStatus)}
       </Badge>
     </div>
   </div>
@@ -85,7 +85,7 @@ const ReceptionStatusMap = new Map<ReceptionStatus, string>([
   </div>
 </div>
 
-      <Button onClick={updateSupplierOrder} disabled={isPending}>
+      <Button onClick={updateClientOrder} disabled={isPending}>
         {isPending ? "en cour ..." : "Enregistrer les modifications"}
       </Button>
         </div>
@@ -94,4 +94,4 @@ const ReceptionStatusMap = new Map<ReceptionStatus, string>([
   );
 };
 
-export default OrderHeader;
+export default ClientOrderHeader;

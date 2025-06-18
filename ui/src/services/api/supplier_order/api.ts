@@ -1,5 +1,5 @@
 import { ApiResponse, Page } from "@/types";
-import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderFullDto, SupplierOrderResponseDto } from "./types";
+import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderFullDto, SupplierOrderResponseDto, SupplierOrderStatistics } from "./types";
 import { rawRequest, request } from "@/services/config/request";
 
 
@@ -38,6 +38,13 @@ export const getSupplierOrderById = (id:number) : Promise<ApiResponse<SupplierOr
 export const getNewOrderNumber = (): Promise<ApiResponse<string>> => {
   return request<string>({
     url: "/supplierOrder/generate-number",
+    method: "get",
+  });
+};
+
+export const getSupplierOrderStatistics = (): Promise<ApiResponse<SupplierOrderStatistics>> => {
+  return request<SupplierOrderStatistics>({
+    url: "/supplierOrder/statistics",
     method: "get",
   });
 };

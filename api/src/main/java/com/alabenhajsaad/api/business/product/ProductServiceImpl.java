@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.business.product;
 
+import com.alabenhajsaad.api.business.product.dto.ProductStatistics;
 import com.alabenhajsaad.api.core.exception.ConflictException;
 import com.alabenhajsaad.api.core.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -97,7 +98,10 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-
+    @Override
+    public ProductStatistics getProductStatistics() {
+        return repository.getStatistics() ;
+    }
 
 
 }

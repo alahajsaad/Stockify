@@ -6,6 +6,7 @@ import { DeliveryStatus, OrderLineRecord, PaymentStatus } from "@/types";
 import { ClientOrderFullDto } from "@/services/api/ClientOrder/types";
 import OrderLines from "@/components/order/orderDetails/OrderLines";
 import { useGetClientOrderById, useUpdateClientOrder } from "@/services/api/ClientOrder/hooks";
+import ClientOrderHeader from "../components/ClientOrderHeader";
 
 const ClientOrderDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -16,7 +17,7 @@ const ClientOrderDetails: React.FC = () => {
     const {mutate:updateClientOrder , isPending : isUpdating } = useUpdateClientOrder()
     
     
-   const handleUpdateSupplierOrder = () => {
+   const handleUpdateClientOrder = () => {
     if (!updatedClientOrder) {
         console.warn('No client order to update');
         return;
@@ -125,13 +126,13 @@ const ClientOrderDetails: React.FC = () => {
 
     return (
         <>
-            {/* <OrderHeader 
+            <ClientOrderHeader 
                 updatePaymentStatus={updatePaymentStatus} 
-                updateReceptionStatus={updateDeliveryStatus} 
-                updateSupplierOrder={handleUpdateSupplierOrder}
+                updateDeliveryStatus={updateDeliveryStatus} 
+                updateClientOrder={handleUpdateClientOrder}
                 isPending={isUpdating}
                 orderData={orderData} 
-            /> */}
+            />
             <OrderLines
                 orderLinesRecord={orderData.clientOrderLine}
                 setOrderLines={handleOrderLinesUpdate}

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addClientOrder, getClientOrderById, getClientOrders, getNewOrderNumber, updateClientOrder } from "./api";
+import { addClientOrder, getClientOrderById, getClientOrders, getClientOrderStatistics, getNewOrderNumber, updateClientOrder } from "./api";
 import { ApiResponse, Page } from "@/types";
-import { ClientOrder, ClientOrderFullDto, ClientOrderResponseDto, GetClientOrdersParams } from "./types";
+import { ClientOrder, ClientOrderFullDto, ClientOrderResponseDto, ClientOrderStatistics, GetClientOrdersParams } from "./types";
 
 
 
@@ -88,3 +88,21 @@ export const useGetClientOrderNumber = () => {
   });
 };
 
+ export const useGetClientOrderStatistics = () => {
+    return useQuery<ApiResponse<ClientOrderStatistics>, Error>({
+      queryKey: ['clientOrderStatistics'], 
+      queryFn: () => getClientOrderStatistics().then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response as ApiResponse<ClientOrderStatistics>;
+      }),
+
+
+    gcTime: Infinity, // Keep data in cache until app is closed
+    staleTime: 1000 * 60 * 60, // Consider data fresh for 60 minutes
+    
+    });
+
+     
+  };

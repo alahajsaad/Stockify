@@ -27,3 +27,10 @@ export type Product = {
   createdAt: string;
   updatedAt: string;  
 };
+
+export type ProductStatistics = {
+    total: number;
+    inStockProducts: number;
+    lowStockProducts: number;
+    outOfStockProducts: number;
+};

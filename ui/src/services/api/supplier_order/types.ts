@@ -70,3 +70,10 @@ export type SupplierOrderFullDto = {
     partner:DynamicPartner
 }
 
+export type SupplierOrderStatistics = {
+    totalUnpaid: number;
+    totalUnreceived: number;
+    totalAmountToPay: number; 
+    totalAmountIncludingTaxToPay: number; 
+};
+

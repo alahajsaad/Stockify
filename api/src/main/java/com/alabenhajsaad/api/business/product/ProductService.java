@@ -1,5 +1,6 @@
 package com.alabenhajsaad.api.business.product;
 
+import com.alabenhajsaad.api.business.product.dto.ProductStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,4 +12,5 @@ public interface ProductService {
     Page<Product> getProducts(StockStatus status,String keyword, Pageable pageable);
     Product getProductById(Integer id);
     Product updateProduct(Product product);
+    ProductStatistics getProductStatistics();
 }

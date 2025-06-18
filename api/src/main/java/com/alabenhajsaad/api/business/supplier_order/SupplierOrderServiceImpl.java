@@ -2,6 +2,7 @@ package com.alabenhajsaad.api.business.supplier_order;
 
 import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderDto;
 import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderResponseDto;
+import com.alabenhajsaad.api.business.supplier_order.dto.SupplierOrderStatistics;
 import com.alabenhajsaad.api.business.supplier_order.mapper.SupplierOrderMapper;
 import com.alabenhajsaad.api.business.supplier_order_line.SupplierOrderLine;
 import com.alabenhajsaad.api.business.utils.CodeGeneratorService;
@@ -193,6 +194,11 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     @Override
     public String getNewSupplierOrderNumber() {
         return CodeGeneratorService.generateNew(repository.findLastOrderNumber(),"CMF") ;
+    }
+
+    @Override
+    public SupplierOrderStatistics getSupplierOrderStatistics() {
+        return repository.getStatistics();
     }
 
 

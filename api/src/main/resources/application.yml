@@ -4,8 +4,12 @@ spring:
   application:
     name: api
 
+
+
   data:
     redis:
+      repositories:
+        enabled: false     # To prevent Spring Boot from automatically scanning and creating instances of Redis repositories
       host: localhost
       port: 6379           # Redis default port
       password: ""         # If you set a password for Redis, include it here

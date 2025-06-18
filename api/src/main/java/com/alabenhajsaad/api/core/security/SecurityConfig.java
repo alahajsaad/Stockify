@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -30,6 +31,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsServiceImp ;
@@ -40,8 +42,13 @@ public class SecurityConfig {
             "/api/v1/company",
             "/api/v1/datasource",
             "/v3/api-docs/**",
-            "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/actuator/**",
+            "/api/v1/user/**",
+            "/api/v1/company/**",
+            "/api/v1/accountActivation/**",
+            "/api/V1/subscription/**",
+            "/api/v1/subscriptionPlan/**"
     );
 
     @Value("${jwt.secret}")
@@ -58,12 +65,12 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(ar -> ar
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("api/v1/user/**","api/v1/vat/**","/api/v1/auth/**","/api/v1/company/**","api/v1/accountActivation/**","/v3/api-docs/**","/swagger-ui/**", "/actuator/**","api/v1/subscriptionPlan/**","api/V1/subscription/**").permitAll()
+                        .requestMatchers(WITHOUT_JWT.toArray(new String[0])).permitAll()
                         .anyRequest().authenticated())
 
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(Customizer.withDefaults())
-                        .authenticationEntryPoint(customAuthEntryPoint)  // 👈 This handles JWT errors
+                        .authenticationEntryPoint(customAuthEntryPoint)
                 )
                 .userDetailsService(userDetailsServiceImp)
                 .build() ;

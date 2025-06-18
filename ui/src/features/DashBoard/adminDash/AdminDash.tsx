@@ -1,14 +1,15 @@
-import StockSummaryCards from "../components/StockSummaryCards";
-import AlertsSection from "./components/AlertsSection";
-import QuickActions from "./components/QuickActions";
+import ClientOrderStatistics from "./components/ClientOrderStatistics";
+import ProductStatistics from "./components/productStatistics";
+import SupplierOrderStatistics from "./components/SupplierOrderStatistics";
 
 const AdminDash : React.FC = () => {
+    
     return (
        <div>
-        <StockSummaryCards />
-        <div className="flex gap-6 items-center justify-center">
-        <AlertsSection />
-        <QuickActions />
+        <ProductStatistics />
+        <div className="flex gap-6 items-center justify-center w-full">
+        <SupplierOrderStatistics />
+        <ClientOrderStatistics/>
         </div>
        
        </div>

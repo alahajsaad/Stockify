@@ -3,6 +3,7 @@ package com.alabenhajsaad.api.business.client_order;
 
 import com.alabenhajsaad.api.business.client_order.dto.ClientOrderDto;
 import com.alabenhajsaad.api.business.client_order.dto.ClientOrderResponseDto;
+import com.alabenhajsaad.api.business.client_order.dto.ClientOrderStatistics;
 import com.alabenhajsaad.api.business.client_order.mapper.ClientOrderMapper;
 import com.alabenhajsaad.api.business.client_order_line.ClientOrderLine;
 import com.alabenhajsaad.api.business.utils.LineAction;
@@ -198,5 +199,10 @@ public class ClientOrderServiceImpl implements ClientOrderService{
     public String getNewClientOrderNumber() {
         return CodeGeneratorService.generateNew(repository.findLastOrderNumber(),"CMC") ;
 
+    }
+
+    @Override
+    public ClientOrderStatistics getClientOrderStatistics() {
+        return repository.getStatistics();
     }
 }

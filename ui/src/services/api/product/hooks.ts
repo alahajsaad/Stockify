@@ -1,6 +1,6 @@
 import { QueryKey, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Product, ProductCreationDto, StockStatus } from "./types";
-import { addProduct, getProductById, getProducts } from "./api";
+import { Product, ProductCreationDto, ProductStatistics, StockStatus } from "./types";
+import { addProduct, getProductById, getProducts, getProductStatistics } from "./api";
 import { ApiResponse, Page } from "@/types";
 
 export const useAddProduct = () => {
@@ -68,7 +68,7 @@ export const useGetProducts = (
     },
     gcTime: Infinity, // Keep data in cache until app is closed
     staleTime: 1000 * 60 * 15, // Consider data fresh for 15 minutes
-    refetchOnMount: false, // Don't refetch when component mounts
+    //refetchOnMount: false, // Don't refetch when component mounts
     enabled: true // Don't fetch automatically, require explicit refetch
   });
 };
@@ -87,6 +87,7 @@ export const useGetProducts = (
   };
 
 // export const useGetProductById = (id: number) => {
+
 //   const queryClient = useQueryClient();
   
 //   // We'll move the useQuery hook before any conditionals
@@ -140,3 +141,23 @@ export const useGetProducts = (
 
 //   return result;
 // };
+
+
+ export const useGetProductStatistics = () => {
+    return useQuery<ApiResponse<ProductStatistics>, Error>({
+      queryKey: ['productStatistics'], 
+      queryFn: () => getProductStatistics().then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response as ApiResponse<ProductStatistics>;
+      }),
+
+
+    gcTime: Infinity, // Keep data in cache until app is closed
+    staleTime: 1000 * 60 * 60, // Consider data fresh for 60 minutes
+    
+    });
+
+     
+  };

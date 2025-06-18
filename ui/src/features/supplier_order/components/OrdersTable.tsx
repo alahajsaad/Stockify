@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/shadcn/badge";
 import Table from "@/components/ui/Table";
 import { DynamicPartner } from "@/services/api/partner/types";
 import {  SupplierOrderResponseDto } from "@/services/api/supplier_order/types";
-import { getStatusStyle, getStatusText } from "../utils";
+import { getStatusStyle, getStatusText } from "../../../components/order/utils";
 import { PaymentStatus, ReceptionStatus } from "@/types";
 
 type OrdersTableProps = {

@@ -51,3 +51,11 @@ export type ClientOrderResponseDto = {
     updatedAt:string
     partner:DynamicPartner
 }
+
+
+export type ClientOrderStatistics = {
+    totalUnpaid: number;
+    totalUndelivered: number;
+    totalAmountToPay: number; 
+    totalAmountIncludingTaxToPay: number; 
+};

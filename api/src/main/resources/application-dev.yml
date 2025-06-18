@@ -1,6 +1,6 @@
 spring:
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect #org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
   datasource:
     primary:
       jdbc-url: jdbc:mysql://localhost:3306/Stockify_Primary_DB?createDatabaseIfNotExist=true
@@ -12,19 +12,7 @@ spring:
       username: root
       password:
       driver-class-name: com.mysql.cj.jdbc.Driver
-#  jpa:
-#    database-platform: org.hibernate.dialect.PostgreSQLDialect
-#  datasource:
-#    primary:
-#      jdbc-url: jdbc:postgresql://localhost:5432/multiTenantPrimary_dB?createDatabaseIfNotExist=true
-#      username: username
-#      password: password
-#      driver-class-name: org.postgresql.Driver
-#    multitenant:
-#      jdbc-url: jdbc:postgresql://localhost:5432/multiTenantDefault_db?createDatabaseIfNotExist=true
-#      username: username
-#      password: password
-#      driver-class-name: org.postgresql.Driver
+
 
 
 #  mail:

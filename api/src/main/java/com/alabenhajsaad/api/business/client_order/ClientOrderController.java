@@ -3,6 +3,7 @@ package com.alabenhajsaad.api.business.client_order;
 
 import com.alabenhajsaad.api.business.client_order.dto.ClientOrderDto;
 import com.alabenhajsaad.api.business.client_order.dto.ClientOrderResponseDto;
+import com.alabenhajsaad.api.business.client_order.dto.ClientOrderStatistics;
 import com.alabenhajsaad.api.business.utils.DeliveryStatus;
 import com.alabenhajsaad.api.business.utils.PaymentStatus;
 import com.alabenhajsaad.api.config.ApiResponse;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -17,6 +19,7 @@ import java.time.LocalDate;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/clientOrder")
+//@PreAuthorize("hasAnyAuthority('SCOPE_ROLE_ADMIN', 'SCOPE_ROLE_EMPLOYEE')")
 public class ClientOrderController {
     private final ClientOrderService clientOrderService;
 
@@ -65,5 +68,10 @@ public class ClientOrderController {
     public ResponseEntity<ApiResponse<String>> getNewOrderNumber() {
         return ResponseEntity.ok(ApiResponse.success(clientOrderService.getNewClientOrderNumber(),"new order number"
         ));
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<ApiResponse<ClientOrderStatistics>> getClientOrderStatistics() {
+        return ResponseEntity.ok(ApiResponse.success(clientOrderService.getClientOrderStatistics(),"Statistiques générées avec succès."));
     }
 }

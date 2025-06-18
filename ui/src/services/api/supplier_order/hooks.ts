@@ -1,7 +1,7 @@
 import { ApiResponse, Page } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderFullDto, SupplierOrderResponseDto } from "./types";
-import { addSupplierOrder, getNewOrderNumber, getSupplierOrderById, getSupplierOrders, updateSupplierOrder } from "./api";
+import { GetSupplierOrdersParams, SupplierOrder, SupplierOrderCreationDto, SupplierOrderFullDto, SupplierOrderResponseDto, SupplierOrderStatistics } from "./types";
+import { addSupplierOrder, getNewOrderNumber, getSupplierOrderById, getSupplierOrders, getSupplierOrderStatistics, updateSupplierOrder } from "./api";
 
 export const useAddSupplierOrder = () => {
     const queryClient = useQueryClient();
@@ -45,7 +45,7 @@ export const useGetSupplierOrders = (params: GetSupplierOrdersParams) => {
     },
     gcTime: Infinity,
     staleTime: 1000 * 60 * 15,
-    refetchOnMount: false
+   // refetchOnMount: false
   });
 };
 
@@ -91,3 +91,21 @@ export const useGetNewOrderNumber = () => {
   });
 };
 
+ export const useGetSupplierOrderStatistics = () => {
+    return useQuery<ApiResponse<SupplierOrderStatistics>, Error>({
+      queryKey: ['supplierOrderStatistics'], 
+      queryFn: () => getSupplierOrderStatistics().then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response as ApiResponse<SupplierOrderStatistics>;
+      }),
+
+
+    gcTime: Infinity, // Keep data in cache until app is closed
+    staleTime: 1000 * 60 * 60, // Consider data fresh for 60 minutes
+    
+    });
+
+     
+  };
