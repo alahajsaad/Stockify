@@ -1,7 +1,7 @@
 import { Page } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { DynamicPartner, PartnerType } from "./types";
-import { getPartners } from "./api";
+import { getPartnerById, getPartners } from "./api";
 
 export const useGetPartners = (
   params: {
@@ -31,5 +31,18 @@ export const useGetPartners = (
     staleTime: 1000 * 60 * 15,
     refetchOnMount: false,
     enabled: options?.enabled ?? true // Default to true, but allow override
+  });
+};
+
+
+export const useGetPartnerById = (id: number) => {
+  return useQuery<DynamicPartner, Error>({
+    queryKey: ['partners', id], 
+    queryFn: () => getPartnerById(id).then(response => {
+      if (response.status === 'error') {
+        throw new Error(response.message);
+      }
+      return response.data as DynamicPartner;
+    }),
   });
 };

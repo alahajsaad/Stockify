@@ -35,7 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsServiceImp ;
-    private final CustomAuthenticationEntryPoint customAuthEntryPoint;
+    //private final CustomAuthenticationEntryPoint customAuthEntryPoint;
     private static final List<String> WITHOUT_JWT = Arrays.asList(
             "/api/v1/auth/**",
             "/api/v1/auth/login",
@@ -47,8 +47,8 @@ public class SecurityConfig {
             "/api/v1/user/**",
             "/api/v1/company/**",
             "/api/v1/accountActivation/**",
-            "/api/V1/subscription/**",
-            "/api/v1/subscriptionPlan/**"
+            "api/v1/subscriptionPlan/all"
+
     );
 
     @Value("${jwt.secret}")
@@ -70,7 +70,7 @@ public class SecurityConfig {
 
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(Customizer.withDefaults())
-                        .authenticationEntryPoint(customAuthEntryPoint)
+                        //.authenticationEntryPoint(customAuthEntryPoint)
                 )
                 .userDetailsService(userDetailsServiceImp)
                 .build() ;

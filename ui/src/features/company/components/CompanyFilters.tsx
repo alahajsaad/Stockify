@@ -4,7 +4,7 @@ import { Filter, RotateCcw } from 'lucide-react';
 import { Button, SearchInput } from 'src/components/ui';
 import { Checkbox } from '@/components/ui/shadcn/checkbox';
 import Select from '@/components/ui/Select';
-import { useGetSubscriptionPlans } from '@/services/api/subscriptionPlan/hooks';
+import { useGetSubscriptionPlans } from '@/services/api/subscription_plan/hooks';
 import { SubscriptionStatus } from '@/types';
 
 export interface CompanyFilters {

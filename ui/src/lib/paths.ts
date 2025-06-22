@@ -2,6 +2,7 @@ export const Paths = {
     landingPage: "/",
     signIn: "/sign-in",
     signUp: "/SignUp",
+    tarifs:"/tarifs",
     home: "/home",
     about: "/about",
     contact: "/contact",

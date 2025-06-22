@@ -14,3 +14,10 @@ export const getPartners = (params: {
       params
   });
 };
+
+export const getPartnerById = (id: number): Promise<ApiResponse<DynamicPartner>> => {
+  return request<DynamicPartner>({
+    url: `/partner/${id}`,
+    method: "get",
+  });
+};

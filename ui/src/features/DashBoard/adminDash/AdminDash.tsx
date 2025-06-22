@@ -1,5 +1,5 @@
 import ClientOrderStatistics from "./components/ClientOrderStatistics";
-import ProductStatistics from "./components/productStatistics";
+import ProductStatistics from "./components/ProductStatistics";
 import SupplierOrderStatistics from "./components/SupplierOrderStatistics";
 
 const AdminDash : React.FC = () => {

@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +24,10 @@ public class PartnerController {
         return ResponseEntity.ok(ApiResponse.success(
                 partnerService.getPartners(PageRequest.of(page, size) ,keyword, partnerType )
         ));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Partner>> getPartnerById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(partnerService.getPartnerById(id) , "partner"));
     }
 }

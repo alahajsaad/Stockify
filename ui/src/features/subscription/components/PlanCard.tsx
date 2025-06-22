@@ -1,6 +1,7 @@
 import React from 'react';
 import { Users, HardDrive } from 'lucide-react';
 import FeatureList from './FeatureList';
+import { Currency } from '@/lib/currency';
 
 interface SubscriptionPlan {
   id: number;
@@ -14,10 +15,11 @@ interface SubscriptionPlan {
 
 interface PlanCardProps {
   plan: SubscriptionPlan;
-  onEdit: () => void;
+  onEdit?: () => void;
+  isSuperAdminView : boolean
 }
 
-const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit }) => {
+const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit ,isSuperAdminView }) => {
   const getPlanColor = (name: string) => {
     switch (name.toLowerCase()) {
       case 'basic':
@@ -82,7 +84,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit }) => {
           <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
           <div className="flex items-baseline gap-1">
             <span className={`text-3xl font-bold ${colors.accent}`}>
-              {plan.price.toFixed(2)}€
+              {plan.price.toFixed(2) + " " + Currency}
             </span>
             <span className="text-gray-500 text-sm">/ mois</span>
           </div>
@@ -116,12 +118,15 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit }) => {
         </div>
 
         {/* Action Button */}
-        <button
+        {isSuperAdminView &&
+         <button
           onClick={onEdit}
           className={`w-full py-2.5 px-4 border-2 rounded-lg font-semibold text-sm transition-all duration-200 ${colors.button}`}
         >
           Modifier le plan
         </button>
+        }
+       
       </div>
     </div>
   );

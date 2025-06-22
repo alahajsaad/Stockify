@@ -21,7 +21,7 @@ export const updateSubscriptionPlan = (plan: SubscriptionPlan): Promise<ApiRespo
 
 export const getSubscriptionPlans = (): Promise<ApiResponse<SubscriptionPlan[]>> => {
   return request<SubscriptionPlan[]>({
-    url: "/subscriptionPlan",
+    url: "/subscriptionPlan/all",
     method: "get",
    
   });

@@ -47,7 +47,7 @@ const NavBar : React.FC<NavBarProps> = ({setIsOpenLoginForm}) =>{
             <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
               Fonctionnalités
             </a>
-            <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
+            <a href="tarifs" className="text-gray-600 hover:text-primary font-medium transition-colors">
               Tarifs
             </a>
             <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">

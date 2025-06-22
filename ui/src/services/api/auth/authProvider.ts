@@ -1,14 +1,13 @@
+//authProvider.ts
+
 import { jwtDecode } from "jwt-decode";
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { TokenPayload } from "src/types";
-import { TokenService } from "@/services/api/auth/TokenService";
-import { useLogout } from "@/services/api/auth/hooks";
+import { TokenService } from "./TokenService";
+import { useLogout } from "./hooks";
 
 
-
-
-// Define Auth Context Type
 type AuthContextType = {
   isAuthenticated: boolean;
   isAuthLoading: boolean;
@@ -26,27 +25,10 @@ const AuthContext = createContext<AuthContextType | null>(null);
 // Auth Provider Component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthLoading, setAuthLoading] = useState(true); // Start as loading
+  const [isAuthLoading, setAuthLoading] = useState(true); 
   const [user, setUser] = useState<TokenPayload | null>(null);
   const navigate = useNavigate();
-  const {mutate : logOut} = useLogout()
-  // Check for existing token on mount and validate it
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = TokenService.getAccessToken();
-      if (token) {
-         const decoded = jwtDecode<TokenPayload>(token);
-        setUser(decoded);
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
-      }
-      setAuthLoading(false);
-    };
-    
-    checkAuth();
-  }, []);
+  const {mutate : logOut } = useLogout()
 
   // Login function
   const login = (token: string) => {
@@ -59,7 +41,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigate('/dashboard');
   };
 
-  // Logout function
   const logout = () => {
     logOut()
     TokenService.removeAccessToken();
@@ -68,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigate('/');
   };
 
- 
+
 
   const updateUser = (updatedUser: TokenPayload) => {
     setUser(updatedUser);

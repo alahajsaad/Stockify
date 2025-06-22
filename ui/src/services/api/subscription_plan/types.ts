@@ -1,5 +1,5 @@
 export interface SubscriptionPlan {
-  id?: number;           
+  id: number;           
   name: string;
   price: number;
   maxUsers: number;

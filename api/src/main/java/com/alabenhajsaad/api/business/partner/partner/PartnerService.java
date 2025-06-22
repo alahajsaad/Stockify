@@ -6,4 +6,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface PartnerService {
     Page<Partner> getPartners(Pageable pageable , String keyword , PartnerType type);
+    Partner getPartnerById(Long id);
 }

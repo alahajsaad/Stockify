@@ -56,7 +56,7 @@ public class SecurityController {
         ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                // .secure(isProduction) // secure=true only in production (requires HTTPS)
-                .path("/")
+                .path("/api/v1/auth")
                 .maxAge(Duration.ofDays(7))
                // .sameSite(isProduction ? "None" : "Lax") // SameSite=None for cross-origin in prod, Lax for localhost
                 .build();
@@ -71,7 +71,23 @@ public class SecurityController {
     }
 
     @PostMapping("/logout")
-    public void logout(Authentication authentication) {
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String actualRefreshToken = null;
+        // Extract the refresh token from cookies
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refresh_token".equals(cookie.getName())) {
+                    actualRefreshToken = cookie.getValue();
+                    log.info("Refresh token: {}", actualRefreshToken);
+                    break;
+                }
+            }
+        }
+        securityService.logout(actualRefreshToken);
+        return ResponseEntity.ok(
+                ApiResponse.success(null, "session terminée")
+        );
     }
 
     @PostMapping("/forgetPassword")
@@ -115,7 +131,7 @@ public class SecurityController {
         try {
             // Generate new access token using the refresh token
             Map<String, String> newToken = securityService.generateNewAccessToken(actualRefreshToken);
-            return ResponseEntity.ok(ApiResponse.success(newToken));
+            return ResponseEntity.ok(ApiResponse.success(newToken,"new access token generated"));
 
         } catch (ExpiredRefreshTokenException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

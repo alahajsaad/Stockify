@@ -48,6 +48,5 @@ export const useGetCompanyMetrics = () => {
       }
       return response.data as CompanyMetrics;
     }),
-    enabled: false
   });
 };

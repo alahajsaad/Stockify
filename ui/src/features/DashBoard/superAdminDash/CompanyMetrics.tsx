@@ -1,27 +1,12 @@
 import { useGetCompanyMetrics } from '@/services/api/company/hooks';
 import { useGetSubscriptionPlanStatistics } from '@/services/api/subscription/hooks';
-import { Building2, Users, TrendingUp, Calculator, Crown, Shield, Zap, Star } from 'lucide-react';
+import { Building2, Users, TrendingUp, Calculator, Crown, Shield, Star } from 'lucide-react';
 import { Card, CardBody } from 'src/components/ui/Card';
-import { useEffect } from 'react';
 
 const CompanyMetrics = () => {
-  const { 
-    data: companyMetrics, 
-    isPending: isCompanyMetricsPending, 
-    refetch: refetchCompanyMetrics 
-  } = useGetCompanyMetrics();
-  
-  const { 
-    data: subscriptionStatistics, 
-    isPending: isSubscriptionStatsPending, 
-    refetch: refetchSubscriptionStats 
-  } = useGetSubscriptionPlanStatistics();
+  const { data: companyMetrics, isPending: isCompanyMetricsPending, refetch: refetchCompanyMetrics } = useGetCompanyMetrics();
+  const { data: subscriptionStatistics, isPending: isSubscriptionStatsPending, refetch: refetchSubscriptionStats } = useGetSubscriptionPlanStatistics();
 
-  // Auto-fetch data when component mounts
-  useEffect(() => {
-    refetchCompanyMetrics();
-    refetchSubscriptionStats();
-  }, [refetchCompanyMetrics, refetchSubscriptionStats]);
 
   // Loading state
   if (isCompanyMetricsPending || isSubscriptionStatsPending) {
@@ -56,10 +41,7 @@ const CompanyMetrics = () => {
     : 0;
 
   const subscriptionPlans = subscriptionStatistics ? Object.entries(subscriptionStatistics) : [];
-  const mostPopularPlan = subscriptionPlans.length > 0 
-    ? subscriptionPlans.reduce((prev, current) => prev[1] > current[1] ? prev : current)[0]
-    : 'N/A';
-
+  
   // Define metric cards with actual data
   const metricCards = [
     {
@@ -89,28 +71,8 @@ const CompanyMetrics = () => {
       icon: Calculator,
       color: "text-orange-600",
       bgColor: "bg-orange-50 dark:bg-orange-900/20",
-    },
-    {
-      title: "Total Abonnements",
-      value: 5,
-      icon: Crown,
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
-    },
-    {
-      title: "Plan Populaire",
-      value: 0,
-      icon: Star,
-      color: "text-pink-600",
-      bgColor: "bg-pink-50 dark:bg-pink-900/20",
-    },
-    {
-      title: "Types Plans",
-      value: 4,
-      icon: Shield,
-      color: "text-indigo-600",
-      bgColor: "bg-indigo-50 dark:bg-indigo-900/20",
-    },
+    }
+    
   ];
 
   return (
@@ -136,7 +98,7 @@ const CompanyMetrics = () => {
       </div>
 
       {/* Main Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
         {metricCards.map((metric, index) => (
           <Card key={index} className="hover:shadow-lg transition-all duration-300 border-0 shadow-sm hover:scale-105">
             <CardBody className="p-4">
@@ -159,12 +121,13 @@ const CompanyMetrics = () => {
         ))}
       </div>
 
-      {/* Subscription Plans Breakdown */}
-      {subscriptionPlans.length > 0 && (
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+<h3 className="text-2xl font-bold text-gray-900 dark:text-white">
             Répartition des Abonnements
           </h3>
+      {/* Subscription Plans Breakdown */}
+      {subscriptionPlans.length > 0 && (
+       
+          
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {subscriptionPlans.map(([planName, count], index) => {
               const percentage = totalSubscriptions > 0 ? ((count / totalSubscriptions) * 100).toFixed(1) : '0';
@@ -187,7 +150,7 @@ const CompanyMetrics = () => {
               );
             })}
           </div>
-        </div>
+      
       )}
     </div>
   );

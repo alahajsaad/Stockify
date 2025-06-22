@@ -1,4 +1,4 @@
-import { SubscriptionPlan } from "../subscriptionPlan/types";
+import { SubscriptionPlan } from "../subscription_plan/types";
 
 
 export type GetCompaniesParams = {

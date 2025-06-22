@@ -35,6 +35,8 @@ import AddClientOrder from "./features/client_order/pages/AddClientOrder";
 import ConsultClientOrders from "./features/client_order/pages/ConsultClientOrders";
 import ClientOrderDetails from "./features/client_order/pages/ClientOrderDetails";
 import SupplierOrderDetails from "./features/supplier_order/pages/SupplierOrderDetails";
+import PartnerDetails from "./features/partner/pages/PartnerDetails";
+import Tarifs from "./features/landing-page/components/Tarifs";
 
 
 
@@ -67,6 +69,7 @@ const App = () => {
       <Routes>
         {/* Public routes */}
         <Route path={Paths.landingPage} element={<LandingPage  setIsAuthenticated={setIsAuthenticated}/>} />
+        <Route path={Paths.tarifs} element={<Tarifs />} />
         <Route path={Paths.signUp} element={<CreateCompanyPage />} />
         <Route path={Paths.forgotPassword} element={<ForgotPasswordPage />} />
         <Route path={Paths.resetPassword} element={<ResetPasswordPage />} />
@@ -104,13 +107,13 @@ const App = () => {
 
             <Route path={Paths.clients}>
               <Route index element={<ConsultPartnersPage />} />
-              {/* <Route path=":id" element={<ConsultClientPage />} /> */}
+              <Route path=":id" element={<PartnerDetails />} />
             </Route>
             <Route path={Paths.addClient} element={<AddClientPage />} />
 
             <Route path={Paths.suppliers}>
               <Route index element={<ConsultPartnersPage />} />
-              {/* <Route path=":id" element={<ConsultClientPage />} /> */}
+              <Route path=":id" element={<PartnerDetails />} />
             </Route>
             <Route path={Paths.addSupplier} element={<AddSupplierPage />} />
 
