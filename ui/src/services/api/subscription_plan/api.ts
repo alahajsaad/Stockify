@@ -26,3 +26,11 @@ export const getSubscriptionPlans = (): Promise<ApiResponse<SubscriptionPlan[]>>
    
   });
 };
+
+export const deleteSubscriptionPlan = (id : number): Promise<ApiResponse<void>> => {
+    return request<void>({
+      url: `/subscriptionPlan/${id}`,
+      method: "delete",
+  });
+  
+};

@@ -33,7 +33,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         String hashedToken = hashToken(rawToken);
 
         var refreshToken = RefreshToken.builder()
-                .token(hashedToken) // or hash this before saving, if needed
+                .token(rawToken) // or hash this before saving, if needed
                 .issuedAt(instant)
                 .expiresAt(instant.plus(30, ChronoUnit.DAYS))
                 .revoked(false)
@@ -67,7 +67,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public RefreshToken validateRefreshToken(String rawToken) {
         String hashedToken = hashToken(rawToken);
 
-        return repository.findByToken(hashedToken)
+        return repository.findByToken(rawToken)
                 .filter(token -> !token.isRevoked())
                 .filter(token -> token.getExpiresAt().isAfter(Instant.now()))
                 .orElseThrow(() -> new ExpiredRefreshTokenException("Invalid or expired refresh token"));

@@ -24,7 +24,7 @@ public class AccessTokenService {
         Instant now = Instant.now();
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS)) // Consider refresh tokens
+                .expiresAt(now.plus(45, ChronoUnit.MINUTES)) // Consider refresh tokens
                 .subject(user.getUsername())
                 .claim("id",user.getId())
                 .claim("fullName", user.getFullName())

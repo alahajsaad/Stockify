@@ -56,7 +56,7 @@ public class TenantFilter extends OncePerRequestFilter {
                     TenantContext.setCurrentTenant(tenantId);
                 } else {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Unauthorized: Invalid token");
+                    response.getWriter().write("Unauthorized: Invalid token error");
                     return;
                 }
             }

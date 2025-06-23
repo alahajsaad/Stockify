@@ -24,4 +24,6 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     public Map<String, Long> getSubscriptionPlanStatistics() {
         return repository.getSubscriptionPlanStatisticsAsMap();
     }
+
+
 }

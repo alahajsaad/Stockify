@@ -47,7 +47,6 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyMapper mapper ;
     private final CompanyUserRelationService userService;
     private final SubscriptionPlanService subscriptionPlanService;
-   // private final SubscriptionService subscriptionService;
 
     @Override
     @Transactional

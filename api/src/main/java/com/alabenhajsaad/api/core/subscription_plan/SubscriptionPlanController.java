@@ -38,4 +38,12 @@ public class SubscriptionPlanController {
                 ApiResponse.success(plans, "Liste des plans d'abonnement récupérée avec succès.")
         );
     }
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_SUPER_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteSubscriptionPlanById(@PathVariable int id) {
+        subscriptionPlanService.deleteSubscriptionPlan(id);
+        return ResponseEntity.ok(
+                ApiResponse.success(null, "plan d'abonnement supprimée avec succès")
+        );
+    }
 }

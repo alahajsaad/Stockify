@@ -30,3 +30,4 @@ jwt:
 logging:
   level:
     liquibase: warn
+    org.springframework.security.web.FilterChainProxy: DEBUG

@@ -16,8 +16,15 @@ const Tarifs: React.FC = () => {
     );
   }
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+return (
+  <div className="relative h-screen flex items-center">
+
+     {/* Background decoration */}
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-50 to-transparent -z-10"></div>
+      <div className="absolute top-40 right-[10%] w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute bottom-0 left-[10%] w-72 h-72 bg-teal-100 rounded-full blur-3xl -z-10"></div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-screen-xl mx-auto">
       {plans?.data?.map((plan) => (
         <PlanCard
           key={plan.id}
@@ -26,7 +33,9 @@ const Tarifs: React.FC = () => {
         />
       ))}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Tarifs;

@@ -13,17 +13,17 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/category")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
 public class CategoryController {
 
     private final CategoryService service;
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     @PostMapping("/multi")
     public ResponseEntity<ApiResponse<List<Category>>> createCategory(@RequestBody List<Category> categories) {
         return ResponseEntity.ok(
                 ApiResponse.success(service.addMultipleCategories(categories), "Catégorie ajoutée avec succès")
         );
     }
-
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Category>> createCategory(@RequestBody Category category) {
         return ResponseEntity.ok(
@@ -31,7 +31,7 @@ public class CategoryController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     @PutMapping
     public ResponseEntity<ApiResponse<Category>> updateCategory(@RequestBody Category category) {
         return ResponseEntity.ok(
@@ -57,7 +57,7 @@ public class CategoryController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteCategoryById(@PathVariable int id) {
         service.deleteCategoryById(id);

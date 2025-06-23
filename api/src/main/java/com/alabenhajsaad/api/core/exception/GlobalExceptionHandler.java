@@ -3,9 +3,11 @@ package com.alabenhajsaad.api.core.exception;
 import com.alabenhajsaad.api.config.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.stream.Collectors;
 
 //@Hidden
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // Handles validation for @RequestParam, @PathVariable, etc.
@@ -47,6 +50,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleEntityNotFoundException(BadCredentialsException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
     }
+//    @ExceptionHandler(AuthenticationException.class)
+//    public ResponseEntity<ApiResponse<Void>> handleAuthenticationException(AuthenticationException e) {
+//        log.error("Authentication failed: {}", e.getMessage());
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
+//    }
 
 //    @ExceptionHandler(ExpiredRefreshTokenException.class)
 //    public ResponseEntity<ApiResponse<Void>> handleExpiredRefreshTokenException(ExpiredRefreshTokenException e) {

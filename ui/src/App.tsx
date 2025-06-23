@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, Suspense, lazy } from "react";
 import { useAuth } from "./features/auth/components/AuthProvider";
-import { LandingPage } from "./features/landing-page";
+import { HeroSection, LandingPage } from "./features/landing-page";
 import CreateCompanyPage from "./features/auth/pages/CreateCompanyPage";
 import LoadingScreen from "./features/DashBoard/components/LoadingScreen";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
@@ -37,6 +37,7 @@ import ClientOrderDetails from "./features/client_order/pages/ClientOrderDetails
 import SupplierOrderDetails from "./features/supplier_order/pages/SupplierOrderDetails";
 import PartnerDetails from "./features/partner/pages/PartnerDetails";
 import Tarifs from "./features/landing-page/components/Tarifs";
+import LandingPageLayout from "./features/landing-page/pages/LandingPageLayout";
 
 
 
@@ -68,8 +69,12 @@ const App = () => {
     <>
       <Routes>
         {/* Public routes */}
-        <Route path={Paths.landingPage} element={<LandingPage  setIsAuthenticated={setIsAuthenticated}/>} />
-        <Route path={Paths.tarifs} element={<Tarifs />} />
+
+       
+        <Route path="/" element={<LandingPageLayout setIsAuthenticated={setIsAuthenticated} />}>
+          <Route index element={<HeroSection />} />
+          <Route path={Paths.tarifs} element={<Tarifs />} />
+        </Route>    
         <Route path={Paths.signUp} element={<CreateCompanyPage />} />
         <Route path={Paths.forgotPassword} element={<ForgotPasswordPage />} />
         <Route path={Paths.resetPassword} element={<ResetPasswordPage />} />
@@ -132,10 +137,12 @@ const App = () => {
             </Route>
             <Route path={Paths.addSupplierOrder} element={<AddSupplierOrderPage />} />
 
-            <Route path={Paths.companies}>
-              <Route index element={<ConsultCompaniesPage />} />
-              <Route path=":id" element={<ConsultCompanyPageSuperAdmin />} />
-            </Route>
+            <Route element={<ProtectedRoute allowedRoles={['ROLE_SUPER_ADMIN']} />}>
+          <Route path={Paths.companies}>
+            <Route index element={<ConsultCompaniesPage />} />
+            <Route path=":id" element={<ConsultCompanyPageSuperAdmin />} />
+          </Route>
+        </Route>
 
 
 
@@ -143,6 +150,8 @@ const App = () => {
            
           </Route>
         </Route>
+
+       
 
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>

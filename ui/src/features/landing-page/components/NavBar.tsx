@@ -1,74 +1,76 @@
 import { useState } from "react";
 import { useIsMobile } from "../../../hooks/useMobile";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Menu, Package, X } from 'lucide-react';
 import { Button } from "src/components/ui";
-import { useNavigate } from "react-router-dom";
 
 type NavBarProps = {
   setIsOpenLoginForm: (isOpen: boolean) => void;
 };
 
-
-const NavBar : React.FC<NavBarProps> = ({setIsOpenLoginForm}) =>{
-    const navigate = useNavigate();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    //const [loginDialogOpen, setLoginDialogOpen] = useState(false);
-    const isMobile = useIsMobile();
-    
-    const toggleMobileMenu = () => {
-      setMobileMenuOpen(!mobileMenuOpen);
-    };
-    const openLoginForm = () => {
-        setIsOpenLoginForm(true)
-    }
-    const navigateToSignUpPage = () => {
-      navigate('/SignUp');
-    }
+const NavBar: React.FC<NavBarProps> = ({ setIsOpenLoginForm }) => {
+  const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
   
-    // const handleLoginClick = () => {
-    //   setLoginDialogOpen(true);
-    //   if (mobileMenuOpen) {
-    //     setMobileMenuOpen(false);
-    //   }
-    // };
-    return(
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 py-4">
-        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-          <div className="flex items-center justify-center gap-1">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                        <Package className="w-4 h-4 text-white" />
-                </div>
-                <span className="ml-3 font-bold text-lg">Stockify</span>
-              </div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
-              Fonctionnalités
-            </a>
-            <a href="tarifs" className="text-gray-600 hover:text-primary font-medium transition-colors">
-              Tarifs
-            </a>
-            <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
-              Témoignages
-            </a>
-            <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
-              Contact
-            </a>
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const openLoginForm = () => {
+    setIsOpenLoginForm(true);
+  };
+
+  const navigateToSignUpPage = () => {
+    navigate('/SignUp');
+  };
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 py-4">
+      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+         <Link to="/" className="flex items-center justify-center gap-1">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+            <Package className="w-4 h-4 text-white" />
           </div>
-          
-          <div className="flex items-center gap-4">
-          {!isMobile &&
-          <>
-          <Button onClick={openLoginForm}>Se connecter</Button>
-          <Button onClick={navigateToSignUpPage}>S'inscrire</Button>
-          </>
-          
-          }
-          
-            
+          <span className="ml-3 font-bold text-lg">Stockify</span>
+        </Link>
         
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-6">
+          <Link 
+            to="/fonctionnalites" 
+            className="text-gray-600 hover:text-primary font-medium transition-colors"
+          >
+            Fonctionnalités
+          </Link>
+          <Link 
+            to="/tarifs" 
+            className="text-gray-600 hover:text-primary font-medium transition-colors"
+          >
+            Tarifs
+          </Link>
+          <Link 
+            to="/temoignages" 
+            className="text-gray-600 hover:text-primary font-medium transition-colors"
+          >
+            Témoignages
+          </Link>
+          <Link 
+            to="/contact" 
+            className="text-gray-600 hover:text-primary font-medium transition-colors"
+          >
+            Contact
+          </Link>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          {!isMobile && (
+            <>
+              <Button onClick={openLoginForm}>Se connecter</Button>
+              <Button onClick={navigateToSignUpPage}>S'inscrire</Button>
+            </>
+          )}
           
           {/* Mobile menu toggle */}
           {isMobile && (
@@ -81,34 +83,63 @@ const NavBar : React.FC<NavBarProps> = ({setIsOpenLoginForm}) =>{
             </button>
           )}
         </div>
-        </div>
-        
-        {/* Mobile Navigation */}
+      </div>
+      
+      {/* Mobile Navigation */}
       {isMobile && mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg animate-fade-in">
           <div className="flex flex-col py-4 px-6 space-y-4">
-            <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
+            <Link 
+              to="/fonctionnalites" 
+              className="text-gray-600 hover:text-primary font-medium transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Fonctionnalités
-            </a>
-            <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
+            </Link>
+            <Link 
+              to="/tarifs" 
+              className="text-gray-600 hover:text-primary font-medium transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Tarifs
-            </a>
-            <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
+            </Link>
+            <Link 
+              to="/temoignages" 
+              className="text-gray-600 hover:text-primary font-medium transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Témoignages
-            </a>
-            <a href="#" className="text-gray-600 hover:text-primary font-medium transition-colors">
+            </Link>
+            <Link 
+              to="/contact" 
+              className="text-gray-600 hover:text-primary font-medium transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Contact
-            </a>
-            <Button onClick={openLoginForm}  className="w-full sm:hidden mt-2">Se connecter</Button>
-            <Button onClick={navigateToSignUpPage}  className="w-full sm:hidden mt-2">S'inscrire</Button>
-            
+            </Link>
+            <Button 
+              onClick={() => {
+                openLoginForm();
+                setMobileMenuOpen(false);
+              }} 
+              className="w-full sm:hidden mt-2"
+            >
+              Se connecter
+            </Button>
+            <Button 
+              onClick={() => {
+                navigateToSignUpPage();
+                setMobileMenuOpen(false);
+              }} 
+              className="w-full sm:hidden mt-2"
+            >
+              S'inscrire
+            </Button>
           </div>
         </div>
       )}
-  
-        {/* <LoginDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} /> */}
-      </nav>
-    )
-}
+    </nav>
+  );
+};
 
 export default NavBar;

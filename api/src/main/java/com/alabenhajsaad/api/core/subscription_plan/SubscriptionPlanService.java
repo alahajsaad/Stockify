@@ -7,4 +7,5 @@ public interface SubscriptionPlanService {
     SubscriptionPlan updateSubscriptionPlan(SubscriptionPlan subscriptionPlan);
     List<SubscriptionPlan> getSubscriptionPlans();
     SubscriptionPlan getSubscriptionPlanByName(String name);
+    void deleteSubscriptionPlan(Integer id);
 }

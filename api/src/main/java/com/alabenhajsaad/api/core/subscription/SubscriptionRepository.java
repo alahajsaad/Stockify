@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, Integer> {
+    boolean existsBySubscriptionPlan_id(Integer id);
+
     @Query("""
         SELECT sp.name as planName, COUNT(DISTINCT s.company.id) as companyCount
         FROM Subscription s 

@@ -4,6 +4,7 @@ import {
   createSubscriptionPlan,
   updateSubscriptionPlan,
   getSubscriptionPlans,
+  deleteSubscriptionPlan,
 } from "./api";
 import { ApiResponse } from "@/types";
 
@@ -80,3 +81,16 @@ export const useUpdateSubscriptionPlan = () => {
     }
   });
 };
+
+
+ export const useDeleteSubscriptionPlan = () => {
+    const queryClient = useQueryClient();
+    
+    return useMutation<ApiResponse<void>, Error, number>({
+      mutationFn: (id: number) => deleteSubscriptionPlan(id),
+      onSuccess: () => {
+        // Invalidate and refetch the list query when a record is deleted
+        queryClient.invalidateQueries({ queryKey: ['SubscriptionPlans'] });
+      }
+    });
+  };

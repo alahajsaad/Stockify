@@ -71,9 +71,10 @@ public class SecurityController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         String actualRefreshToken = null;
+
         // Extract the refresh token from cookies
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -84,11 +85,21 @@ public class SecurityController {
                 }
             }
         }
+
+        // Invalidate refresh token in the security service (optional, depends on your system)
         securityService.logout(actualRefreshToken);
-        return ResponseEntity.ok(
-                ApiResponse.success(null, "session terminée")
-        );
+
+        // Clear the refresh_token cookie
+        Cookie clearedCookie = new Cookie("refresh_token", null);
+        clearedCookie.setHttpOnly(true);
+        clearedCookie.setSecure(true); // Set to false if you’re testing over HTTP, but true in production
+        clearedCookie.setPath("/"); // Must match the original cookie path
+        clearedCookie.setMaxAge(0); // Expire immediately
+        response.addCookie(clearedCookie);
+
+        return ResponseEntity.ok(ApiResponse.success(null, "Session terminée"));
     }
+
 
     @PostMapping("/forgetPassword")
     public ResponseEntity<ApiResponse<Void>> forgetPassword(@RequestBody @Valid EmailDto emailDto) {

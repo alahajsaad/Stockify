@@ -1,7 +1,9 @@
 import React from 'react';
-import { Users, HardDrive } from 'lucide-react';
+import { Users, HardDrive, Trash } from 'lucide-react';
 import FeatureList from './FeatureList';
 import { Currency } from '@/lib/currency';
+import { useDeleteSubscriptionPlan } from '@/services/api/subscription_plan/hooks';
+import { toast } from 'react-toastify';
 
 interface SubscriptionPlan {
   id: number;
@@ -20,6 +22,7 @@ interface PlanCardProps {
 }
 
 const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit ,isSuperAdminView }) => {
+  const {mutate : deleteSubPlan} = useDeleteSubscriptionPlan()
   const getPlanColor = (name: string) => {
     switch (name.toLowerCase()) {
       case 'basic':
@@ -69,19 +72,40 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit ,isSuperAdminView }) =
 
   const colors = getPlanColor(plan.name);
 
+  const handleDeleteSubscriptionPlan = (id:number) => {
+    deleteSubPlan(id,{
+                onSuccess:(response)=>{
+                    toast.success(response.message)
+                },
+                onError:(response)=>{
+                     toast.error(response.message)
+                }
+            });
+  }
+
   return (
     <div className={`bg-white rounded-xl border-2 ${colors.border} shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden`}>
       {/* Popular Badge */}
-      {plan.popular && (
+      {/* {plan.popular && (
         <div className="absolute top-0 right-0 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
           Populaire
         </div>
-      )}
+      )} */}
 
       <div className="p-6">
         {/* Header */}
         <div className="mb-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+          <div className='flex items-center justify-between'>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+            {isSuperAdminView && 
+               <Trash 
+                className='text-red-600 cursor-pointer hover:scale-110 transition-transform' 
+                onClick={() => handleDeleteSubscriptionPlan(plan.id)} 
+              />
+            }
+           
+          </div>
+          
           <div className="flex items-baseline gap-1">
             <span className={`text-3xl font-bold ${colors.accent}`}>
               {plan.price.toFixed(2) + " " + Currency}
