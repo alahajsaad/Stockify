@@ -32,12 +32,12 @@ import AddSupplierPage from "./features/partner/pages/AddSupplierPage";
 import ConsultSupplierOrders from "./features/supplier_order/pages/ConsultSupplierOrders";
 import { useNavigationType } from 'react-router-dom';
 import AddClientOrder from "./features/client_order/pages/AddClientOrder";
-import ConsultClientOrders from "./features/client_order/pages/ConsultClientOrders";
 import ClientOrderDetails from "./features/client_order/pages/ClientOrderDetails";
 import SupplierOrderDetails from "./features/supplier_order/pages/SupplierOrderDetails";
 import PartnerDetails from "./features/partner/pages/PartnerDetails";
 import Tarifs from "./features/landing-page/components/Tarifs";
 import LandingPageLayout from "./features/landing-page/pages/LandingPageLayout";
+import ConsultClientOrders from "./features/client_order/newConsultClientOrders/ConsultClientOrders";
 
 
 
@@ -101,7 +101,7 @@ const App = () => {
             
             
            
-            <Route path={Paths.subscriptions} element={<ConsultSubscriptionsPage />} />
+           
            
 
             <Route path={Paths.addCategory} element={<AddCategoryPage />} />
@@ -137,12 +137,14 @@ const App = () => {
             </Route>
             <Route path={Paths.addSupplierOrder} element={<AddSupplierOrderPage />} />
 
-            <Route element={<ProtectedRoute allowedRoles={['ROLE_SUPER_ADMIN']} />}>
-          <Route path={Paths.companies}>
-            <Route index element={<ConsultCompaniesPage />} />
-            <Route path=":id" element={<ConsultCompanyPageSuperAdmin />} />
+          <Route element={<ProtectedRoute allowedRoles={['ROLE_SUPER_ADMIN']} />}>
+            <Route path={Paths.subscriptions} element={<ConsultSubscriptionsPage />} />
+
+            <Route path={Paths.companies}>
+              <Route index element={<ConsultCompaniesPage />} />
+              <Route path=":id" element={<ConsultCompanyPageSuperAdmin />} />
+            </Route>
           </Route>
-        </Route>
 
 
 

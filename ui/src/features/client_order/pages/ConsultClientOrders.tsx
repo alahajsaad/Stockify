@@ -33,6 +33,7 @@ const ConsultClientOrders: React.FC = () => {
     paymentStatus,
     deliveryStatus,
   };
+  console.log(filter)
 
   // Récupération des commandes via la requête API
   const { data: clientOrders, isPending, refetch } = useGetClientOrders(filter);
@@ -42,18 +43,24 @@ const ConsultClientOrders: React.FC = () => {
     refetch();
   }, [partnerId, paymentStatus, deliveryStatus, page, size, refetch]);
 
+  
   const updateSearchParams = (params: any) => {
-  // Convert searchParams to an object
-  const currentParams: any = {};
-  searchParams.forEach((value, key) => {
-    currentParams[key] = value;
-  });
+    // Convert searchParams to an object
+    const currentParams: any = {};
+    searchParams.forEach((value, key) => {
+      currentParams[key] = value;
+    });
 
-  setSearchParams({
-    ...currentParams, // Keep all current parameters
-    ...params, // Override only the ones you want to update
-  });
-};
+    // Filter out empty values to clean the URL
+    const filteredParams: any = {};
+    Object.entries({ ...currentParams, ...params }).forEach(([key, value]) => {
+      if (value !== '' && value !== null && value !== undefined) {
+        filteredParams[key] = value;
+      }
+    });
+
+    setSearchParams(filteredParams);
+  };
 
 
   return (
@@ -69,6 +76,7 @@ const ConsultClientOrders: React.FC = () => {
 
       {/* Filtres de recherche */}
       <ClientOrdersFilter
+        client={partner}
         setClient={(client) => {
           setPartner(client); // Mise à jour de l'état local pour l'affichage
           updateSearchParams({ partnerId: client?.id || '' }); // Mise à jour de l'URL
@@ -77,6 +85,7 @@ const ConsultClientOrders: React.FC = () => {
         DeliveryStatus={deliveryStatus}
         setPaymentStatus={(status) => updateSearchParams({ paymentStatus: status || '' })}
         setDeliveryStatus={(status) => updateSearchParams({ deliveryStatus: status || '' })}
+        updateSearchParams={updateSearchParams}
       />
 
       {/* Affichage conditionnel : chargement, tableau ou message d'absence */}

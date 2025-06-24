@@ -5,7 +5,7 @@ import { PaymentStatus, ReceptionStatus } from "@/types";
 import SearchPartner from "@/components/order/consultOrders/SearchPartner";
 
 type SupplierOrdersFilterProps = {
-    setSupplier: (supplier: DynamicPartner) => void;
+    setSupplier: (supplier: DynamicPartner | undefined) => void;
     setPaymentStatus : (status : PaymentStatus ) => void,
     PaymentStatus: PaymentStatus ,
     setReceptionStatus:(status: ReceptionStatus ) => void,

@@ -46,13 +46,13 @@ public class ClientOrderController {
             @RequestParam(required = false) DeliveryStatus deliveryStatus,
             @RequestParam(required = false) PaymentStatus paymentStatus,
             @RequestParam(required = false) String keyword ,
-            @RequestParam(required = false) Integer clientId,
+            @RequestParam(required = false) Integer partnerId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "8") Integer size
     ) {
 
         return ResponseEntity.ok(
-                clientOrderService.getClientOrders(PageRequest.of(page, size) ,fromDate, toDate, deliveryStatus,paymentStatus,keyword ,clientId)
+                clientOrderService.getClientOrders(PageRequest.of(page, size) ,fromDate, toDate, deliveryStatus,paymentStatus,keyword ,partnerId)
         );
     }
 

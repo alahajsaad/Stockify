@@ -2,7 +2,7 @@ import { SearchInput } from "@/components/ui";
 import List from "@/components/ui/List";
 import { useGetPartners } from "@/services/api/partner/hooks";
 import { DynamicPartner, EntityType, PartnerType } from "@/services/api/partner/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // Use the same type from PartnerInformation
 export type DistractedDynamicPartner = {
@@ -35,13 +35,26 @@ export const getDistractedDynamicPartner = (partners: DynamicPartner[]): Distrac
 type SearchPartnerProps = {
     partnerType: PartnerType;
     setPartner: (partner: DynamicPartner | undefined) => void;
+    partner:DynamicPartner | undefined
    
 }
 
-const SearchPartner: React.FC<SearchPartnerProps> = ({ partnerType, setPartner }) => {
+const SearchPartner: React.FC<SearchPartnerProps> = ({ partnerType, setPartner ,partner}) => {
     const [searchKey, setSearchKey] = useState<string>('');
+    const [displayValue, setDisplayValue] = useState<string>(''); // Separate display value
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    
+    const [selectedPartner, setSelectedPartner] = useState<DistractedDynamicPartner | null>(null);
+    useEffect(()=>{
+        if(partner === null){
+            setSelectedPartner(null)
+            setDisplayValue('')
+        }
+    },[partner]) 
+
+
+    const justSelected = useRef(false);
+
+    console.log("isOpen : " + isOpen)
     const { data: partners, isPending, refetch } = useGetPartners({
         keyword: searchKey,
         partnerType: partnerType,
@@ -49,44 +62,67 @@ const SearchPartner: React.FC<SearchPartnerProps> = ({ partnerType, setPartner }
         size: 10
     });
 
-    // Use the same data transformation as PartnerInformation
     const PartnerDtos: DistractedDynamicPartner[] = getDistractedDynamicPartner(partners?.content || []);
 
-    const handleSearchChange = (value: string) => {
+    const handleSearchChange = useCallback((value: string)=>{
+        // Prevent opening immediately after selection
+        if (justSelected.current) {
+            justSelected.current = false;
+            return;
+        }
+        setDisplayValue(value);
         setSearchKey(value);
+        setSelectedPartner(null); // Clear selection when typing
+        
         // Only open the dropdown if there's search text
         if (value.trim() !== '') {
             setIsOpen(true);
         } else {
             setIsOpen(false);
         }
-    };
+    } ,[])
 
-    // Handle partner selection - matches PartnerInformation logic
-    const handlePartnerSelect = (selectedPartner: DistractedDynamicPartner | null) => {
-        if (selectedPartner) {
+    const handlePartnerSelect = (selectedPartner: DistractedDynamicPartner) => {
+            justSelected.current = true; // Prevent immediate reopen
+            setSelectedPartner(selectedPartner);
             setPartner(partners?.content.find((partner) => partner.id === selectedPartner.id));
+            setDisplayValue(selectedPartner.partnerName);
             setIsOpen(false);
-            setSearchKey(selectedPartner.partnerName); // Clear search after selection
-        }
+           
     };
 
-    // Add the useEffect for refetching like in PartnerInformation
+   
+    const handleFocus = () => {
+        if (selectedPartner) {
+            setSelectedPartner(null);
+            setDisplayValue('');
+            setSearchKey('');
+        }
+        // Open dropdown if there's text to search
+        if (displayValue.trim() !== '' ) {
+            setIsOpen(true);
+             console.log("isOpen form handle focus: " + isOpen)
+        }
+       
+    };
+
     useEffect(() => {
-        if (searchKey) {
+        if (searchKey && !selectedPartner) {
             refetch();
         }
-    }, [searchKey, refetch]);
+    }, [searchKey, refetch, selectedPartner]);
 
     return (
         <div className="relative">
-            <SearchInput 
+            <SearchInput
                 placeholder={partnerType === "SUPPLIER" ? "Rechercher un fournisseur..." : "Rechercher un client..."}
                 setSearchKey={handleSearchChange}
                 isPending={isPending}
+                value={displayValue}
+                onfocus={handleFocus}
             />
-            
-            <List 
+           
+            <List
                 data={PartnerDtos}
                 setSelectedItem={handlePartnerSelect}
                 isOpen={isOpen}

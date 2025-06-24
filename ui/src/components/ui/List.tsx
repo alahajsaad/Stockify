@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 interface ListProps<T> {
   data?: T[];
   showedAttribute: (keyof T)[];
-  setSelectedItem: (item: T | null) => void;
+  setSelectedItem: (item: T) => void;
   isOpen: boolean;
   setIsOpen: (bool: boolean) => void;
 }
@@ -18,10 +18,6 @@ const List = <T,>({
   // Fix: Changed HTMLElement to HTMLUListElement to match the ul element
   const ref = useRef<HTMLUListElement>(null);
 
-  const handleSelect = (item: T) => {
-    setSelectedItem(item);
-    setIsOpen(false);
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,7 +52,7 @@ const List = <T,>({
                 key={index}
                 role="option"
                 className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-blue-100 dark:text-white dark:hover:bg-gray-600"
-                onClick={() => handleSelect(d)}
+                onClick={() => setSelectedItem(d)}
               >
                 {showedAttribute.map((att, idx) => (
                   <span key={idx}>

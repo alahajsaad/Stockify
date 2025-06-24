@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Category, CreateCategoryDto } from "./types";
+import { Category, CategoryCreationDto } from "./types";
 import { addCategory, deleteCategory, getCategories, getCategoryById, updateCategory } from "./api";
 import { ApiResponse, Page } from "@/types";
 
@@ -7,26 +7,16 @@ import { ApiResponse, Page } from "@/types";
 export const useAddCategory = () => {
   const queryClient = useQueryClient();
   
-  return useMutation<Category, Error, CreateCategoryDto>({
-    mutationFn: (category: CreateCategoryDto) =>
+  return useMutation<Category, Error, CategoryCreationDto>({
+    mutationFn: (category: CategoryCreationDto) =>
       addCategory(category).then(response => {
         if (response.status === 'error') {
           throw new Error(response.message);
         }
         return response.data as Category;
       }),
-     onSuccess: (newCategory) => {
-      // Invalidate all Categories queries instead of trying to update cache manually
-      queryClient.invalidateQueries({ 
-        queryKey: ['Categories'],
-        exact: false // This will invalidate all queries that start with ['Categories']
-      });
-      
-      // Alternative: If you want to keep optimistic updates, update all matching queries
-      // queryClient.setQueryData(['Categories'], (oldData: Category[] | undefined) => {
-      //   if (!oldData) return [newCategory];
-      //   return [...oldData, newCategory];
-      // });
+     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['Categories'] });
     }
   });
 };
@@ -43,7 +33,7 @@ export const useUpdateCategory = () => {
           return response.data as Category;
         }),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['Categories'] ,exact: false  });
+        queryClient.invalidateQueries({ queryKey: ['Categories'] });
         
       }
     });
@@ -84,21 +74,34 @@ export const useGetCategories = (params: {
     },
     gcTime: Infinity,
     staleTime: 1000 * 60 * 15,
-    refetchOnMount: false
+    refetchOnMount: true
   });
 };
 
 
 
- 
   export const useDeleteCategory = () => {
-    const queryClient = useQueryClient();
-    
-    return useMutation<ApiResponse<void>, Error, number>({
-      mutationFn: (id: number) => deleteCategory(id),
-      onSuccess: () => {
-        // Invalidate and refetch the list query when a record is deleted
-        queryClient.invalidateQueries({ queryKey: ['Categories'] });
-      }
-    });
-  };
+  const queryClient = useQueryClient();
+
+  return useMutation<ApiResponse<void>, Error, number>({
+    mutationFn: (id: number) => deleteCategory(id),
+    onSuccess: (_data, deletedId) => {
+      // Get all cached queries starting with ['Categories']
+      const queries = queryClient.getQueriesData<Page<Category>>({ queryKey: ['Categories'] });
+
+      queries.forEach(([key, oldData]) => {
+        if (!oldData) return;
+
+        // Remove the deleted category from the cached data
+        const updatedData = {
+          ...oldData,
+          content: oldData.content.filter((category) => category.id !== deletedId),
+        };
+
+        // Update the cache for this query key
+        queryClient.setQueryData(key, updatedData);
+      });
+    }
+  });
+};
+

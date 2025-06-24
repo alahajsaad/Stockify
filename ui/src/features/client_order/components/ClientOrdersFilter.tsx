@@ -5,19 +5,23 @@ import { DeliveryStatus, PaymentStatus } from "@/types";
 import SearchPartner from "@/components/order/consultOrders/SearchPartner";
 
 type ClientOrdersFilterProps = {
-    setClient: (client: DynamicPartner) => void;
+    client:DynamicPartner | undefined
+    setClient: (client: DynamicPartner | undefined) => void;
     setPaymentStatus: (status: PaymentStatus) => void;
     PaymentStatus: PaymentStatus;
     setDeliveryStatus: (status: DeliveryStatus) => void;
     DeliveryStatus: DeliveryStatus;
+    updateSearchParams: (params: any) => void;
 }
 
 const ClientOrdersFilter: React.FC<ClientOrdersFilterProps> = ({
+    client,
     setClient,
     setPaymentStatus,
     PaymentStatus,
     setDeliveryStatus,
-    DeliveryStatus
+    DeliveryStatus,
+    updateSearchParams
 }) => {
 
     const PaymentStatusMap = new Map<string, string>([
@@ -32,11 +36,19 @@ const ClientOrdersFilter: React.FC<ClientOrdersFilterProps> = ({
         ["UNDELIVERED", "Commandes non livrées"]
     ]);
 
-    const handleReset = () => {
+   const handleReset = () => {
         // Réinitialiser tous les filtres à leur valeur par défaut
         setClient(undefined);
         setPaymentStatus("" as PaymentStatus);
         setDeliveryStatus("" as DeliveryStatus);
+        
+        // Clear all filter-related URL parameters
+        updateSearchParams({
+            partnerId: '',
+            paymentStatus: '',
+            deliveryStatus: '',
+            page: '0' // Reset to first page as well
+        });
     };
 
     return (
@@ -53,7 +65,7 @@ const ClientOrdersFilter: React.FC<ClientOrdersFilterProps> = ({
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Recherche
                     </label>
-                    <SearchPartner partnerType={"CLIENT"} setPartner={setClient} />
+                    <SearchPartner partnerType={"CLIENT"} setPartner={setClient} partner={client} />
                 </div>
 
                 <div className="w-full lg:w-1/4">

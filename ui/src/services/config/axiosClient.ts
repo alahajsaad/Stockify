@@ -51,7 +51,7 @@ function isTokenValid(bearerToken: string): boolean {
 // Add a response interceptor
 client.interceptors.response.use(
   function (response) {
-    console.log("response : "+response.headers)
+    //console.log("response : "+response.headers)
     return response;
   },
  

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { Button, Input } from "src/components/ui";
 import InputFile from "src/components/ui/inputs/InputFile";
 import { useCreateCompany } from "src/services/api/company";
-import { CompanyResponseDto } from "src/types/company";
+import { Company, CompanyResponseDto } from "src/types/company";
 import { z } from "zod";
 const formSchema = z
   .object({
@@ -28,7 +28,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 type FormProps = {
     setStep : (step : number) => void
-    setCompany : (company : CompanyResponseDto) => void
+    setCompany : (company : Company) => void
     admin_Id?: number
 }
 
