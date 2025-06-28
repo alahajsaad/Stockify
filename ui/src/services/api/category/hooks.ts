@@ -2,20 +2,22 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category, CategoryCreationDto } from "./types";
 import { addCategory, deleteCategory, getCategories, getCategoryById, updateCategory } from "./api";
 import { ApiResponse, Page } from "@/types";
+import { toast } from "react-toastify";
 
 
 export const useAddCategory = () => {
   const queryClient = useQueryClient();
   
-  return useMutation<Category, Error, CategoryCreationDto>({
+  return useMutation<ApiResponse<Category>, Error, CategoryCreationDto>({
     mutationFn: (category: CategoryCreationDto) =>
       addCategory(category).then(response => {
         if (response.status === 'error') {
           throw new Error(response.message);
         }
-        return response.data as Category;
+        return response as ApiResponse<Category>;
       }),
      onSuccess: () => {
+     
       queryClient.invalidateQueries({ queryKey: ['Categories'] });
     }
   });

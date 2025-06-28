@@ -7,7 +7,7 @@ const AdminDash : React.FC = () => {
     return (
        <div>
         <ProductStatistics />
-        <div className="flex gap-6 items-center justify-center w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <SupplierOrderStatistics />
         <ClientOrderStatistics/>
         </div>

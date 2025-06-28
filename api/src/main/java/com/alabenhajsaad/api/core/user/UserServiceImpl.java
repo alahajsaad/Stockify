@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponseDto createEmployeeAccount(EmployeeCreationDto dto , Integer companyId) {
         if(Boolean.TRUE.equals(repository.existsByEmail(dto.email()))){
-            throw new ConflictException("cette employee a deja un compte avec l'adress email :"+dto.email());
+            throw new ConflictException("Cet employé a déjà un compte avec l’adresse e-mail :"+dto.email());
         }
 
         AppUser user = AppUser.builder()

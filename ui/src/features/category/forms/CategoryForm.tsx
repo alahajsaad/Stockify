@@ -4,6 +4,7 @@ import { Button, Input } from "src/components/ui";
 import { z } from "zod";
 import { Category, CategoryCreationDto } from "@/services/api/category/types";
 import { useAddCategory , useUpdateCategory } from "@/services/api/category/hooks";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   name: z.string().min(1, "Veuillez ajouter un nom de catégorie"),
@@ -65,8 +66,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ toggleForm, initialCategory
       };
       
       addCategory(newCategory, {
-        onSuccess: () => {
+        onSuccess: (response) => {
           reset();
+          toast.success(response.message)
           toggleForm?.(false);
           onAddSuccess?.()
         }

@@ -99,8 +99,8 @@ export const useGetClientOrderNumber = () => {
       }),
 
 
-    gcTime: Infinity, // Keep data in cache until app is closed
-    staleTime: 1000 * 60 * 60, // Consider data fresh for 60 minutes
+     staleTime : 0,
+     gcTime : 0
     
     });
 

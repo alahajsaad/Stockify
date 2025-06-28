@@ -4,21 +4,40 @@ import { addProduct, getProductById, getProducts, getProductStatistics } from ".
 import { ApiResponse, Page } from "@/types";
 
 export const useAddProduct = () => {
-    const queryClient = useQueryClient();
-     
-    return useMutation<ApiResponse<Product>, Error, ProductCreationDto>({
-      mutationFn: (product: ProductCreationDto) => 
-        addProduct(product).then(response => {
-          if (response.status === 'error') {
-            throw new Error(response.message);
+  const queryClient = useQueryClient();
+        
+  return useMutation<ApiResponse<Product>, Error, ProductCreationDto>({
+    mutationFn: (product: ProductCreationDto) =>
+      addProduct(product).then(response => {
+        if (response.status === 'error') {
+          throw new Error(response.message);
+        }
+        return response;
+      }),
+    onSuccess: (data) => {
+      // Invalider toutes les requêtes qui commencent par ['Products']
+      // queryClient.invalidateQueries({ 
+      //   queryKey: ['Products'],
+      //   exact: false // Important: invalide toutes les clés qui commencent par ['Products']
+      // });
+      
+      // Alternative: mise à jour optimiste du cache
+      // Optionnel: mettre à jour directement les caches existants
+      queryClient.getQueriesData<Page<Product>>({ queryKey: ['Products'] })
+        .forEach(([queryKey, cachedData]) => {
+          if (cachedData && data.data) {
+            // Ajouter le nouveau produit aux données existantes
+            const updatedData: Page<Product> = {
+              ...cachedData,
+              content: [data.data, ...cachedData.content],
+              totalElements: cachedData.totalElements + 1
+            };
+            queryClient.setQueryData(queryKey, updatedData);
           }
-          return response;
-        }),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['products'] });
-      }
-    });
-}
+        });
+    }
+  });
+};
 
 
 
@@ -66,10 +85,9 @@ export const useGetProducts = (
         return response.data;
       });
     },
-    gcTime: Infinity, // Keep data in cache until app is closed
-    staleTime: 1000 * 60 * 15, // Consider data fresh for 15 minutes
-    //refetchOnMount: false, // Don't refetch when component mounts
-    enabled: true // Don't fetch automatically, require explicit refetch
+    gcTime: 0, // Keep data in cache until app is closed
+    staleTime:0, // Consider data fresh for 15 minutes
+    refetchOnMount : true ,
   });
 };
 
@@ -86,61 +104,6 @@ export const useGetProducts = (
     });
   };
 
-// export const useGetProductById = (id: number) => {
-
-//   const queryClient = useQueryClient();
-  
-//   // We'll move the useQuery hook before any conditionals
-//   const result = useQuery<Product, Error>({
-//     queryKey: ['Products', 'byId', id],
-//     queryFn: () => {
-//       // First, check if we have this product in any existing filtered product queries
-//       const queriesData = queryClient.getQueriesData<Page<Product>>({
-//         queryKey: ['Products', 'filteredProducts'],
-//       });
-      
-//       // Look through all filtered product queries
-//       for (const [, pageData] of queriesData) {
-//         if (pageData?.content) {
-//           const foundProduct = pageData.content.find(product => product.id === id);
-//           if (foundProduct) {
-//             // Store in dedicated cache entry for future direct access
-//             queryClient.setQueryData(['Products', 'byId', id], foundProduct);
-//             return Promise.resolve(foundProduct);
-//           }
-//         }
-//       }
-      
-//       // If not found in cache, make the API request
-//       return getProductById(id).then(response => {
-//         if (response.status === 'error') {
-//           throw new Error(response.message);
-//         }
-//         if (!response.data) {
-//           throw new Error('No data returned from server');
-//         }
-//         return response.data;
-//       });
-//     },
-//     gcTime: Infinity, // Keep data in cache until app is closed
-//     staleTime: 1000 * 60 * 15, // Consider data fresh for 15 minutes
-//     enabled: id > 0 && !isNaN(id) // Only enable the query for valid IDs
-//   });
-
-//   // For invalid IDs, return a custom error object
-//   if (id <= 0 || isNaN(id)) {
-//     return {
-//       isLoading: false,
-//       isPending: false,
-//       isError: true,
-//       data: undefined,
-//       error: new Error("Invalid product ID"),
-//       refetch: () => Promise.reject(new Error("Invalid product ID"))
-//     } as const;
-//   }
-
-//   return result;
-// };
 
 
  export const useGetProductStatistics = () => {
@@ -154,8 +117,8 @@ export const useGetProducts = (
       }),
 
 
-    gcTime: Infinity, // Keep data in cache until app is closed
-    staleTime: 1000 * 60 * 60, // Consider data fresh for 60 minutes
+     staleTime : 0,
+     gcTime : 0
     
     });
 

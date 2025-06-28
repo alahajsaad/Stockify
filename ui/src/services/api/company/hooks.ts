@@ -48,6 +48,7 @@ export const useGetCompanyMetrics = () => {
       }
       return response.data as CompanyMetrics;
     }),
-    
+    staleTime : 0,
+    gcTime : 0
   });
 };

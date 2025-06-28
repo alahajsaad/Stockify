@@ -6,13 +6,13 @@ import { ApiResponse } from "@/types";
 export const useAddValueAddedTax = () => {
     const queryClient = useQueryClient();
      
-    return useMutation<ValueAddedTax, Error, CreateVat>({
+    return useMutation<ApiResponse<ValueAddedTax>, Error, CreateVat>({
       mutationFn: (tax: CreateVat) => 
         addValueAddedTax(tax).then(response => {
           if (response.status === 'error') {
             throw new Error(response.message);
           }
-          return response.data as ValueAddedTax;
+          return response as ApiResponse<ValueAddedTax>;
         }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['Value_added_taxes'] });
@@ -23,13 +23,13 @@ export const useAddValueAddedTax = () => {
 export const useUpdateValueAddedTax = () => {
     const queryClient = useQueryClient();
      
-    return useMutation<ValueAddedTax, Error, ValueAddedTax>({
+    return useMutation<ApiResponse<ValueAddedTax>, Error, ValueAddedTax>({
       mutationFn: (tax: ValueAddedTax) => 
         updateValueAddedTax(tax).then(response => {
           if (response.status === 'error') {
             throw new Error(response.message);
           }
-          return response.data as ValueAddedTax;
+          return response as ApiResponse<ValueAddedTax>;
         }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['Value_added_taxes'] });
@@ -68,7 +68,6 @@ export const useUpdateValueAddedTax = () => {
       },
       gcTime: Infinity,
       staleTime: 1000 * 60 * 15,
-      refetchOnMount: false
     });
   };
   

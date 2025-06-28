@@ -49,7 +49,7 @@ const ClientOrderStatistics = () => {
     return (
         <div className="space-y-4">
             <h2 className="text-xl font-bold text-gray-900">Alertes commandes clients</h2>
-            <div className="flex flex-wrap gap-4">
+            
                 <StatisticCard
                     icon={
                         <div className="bg-red-100 rounded-full p-1.5 mr-2">
@@ -71,7 +71,7 @@ const ClientOrderStatistics = () => {
                                 <span className="text-base font-medium text-red-600">{statistics.data?.totalUnpaid}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Montant à payer :</span>
+                                <span className="text-sm text-gray-600">Montant à recevoir :</span>
                                 <span className="text-base font-medium text-gray-900">
                                     {statistics.data?.totalAmountToPay} {Currency}
                                 </span>
@@ -102,12 +102,12 @@ const ClientOrderStatistics = () => {
                     title="Statut de livraison"
                     stats={
                         <div className="text-center">
-                            <div className="text-3xl font-bold text-orange-600 mb-1">{statistics.data?.totalUndelivered}</div>
+                            <div className="text-3xl font-bold text-orange-600 mb-1">{statistics.data?.totalUndelivered ?? 0}</div>
                             <div className="text-sm text-gray-600">Commandes en attente de livraison</div>
                         </div>
                     }
                 />
-            </div>
+
         </div>
     );
 };

@@ -4,6 +4,7 @@ import { Button, Input } from "src/components/ui";
 import { z } from "zod";
 import { valueAddedTax } from "src/types";
 import { useAddValueAddedTax , useUpdateValueAddedTax } from "@/services/api/value_added_tax/hooks";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   rate: z.coerce.number().min(1, "Veuillez ajouter un taux valide"),
@@ -55,8 +56,9 @@ const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat ,onUpdateSucce
       };
       
       updateValueAddedTax(updatedAddedValueTax, {
-        onSuccess: () => {
+        onSuccess: (response) => {
           reset();
+          toast.success(response.message)
           toggleForm?.(false);
           onUpdateSuccess?.(true);
 
@@ -70,8 +72,9 @@ const VatForm: React.FC<VatFormProps> = ({ toggleForm, initialVat ,onUpdateSucce
       };
       
       addValueAddedTax(newValueAddedTax, {
-        onSuccess: () => {
+        onSuccess: (response) => {
           reset();
+          toast.success(response.message)
           toggleForm?.(false);
           onAddSuccess?.()
         }

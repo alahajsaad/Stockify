@@ -46,11 +46,8 @@ const CreateEmployeeAccountForm : React.FC<FormProps> = ({companyId,onSuccess}) 
           toast.success(response.message || "Employé créé avec succès");
           reset();
         },
-        onError: (error: any) => {
-          toast.error(
-            error?.response?.data?.message || 
-            "Une erreur est survenue lors de la création de l'employé"
-          );
+        onError: (response) => {
+          toast.error(response.message);
         },
       }
         );

@@ -10,11 +10,11 @@ import SelectVat from "@/features/value_added_tax/components/SelectVat";
 import { Card, CardBody } from "@/components/ui/Card";
 
 export const formSchema = z.object({
-    designation: z.string().min(1, "Designation is required"),
+  designation: z.string().min(1, "Designation is required"),
   reference: z.string().min(1, "Reference is required"),
-  categoryId: z.number().min(1, "Sélectionner une category"),
-  vatId: z.number().min(1, "Sélectionner une valeau de tax"),
-   criticalThreshold: z.coerce.number().min(1, "Définir un seuil de stock pour les alertes de fin de stock"),
+  categoryId: z.coerce.number().min(1, "Sélectionner une category"),
+  vatId: z.coerce.number().min(1, "Sélectionner un taux de TVA"),
+  criticalThreshold: z.coerce.number().min(1, "Définir un seuil de stock pour les alertes de fin de stock"),
 
 });
 
@@ -93,7 +93,7 @@ const AddProduct: React.FC = () => {
           onCategorySelect={handleCategorySelect}
           selectedCategoryId={selectedCategoryId > 0 ? selectedCategoryId : undefined}
         />
-        <input type="hidden" {...register("categoryId", { valueAsNumber: true })} />
+        <input type="hidden" {...register("categoryId")} />
         {errors.categoryId && <p className="text-red-500">{errors.categoryId.message}</p>}
 
         </div>
@@ -104,7 +104,7 @@ const AddProduct: React.FC = () => {
           onVatSelect={handleVatSelect}
           selectedVatId={selectedVatId > 0 ? selectedVatId : undefined}
         />
-        <input type="hidden" {...register("vatId", { valueAsNumber: true })} />
+        <input type="hidden" {...register("vatId")} />
         {errors.vatId && <p className="text-red-500">{errors.vatId.message}</p>}
 
         </div>

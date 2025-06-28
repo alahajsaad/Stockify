@@ -49,7 +49,7 @@ const SupplierOrderStatistics = () => {
     return (
         <div className="space-y-4">
             <h2 className="text-xl font-bold text-gray-900">Alertes commandes fournisseurs</h2>
-            <div className="flex flex-wrap gap-4">
+            
                 <StatisticCard
                     icon={
                         <div className="bg-red-100 rounded-full p-1.5 mr-2">
@@ -102,12 +102,12 @@ const SupplierOrderStatistics = () => {
                     title="Statut de réception"
                     stats={
                         <div className="text-center">
-                            <div className="text-3xl font-bold text-orange-600 mb-1">{statistics.data?.totalUnreceived}</div>
+                            <div className="text-3xl font-bold text-orange-600 mb-1">{statistics.data?.totalUnreceived ?? 0}</div>
                             <div className="text-sm text-gray-600">Commandes en attente de livraison</div>
                         </div>
                     }
                 />
-            </div>
+          
         </div>
     );
 };
